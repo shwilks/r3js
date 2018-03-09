@@ -1,0 +1,22 @@
+
+dependencies:
+  - name: r3js
+    version: 1.0.0
+    src: htmlwidgets/lib
+    stylesheet:
+      - styles/r3js.css
+    script:
+      - threejs/three.min.js
+      - threejs/plugins/Detector.js
+      - threejs/fonts/helvetiker_regular.typeface.js
+      - init.js
+      - functions/grid.js
+      - functions/buttons.js
+      - functions/navigation.js
+      - functions/highlight_functions.js
+      - functions/save_img.js
+      - functions/graphics.js
+      - functions/camera.js
+      - functions/viewer.js
+      - functions/plotting.js
+      - functions/axes.js

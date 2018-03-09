@@ -1,0 +1,37 @@
+
+
+<html>
+<head>
+	<title>r3js viewer</title>
+	<script src="lib/threejs/three.min.js"></script>
+	<script src="lib/threejs/plugins/Detector.js"></script>
+	<script src="lib/threejs/plugins/THREE.MeshLine.js"></script>
+	<script src="lib/threejs/fonts/helvetiker_regular.typeface.js"></script>
+	<script src="lib/init.js"></script>
+	<script src="lib/functions/grid.js"></script>
+	<script src="lib/functions/buttons.js"></script>
+	<script src="lib/functions/navigation.js"></script>
+	<script src="lib/functions/highlight_functions.js"></script>
+	<script src="lib/functions/save_img.js"></script>
+	<script src="lib/functions/graphics.js"></script>
+	<script src="lib/functions/camera.js"></script>
+	<script src="lib/functions/viewer.js"></script>
+	<script src="lib/functions/plotting.js"></script>
+	<script src="lib/functions/axes.js"></script>
+	<script src="data/bug.js"></script>
+	<link rel="stylesheet" type="text/css" href="lib/styles/r3js.css">
+	<script>
+		window.onload = function() {
+			var container = document.getElementById("r3js-viewer");
+			r3js(container, plotData);
+		};
+	</script>
+</head>
+<body>
+	<div id="r3js-viewer" style="position: absolute; top: 0px; bottom: 0px; left:0px; right:0px;">
+	</div>
+</body>
+</html>
+
+
+
