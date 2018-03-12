@@ -13,7 +13,6 @@ Installation
 Dowload the latest release from github:
 
 ```{R}
-# Then you can use the following to install directly from github:
 devtools::install_github(repo = "sw463/r3js",
                          type = "source")
 ```
