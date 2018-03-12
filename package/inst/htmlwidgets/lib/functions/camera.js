@@ -99,7 +99,7 @@ function addCamera(viewport, dimensions){
     
     // Set resize function
     camera.resize = function(){
-      this.renderer.setSize( this.viewport.offsetWidth, this.viewport.offsetHeight);
+      this.renderer.setSize( this.viewport.offsetWidth, this.viewport.offsetHeight );
       this.aspect = this.viewport.offsetWidth / this.viewport.offsetHeight;
       this.updateProjectionMatrix();
       this.viewport.render();
@@ -107,7 +107,7 @@ function addCamera(viewport, dimensions){
     
     // Set the function to center the camera
 	camera.center = function(){
-	    var objectSize = Math.max.apply(Math, this.viewport.plotData.aspect)/1.6;
+	    var objectSize = Math.max.apply(Math, this.viewport.plotData.aspect)/2;
 
 	    var fov = this.fov * ( Math.PI / 180 ); 
 	    this.position.z = Math.abs( objectSize / Math.sin( fov / 2 ) );

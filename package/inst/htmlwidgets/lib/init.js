@@ -83,7 +83,7 @@ function r3js(container, plotData, settings){
     var selectable_objects = [];
 
     // // Add buttons
-    // addButtons(viewport);
+    addButtons(viewport);
 
     // Add ambient light
     var ambient_light = new THREE.AmbientLight( 0x404040 );
@@ -272,6 +272,7 @@ function r3js(container, plotData, settings){
         
         // Add the click event listener
         toggle.addEventListener("mouseup", toggleBtn);
+        toggle.addEventListener("touchend", toggleBtn);
         toggle.toggleBtn();
         
     }
@@ -279,8 +280,6 @@ function r3js(container, plotData, settings){
     // Add some general event listeners
     window.addEventListener("resize", function(){ 
     	viewport.camera.resize();
-        // resolution.set( viewport.container.offsetWidth,
-        //                 viewport.container.offsetHeight );
     });
 
     // Function to get mouse position
@@ -506,6 +505,11 @@ function r3js(container, plotData, settings){
 	}
 
     
+    // Position the scene
+    viewport.positionScene();
+    viewport.camera.center();
+
+  
     // Apply viewer settings
     if(settings){
 
@@ -517,7 +521,7 @@ function r3js(container, plotData, settings){
         viewport.plotHolder.rotation.onChangeCallback();
 
         // Zoom the scene
-        viewport.camera.zoom = viewport.camera.zoom*settings.zoom;
+        viewport.camera.position.z = viewport.camera.position.z*settings.zoom;
 
         // Pan the scene
         plotPoints.position.x += settings.translation[0];
@@ -534,25 +538,22 @@ function r3js(container, plotData, settings){
 
     // Animate the scene
     function animate() {
-		
-	    if(viewport.mouse.over && !viewport.mouse.down){
-	        raytrace();
-	    }
-	    viewport.render();
-		viewport.animationFrame = requestAnimationFrame(animate);
-	}
+        
+        if(viewport.mouse.over && !viewport.mouse.down){
+            raytrace();
+        }
+        viewport.render();
+        viewport.animationFrame = requestAnimationFrame(animate);
+    }
 
-  // Position the scene
-  viewport.positionScene();
-  viewport.camera.center();
 
-  // Call the rotation event listener
-  viewport.plotHolder.rotation.onChangeCallback();
+    // Call the rotation event listener
+    viewport.plotHolder.rotation.onChangeCallback();
 
-  // Start the animation
-  viewport.animate = animate;
-  viewport.render();
-  animate();
+    // Start the animation
+    viewport.animate = animate;
+    viewport.render();
+    animate();
 
 }
 
