@@ -74,7 +74,7 @@ Interactivity
 -------------
 Several ways to add interactivity to plots are currently supported, namely labels, highlighting on rollover and toggle buttons.
 
-__Labels__
+__Labels__  
 Labels can be added simply by providing a string or string vector as input to the plotting function for the `label` argument:
 
 ```{R}
@@ -86,7 +86,7 @@ plot3js(x = runif(100),
 ```
 
 
-__Rollover highlighting__
+__Rollover highlighting__  
 Features of a plotted object can be programmed to change upon rollover simply by passing the arguments you wish to update on 
 rollover as a list to the `highlight` argument:
 
@@ -101,7 +101,7 @@ plot3js(x = runif(100),
 ```
 
 
-__Toggle buttons__
+__Toggle buttons__  
 To associate an object with a toggle button simply pass the desired toggle label to the `toggle` argument:
 
 ```{R}
