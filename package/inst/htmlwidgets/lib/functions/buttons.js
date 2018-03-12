@@ -17,10 +17,11 @@ function addButtons(viewport){
     	                  symbol,
     	                  event){
 	    var btn = document.createElement( 'div' );
+	    btn.classList.add("glyph-btn");
+	    btn.classList.add('not-selectable');
 	    btn.title = title;
 	    btn.innerHTML = symbol;
 	    btn.addEventListener('mousedown', event);
-	    btn.classList.add("glyph-btn");
 	    btn_holder.appendChild(btn);
 	    return(btn);
 	}

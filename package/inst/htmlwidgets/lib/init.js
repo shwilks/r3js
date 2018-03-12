@@ -239,6 +239,7 @@ function r3js(container, plotData, settings){
     for(var i=0; i<viewport.toggles.names.length; i++){
         var toggle = document.createElement("div");
         toggle.innerHTML = viewport.toggles.names[i];
+        toggle.classList.add('not-selectable');
         toggle.style.fontSize = "80%";
         toggle.style.margin = "8px";
         toggle.style.marginBottom = "12px";
@@ -509,7 +510,7 @@ function r3js(container, plotData, settings){
     viewport.positionScene();
     viewport.camera.center();
 
-  
+
     // Apply viewer settings
     if(settings){
 
