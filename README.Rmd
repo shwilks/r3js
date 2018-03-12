@@ -1,6 +1,6 @@
 
-r3js R package
-==============
+r3js
+====
 
 This is the project directory for the r3js, a package to provide R and javascript functions to allow WebGL-based 3D plotting in R using the three.js javascript library. Simple interactivity through roll-over highlighting and toggle buttons is also supported.
 
@@ -22,7 +22,7 @@ devtools::install_github(repo = "sw463/r3js",
 Example usage
 -------------
 
-Generally, r3js works by generating an object containing the plotting data and then continuously updating it as new features are added to the plot (similar to plotly).  For a simple 3D scatterplot however, the `plot3js` function handles all of the plotting setup for you:
+Generally, r3js works by generating an object containing the plotting data and then continuously updating it as new features are added to the plot (similar to plotly).  For a simple 3D scatterplot however, the `plot3js` function handles all of the plotting setup for you. Plotting syntax is intended to be similar to the base plotting functions in R, and that used in the RGL package.
 
 
 ```{R}
