@@ -5,7 +5,7 @@
 \title{<Add Title>}
 \usage{
 r3js(mapData, width = NULL, height = NULL, elementId = NULL,
-  rotation = c(0, 0, 0), zoom = 1, translation = c(0, 0, 0),
+  rotation = c(-45, 0, 0), zoom = 1, translation = c(0, 0, 0),
   show_rotation = FALSE)
 }
 \description{

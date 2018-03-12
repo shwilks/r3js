@@ -5,8 +5,8 @@
 \title{Add axes to an r3js plot}
 \usage{
 axis3js(data3js, side, loc = "front", lims = "--", at = NULL,
-  labels = NULL, lwd = 1, mat = "basic", cex.axis = 1, grid = TRUE,
-  grid_style = list(lwd = 1, mat = "basic", col = "grey80"), ...)
+  labels = NULL, title = NULL, lwd = 1, tcl = 0.2, mgp = c(3, 1, 0),
+  mat = "basic", cex.axis = 1, ...)
 }
 \arguments{
 \item{at}{}

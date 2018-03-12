@@ -464,21 +464,57 @@ arrow3js <- function(data3js,
 }
 
 
-#' Add a surface to a 3js object
+#' Add a surface to an r3js object
 #'
-#' @param data3js
-#' @param x
-#' @param y
-#' @param z
-#' @param col
-#' @param mat
-#' @param wireframe
-#' @param ...
+#' This function behaves very similarly to the \code{surface3d} function in the \code{rgl}
+#' package, although the handling of NA values is more robust in this implementation.
 #'
-#' @return
+#' @param data3js The r3js object to add the surface to.
+#' @param x Values corresponding to rows of z, or matrix of x coordinates
+#' @param y Values corresponding to the columns of z, or matrix of y coordinates
+#' @param z Matrix of heights
+#' @param col The color of the surface as either a single value, vector or matrix.
+#' @param mat The material to use when drawing the matrix, for a solid surface the default is
+#' "phong", for a wireframe the default is "line".
+#' @param wireframe Logical value for if the surface should be displayed as a mesh
+#' @param ... Material and texture properties. See \code{\link{material3js}} for details
+#'
+#' @return Returns the updated r3js object in the form of a list.
 #' @export
 #'
 #' @examples
+#' # Taken from "persp"
+#' data(volcano)
+#'
+#' z <- 2 * volcano        # Exaggerate the relief
+#' x <- 10 * (1:nrow(z))   # 10 meter spacing (S to N)
+#' y <- 10 * (1:ncol(z))   # 10 meter spacing (E to W)
+#'
+#' zlim <- range(y)
+#' zlen <- zlim[2] - zlim[1] + 1
+#' colorlut <- terrain.colors(zlen) # height color lookup table
+#' col <- colorlut[ z - zlim[1] + 1 ] # assign colors to heights for each point
+#'
+#' # Setup r3js plot
+#' data3js <- plot3js.new()
+#' data3js <- plot3js.window(data3js,
+#'                           xlim = range(x),
+#'                           ylim = range(y),
+#'                           zlim = range(z),
+#'                           aspect = c(diff(range(x))/diff(range(y)),
+#'                                      1,
+#'                                      0.5))
+#'
+#' # Plot surface
+#' data3js <- surface3js(data3js,
+#'                       x = x,
+#'                       y = y,
+#'                       z = z,
+#'                       col = col)
+#'
+#' # Display plot
+#' print(r3js(data3js))
+#'
 surface3js <- function(data3js,
                        x, y, z,
                        col,
@@ -486,6 +522,11 @@ surface3js <- function(data3js,
                        wireframe = FALSE,
                        highlight,
                        ...){
+
+  # Convert x, y and colors into matrices if necessary
+  if(!is.matrix(x))  { x   <- matrix(x, nrow = nrow(z), ncol = ncol(z), byrow = FALSE) }
+  if(!is.matrix(y))  { y   <- matrix(y, nrow = nrow(z), ncol = ncol(z), byrow = TRUE)  }
+  if(!is.matrix(col)){ col <- matrix(col, nrow = nrow(z), ncol = ncol(z))              }
 
   object <- c()
   if(wireframe){

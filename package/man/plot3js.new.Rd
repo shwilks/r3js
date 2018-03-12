@@ -6,6 +6,32 @@
 \usage{
 plot3js.new()
 }
+\value{
+Returns an r3js plotting object in the form of a list.
+}
 \description{
-Setup a new r3js plot
+This function sets up a new r3js plot and returns an r3js plotting object
+that can later be added to using other functions such as \code{\link{points3js}}
+and \code{\link{lines3js}} etc.  It is in many ways equivalent to the \code{\link{plot.new}}
+command.
+}
+\examples{
+# Initialise plotting object
+data3js <- plot3js.new()
+
+# Add points
+data3js <- points3js(x = runif(10),
+                     y = runif(10,
+                     z = runif(1),
+                     col = rainbow(10))
+
+# Plot the object
+r3js(data3js)
+}
+\seealso{
+\code{\link{axis3js}},
+\code{\link{box3js}},
+\code{\link{points3js}},
+\code{\link{lines3js}},
+\code{\link{surface3js}}
 }

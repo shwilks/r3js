@@ -5,7 +5,7 @@
 \title{Add points to a 3js object}
 \usage{
 points3js(data3js, x, y, z, size = 1, col = "black", pch = 0, highlight,
-  label, ...)
+  label = NULL, toggle = NULL, ...)
 }
 \arguments{
 \item{...}{}

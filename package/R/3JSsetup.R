@@ -1,21 +1,136 @@
 
 #' Setup a new r3js plot
 #'
-#' @return
-#' @export
+#' This function sets up a new r3js plot and returns an r3js plotting object
+#' that can later be added to using other functions such as \code{\link{points3js}}
+#' and \code{\link{lines3js}} etc.  It is in many ways equivalent to the \code{\link{plot.new}}
+#' command.
+#'
+#' @return Returns an r3js plotting object in the form of a list.
+#'
+#' @seealso
+#' \code{\link{axis3js}},
+#' \code{\link{box3js}},
+#' \code{\link{points3js}},
+#' \code{\link{lines3js}},
+#' \code{\link{surface3js}}
 #'
 #' @examples
+#' # Initialise plotting object
+#' data3js <- plot3js.new()
+#'
+#' # Add points
+#' data3js <- points3js(x = runif(10),
+#'                      y = runif(10,
+#'                      z = runif(1),
+#'                      col = rainbow(10))
+#'
+#' # Plot the object
+#' r3js(data3js)
+#' @export
+#'
 plot3js.new <- function(){
   data3js <- list()
   data3js$ticks <- list(NULL,NULL,NULL)
 }
 
-#' Start a new 3js object group
+
+
+
+#' Start a new r3js object group
 #'
-#' @return
+#' This function can be used to build plot objects together into a group before
+#' combining them into a main plotting object with the \code{\link{combine3js}}
+#' function. See details.
+#'
+#' @details r3js provides support for plot rollover highlighting of plotted objects
+#' through the \code{highlight} argument. Sometimes, however you may wish for several
+#' plotted objects to be associated with each other such that interaction with one
+#' or any of them causes all other objects in the group to be highlighted. This is
+#' where the \code{group3js} function comes in, allowing you to associate objects as
+#' a group before adding them to a main plotting object created using \code{\link{plot3js.new}}.
+#' By explicitely setting \code{interactive = FALSE} for certain objects of the group
+#' you are also still able to control interactivity on a per-object basis, even though
+#' highlighting behaviour will now be linked (see examples).
+#'
+#' @return Returns an empty r3js group object in the form of a list.
 #' @export
 #'
 #' @examples
+#' # Using groups
+#' x <- runif(100, 0, 50)
+#' y <- runif(100, 0, 25)
+#' z <- runif(100, -1, 1)
+#' cols <- rainbow(100)
+#'
+#' # Setup new plot
+#' data3js <- plot3js.new()
+#' data3js <- plot3js.window(data3js,
+#'                           xlim = c(0, 50),
+#'                           ylim = c(0, 25),
+#'                           zlim = c(0,1),
+#'                           aspect = c(2,1,0.4))
+#'
+#' # Add basegrid
+#' for(n in 0:50){
+#'   data3js <- lines3js(data3js,
+#'                       x = rep(n, 2),
+#'                       y = c(0,25),
+#'                       z = c(0,0),
+#'                       col = "grey80")
+#' }
+#' for(n in 0:25){
+#'   data3js <- lines3js(data3js,
+#'                       x = c(0,50),
+#'                       y = rep(n, 2),
+#'                       z = c(0,0),
+#'                       col = "grey80")
+#' }
+#'
+#' # Plot points and lines as groups
+#' for(n in 1:length(x)){
+#'
+#'   # Begin new group
+#'   group <- group3js()
+#'
+#'   # Add main point to group
+#'   group <- points3js(group,
+#'                      x = x[n],
+#'                      y = y[n],
+#'                      z = z[n],
+#'                      col = cols[n],
+#'                      highlight = list(size = 1.5,
+#'                                       col  = "black"))
+#'
+#'   # Add line
+#'   group <- lines3js(group,
+#'                     x = rep(x[n],2),
+#'                     y = rep(y[n],2),
+#'                     z = c(0,z[n]),
+#'                     col = cols[n],
+#'                     highlight = list(col  = "black",
+#'                                      lwd = 2),
+#'                     interactive = FALSE)
+#'
+#'   # Add base point
+#'   group <- points3js(group,
+#'                      x = x[n],
+#'                      y = y[n],
+#'                      z = 0,
+#'                      col = cols[n],
+#'                      highlight = list(col  = "black",
+#'                                       size = 2.5),
+#'                      interactive = FALSE,
+#'                      dimensions = 2)
+#'
+#'   # Add group to main plot
+#'   data3js <- combine3js(data3js, group)
+#'
+#' }
+#'
+#' # Plot result
+#' print(r3js(data3js))
+#'
 group3js <- function(){
   list(type = "group")
 }
