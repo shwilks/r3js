@@ -1,4 +1,10 @@
 
+/* Add glyph font */
+@font-face {
+    font-family: "viewerglyphs";
+    src: url(glyphs/glyphs.ttf);
+}
+
 .transform-div {
 	position: absolute;
 	left: 6px;
@@ -7,5 +13,35 @@
 	font-size: 14px
 }
 
+/* General classes */
+.not-selectable {
+	-webkit-user-select: none; /* Safari 3.1+ */
+    -moz-user-select: none; /* Firefox 2+ */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Standard syntax */
+}
+
+
+/* Top-left glyphs */
+.glyph-holder {
+	position : absolute;
+    top  : 8px;
+    left : 5px;
+    padding : 4px;
+}
+
+.glyph-btn {
+	display: inline-block;
+	cursor : pointer;
+	margin-right : 8px;
+	-webkit-user-select: none; /* Safari 3.1+ */
+    -moz-user-select: none; /* Firefox 2+ */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Standard syntax */
+}
+
+.glyph-btn:hover {
+	color : #33cccc;
+}
 
 
