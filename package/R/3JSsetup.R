@@ -383,3 +383,48 @@ grid3js <- function(data3js,
   data3js
 
 }
+
+
+#' Export a r3js plot
+#'
+#' Exports a r3js plot to an external html file.
+#'
+#' @param data3js The
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+export3js <- function(data3js,
+                      file,
+                      title = "r3js plot",
+                      ...) {
+
+  # Create the widget
+  widget <- r3js(data3js = data3js,
+                 ...)
+
+  # Check file has .html extension
+  if(!grepl("\\.html$", file)){
+    file <- paste0(file, ".html")
+  }
+
+  # Export the widget to a temporary file first
+  tmp_file <- tempfile(fileext = ".html")
+  htmlwidgets::saveWidget(widget = widget,
+                          file   = tmp_file,
+                          title  = title)
+
+  # Move the file to the proper location
+  file.copy(from = tmp_file,
+            to   = file,
+            overwrite = TRUE)
+
+  # Remove the temporary file
+  unlink(tmp_file)
+
+}
+
+
+
