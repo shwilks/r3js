@@ -2,12 +2,12 @@
 % Please edit documentation in R/r3js.R
 \name{r3js}
 \alias{r3js}
-\title{<Add Title>}
+\title{Plot r3js data}
 \usage{
-r3js(mapData, width = NULL, height = NULL, elementId = NULL,
+r3js(data3js, width = NULL, height = NULL, elementId = NULL,
   rotation = c(-45, 0, 0), zoom = 1, translation = c(0, 0, 0),
   show_rotation = FALSE)
 }
 \description{
-<Add Description>
+Creates an html widget from an r3js data object.
 }

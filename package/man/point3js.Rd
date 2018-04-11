@@ -4,7 +4,7 @@
 \alias{point3js}
 \title{Add point to a 3js object}
 \usage{
-point3js(data3js, x, y, z, size, col, pch = 0, highlight, ...)
+point3js(data3js, x, y, z, size, col, pch = 16, highlight, ...)
 }
 \arguments{
 \item{...}{}

@@ -100,9 +100,11 @@ function make_point(object){
     	            object.size/10);
 
     // Normalise the coords
-    object.position = normalise_coords(object.position,
-                                       object.lims,
-                                       object.aspect);
+    if(object.normalise){
+        object.position = normalise_coords(object.position,
+                                           object.lims,
+                                           object.aspect);
+    }
 
     // Position object
     point.position.set(object.position[0],
@@ -150,6 +152,140 @@ function make_lineMeshGeo(from, to, linewidth, dimensions){
 }
 
 
+function line_geo2D(from, to, 
+                    lwd, cap, 
+                    shrinkage, 
+                    offset,
+                    arrow){
+
+    var lwd = lwd/2;
+    // Get direction and length
+    var direction = new THREE.Vector3(to[0]-from[0],
+                                      to[1]-from[1],
+                                      to[2]-from[2]);
+    var length = direction.length();
+    if(shrinkage){
+        length = length - shrinkage;
+    }
+    if(arrow){
+        length = length - arrow.headlength;
+    }
+
+    // Set object geometry
+    var geo = new THREE.PlaneGeometry( lwd, length, 1, 1);
+    geo.translate( 0, -length/2, 0 );
+    if(shrinkage){
+        geo.translate( 0, -shrinkage/2, 0 );
+    }
+    if(offset){
+        geo.translate( offset[0], offset[1], offset[2] );
+    }
+    if(arrow){
+        geo.translate( 0, -arrow.headlength, 0 );
+        var arrowhead = new THREE.Geometry();
+        arrowhead.vertices.push( new THREE.Vector3(arrow.headwidth/2, -arrow.headlength, 0) );
+        arrowhead.vertices.push( new THREE.Vector3(-arrow.headwidth/2, -arrow.headlength, 0) );
+        arrowhead.vertices.push( new THREE.Vector3(0, 0, 0) );
+        arrowhead.faces.push( new THREE.Face3( 0, 2, 1 ) );
+        geo.merge(arrowhead);
+    }
+    
+    // Add cap if requested
+    if(cap){
+        var cap = new THREE.CircleGeometry( lwd/2, 16, 0, Math.PI );
+        geo.merge(cap);
+        var cap = new THREE.CircleGeometry( lwd/2, 16, Math.PI, Math.PI );
+        cap.translate(0,-length,0);
+        geo.merge(cap);
+    }
+
+    // Make translation matrix
+    var transmat = new THREE.Matrix4();
+    transmat.makeTranslation(to[0], to[1], to[2]);
+
+    // Make rotation matrix
+    var axis = new THREE.Vector3(0, 1, 0);
+    var quat = new THREE.Quaternion().setFromUnitVectors(axis, direction.clone().normalize());
+    var rotmat = new THREE.Matrix4().makeRotationFromQuaternion(quat);
+
+    // Rotate to match direction and position
+    geo.applyMatrix(rotmat);
+    geo.applyMatrix(transmat);
+
+    return(geo);
+
+}
+
+function line_geo3D(from, 
+                    to, 
+                    lwd, 
+                    cap, 
+                    shrinkage, 
+                    offset, 
+                    box, 
+                    arrow){
+
+    var lwd = lwd/2;
+
+    // Get direction and length
+    var direction = new THREE.Vector3(to[0]-from[0],
+                                      to[1]-from[1],
+                                      to[2]-from[2]);
+    var length = direction.length();
+    if(arrow){
+        length = length - arrow.headlength;
+    }
+    if(shrinkage){
+        length = length - shrinkage;
+    }
+
+    // Set object geometry
+    if(!box){
+        var geo = new THREE.CylinderGeometry( lwd/2, lwd/2, length, 32);
+    } else {
+        var geo = new THREE.BoxGeometry( lwd, length, lwd );
+    }
+    geo.translate( 0, (-length/2), 0 );
+    if(shrinkage){
+        geo.translate( 0, -shrinkage/2, 0 );
+    }
+    if(offset){
+        geo.translate( offset[0], offset[1], offset[2] );
+    }
+    if(arrow){
+        geo.translate( 0, -arrow.headlength, 0 );
+        var arrowhead = new THREE.ConeGeometry( arrow.headwidth/2, arrow.headlength, 32 );
+        arrowhead.translate(0,-arrow.headlength/2,0);
+        geo.merge(arrowhead);
+    }
+    
+    // Add cap if requested
+    if(cap){
+        var cap = new THREE.SphereGeometry( lwd/2, 16, 16, 0, Math.PI );
+        geo.merge(cap);
+        var cap = new THREE.SphereGeometry( lwd/2, 16, 16, 0, Math.PI*2, Math.PI, Math.PI );
+        cap.translate(0,-length,0);
+        geo.merge(cap);
+    }
+
+    // Make translation matrix
+    var transmat = new THREE.Matrix4();
+    transmat.makeTranslation(to[0], to[1], to[2]);
+
+    // Make rotation matrix
+    var axis = new THREE.Vector3(0, 1, 0);
+    var quat = new THREE.Quaternion().setFromUnitVectors(axis, direction.clone().normalize());
+    var rotmat = new THREE.Matrix4().makeRotationFromQuaternion(quat);
+
+    // Rotate to match direction and position
+    geo.applyMatrix(rotmat);
+    geo.applyMatrix(transmat);
+
+    return(geo);
+
+}
+
+
 function make_lineMesh(from, to, material, linewidth, dimensions){
 
     // Get geo
@@ -170,12 +306,17 @@ function make_lineMesh(from, to, material, linewidth, dimensions){
 function make_line(object){
 
     // Get line coordinates and material
-    var from = normalise_coords(object.position.from, 
-                                object.lims, 
-                                object.aspect);
-    var to   = normalise_coords(object.position.to, 
-                                object.lims, 
-                                object.aspect);
+    if(object.normalise){
+        var from = normalise_coords(object.position.from, 
+                                    object.lims, 
+                                    object.aspect);
+        var to   = normalise_coords(object.position.to, 
+                                    object.lims, 
+                                    object.aspect);
+    } else {
+        var from = object.position.from;
+        var to   = object.position.to;
+    }
     var material = get_object_material(object);
 
     // Make the line
@@ -403,11 +544,15 @@ function make_surface(object){
     for(var i=0; i<object.x.length; i++){
     	for(var j=0; j<object.x[0].length; j++){
             if(!isNaN(object.z[i][j])){
-                var coords = normalise_coords(
-                    [object.x[i][j], object.y[i][j], object.z[i][j]],
-                    object.lims,
-                    object.aspect
-                );
+                if(object.normalise){
+                    var coords = normalise_coords(
+                        [object.x[i][j], object.y[i][j], object.z[i][j]],
+                        object.lims,
+                        object.aspect
+                    );
+                } else {
+                    var coords = [object.x[i][j], object.y[i][j], object.z[i][j]];  
+                }
                 geo.vertices[n].set(
                     coords[0],
                     coords[1],
@@ -448,6 +593,9 @@ function make_surface(object){
 
 }
 
+
+
+
 function get_geos(dimensions, lwd){
 	if(dimensions == 2){
 		var square = function(object){
@@ -456,7 +604,7 @@ function get_geos(dimensions, lwd){
 		var circle = function(object){
 			return(new THREE.CircleBufferGeometry(0.2, 32));
 		}
-        var ring = function(object){
+        var ocircle = function(object){
             return(new THREE.RingGeometry( 0.2-object.properties.lwd/25, 0.2, 32 ));
             
             // var shape = new THREE.Shape();
@@ -479,6 +627,15 @@ function get_geos(dimensions, lwd){
             // };
             // var geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
             // return(geometry);
+        }
+        var osquare = function(object){
+            var lwd  = object.properties.lwd/25;
+            var size = 0.3;
+            var inner = Math.sqrt((Math.pow(size,2))/2);
+            var outer = Math.sqrt((Math.pow(size+lwd,2))/2);
+            var geo = new THREE.RingBufferGeometry(inner, outer, 4, 1);
+            geo.rotateZ( Math.PI/4 );
+            return(geo);
         }
 		var line = function(length, width){
 			var geo = new THREE.PlaneGeometry( width*0.05, length );
@@ -513,13 +670,74 @@ function get_geos(dimensions, lwd){
             geo.translate( 0, -length/2, 0 );
 			return(geo);
 		};
+        var osquare = function(object){
+            var size = 0.3;
+            var lwd  = object.properties.lwd/25;
+            var geo = new THREE.Geometry();
+            var lims = [-size/2-lwd/4, size/2+lwd/4];
+
+            // Draw lines
+            for(var i=0; i<2; i++){
+              for(var j=0; j<2; j++){
+                var line = line_geo3D([lims[i], 
+                                       lims[j],
+                                       lims[0]], 
+                                      [lims[i], 
+                                       lims[j],
+                                       lims[1]], 
+                                       lwd, false, lwd/2, 0, true);
+                geo.merge(line);
+              }
+            }
+            for(var i=0; i<2; i++){
+              for(var j=0; j<2; j++){
+                var line = line_geo3D([lims[0], 
+                                       lims[i],
+                                       lims[j]], 
+                                      [lims[1], 
+                                       lims[i],
+                                       lims[j]], 
+                                       lwd, false, lwd/2, 0, true);
+                geo.merge(line);
+              }
+            }
+            for(var i=0; i<2; i++){
+              for(var j=0; j<2; j++){
+                var line = line_geo3D([lims[i], 
+                                       lims[0],
+                                       lims[j]], 
+                                      [lims[i], 
+                                       lims[1],
+                                       lims[j]], 
+                                       lwd, false, lwd/2, 0, true);
+                geo.merge(line);
+              }
+            }
+
+            // Add corner pieces
+            for(var i=0; i<2; i++){
+              for(var j=0; j<2; j++){
+                for(var k=0; k<2; k++){
+                  var corner = new THREE.BoxGeometry( lwd/2, lwd/2, lwd/2 );
+                  corner.translate(lims[i], lims[j], lims[k]);
+                  geo.merge(corner);
+                }
+              }
+            }
+            
+            geo.mergeVertices();
+            geo = new THREE.BufferGeometry().fromGeometry(geo);
+            return(geo);
+        };
+        var ocircle = circle;
 	}
 	return({
-		square: square,
-		circle: circle,
-        ring:   ring,
-		line:   line,
-		arrow:  arrow
+		square:  square,
+        osquare: osquare,
+		circle:  circle,
+        ocircle: ocircle,
+		line:    line,
+		arrow:   arrow
 	})
 }
 

@@ -13,7 +13,7 @@ HTMLWidgets.widget({
       renderValue: function(x) {
 
         // TODO: code to render the widget, e.g.
-        r3js(el, x.mapData, x.settings);
+        r3js(el, x.data3js, x.settings);
 
       },
 

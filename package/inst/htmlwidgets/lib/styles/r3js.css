@@ -1,4 +1,9 @@
 
+/* Set body styles */
+body {
+	font-family: sans-serif;
+}
+
 /* Add glyph font */
 @font-face {
     font-family: "viewerglyphs";
@@ -26,7 +31,7 @@
 .glyph-holder {
 	position : absolute;
     top  : 8px;
-    left : 5px;
+    right : 5px;
     padding : 4px;
 }
 

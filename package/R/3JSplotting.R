@@ -105,9 +105,8 @@ plot3js <- function(x,y,z,
   widget <- r3js(data3js)
   print(widget)
 
-  # Return plotting widget
-  attr(widget, "data") <- data3js
-  widget
+  # Return plotting data
+  invisible(data3js)
 
 }
 
@@ -217,14 +216,16 @@ point3js <- function(data3js,
                      x, y, z,
                      size,
                      col,
-                     pch = 0,
+                     pch = 16,
                      highlight,
                      ...){
 
   object <- c()
   object$type <- "point"
-  if(pch == 0){ object$shape <- "circle" }
-  if(pch == 1){ object$shape <- "ring"   }
+  if(pch == 0) { object$shape <- "osquare" }
+  if(pch == 1) { object$shape <- "ocircle" }
+  if(pch == 15){ object$shape <- "square"  }
+  if(pch == 16){ object$shape <- "circle"  }
   object$size <- size
   object$properties <- material3js(col = col, ...)
   object$position <- c(x,y,z)
@@ -253,7 +254,7 @@ points3js <- function(data3js,
                       x, y, z,
                       size = 1,
                       col  = "black",
-                      pch  = 0,
+                      pch  = 16,
                       highlight,
                       label  = NULL,
                       toggle = NULL,
@@ -651,6 +652,23 @@ sidegrid3js <- function(data3js, ax, side, at, dynamic = FALSE, ...){
 }
 
 
-
+# legend3js <- function(position,
+#                       legend,
+#                       fill     = NULL,
+#                       border   = "black",
+#                       divstyle = list(),
+#                       lty,
+#                       lwd,
+#                       pch,
+#                       bty = "o",
+#                       bg = par("bg"),
+#                       box.lwd = par("lwd"),
+#                       box.lty = par("lty"),
+#                       box.col = par("fg"), pt.bg = NA, cex = 1, pt.cex = cex, pt.lwd = lwd,
+#                       xjust = 0, yjust = 1, x.intersp = 1, y.intersp = 1, adj = c(0,
+#                                                                                   0.5), text.width = NULL, text.col = par("col"), text.font = NULL,
+#                       merge = do.lines && has.pch, trace = FALSE, plot = TRUE,
+#                       ncol = 1, horiz = FALSE, title = NULL, inset = 0, xpd, title.col = text.col,
+#                       title.adj = 0.5, seg.len = 2)
 
 

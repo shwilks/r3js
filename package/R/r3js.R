@@ -1,11 +1,12 @@
-#' <Add Title>
+
+#' Plot r3js data
 #'
-#' <Add Description>
+#' Creates an html widget from an r3js data object.
 #'
 #' @import htmlwidgets
 #'
 #' @export
-r3js <- function(mapData,
+r3js <- function(data3js,
                  width       = NULL,
                  height      = NULL,
                  elementId   = NULL,
@@ -24,7 +25,7 @@ r3js <- function(mapData,
 
   # Forward options using x
   x = list(
-    mapData = jsonlite::toJSON(mapData),
+    data3js  = jsonlite::toJSON(data3js),
     settings = settings
   )
 
