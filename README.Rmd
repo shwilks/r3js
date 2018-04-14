@@ -13,8 +13,9 @@ Installation
 Dowload the latest release from github:
 
 ```R
-devtools::install_github(repo = "sw463/r3js",
-                         type = "source")
+devtools::install_github(repo   = "sw463/r3js",
+                         type   = "source",
+                         subdir = "package")
 ```
 
 
