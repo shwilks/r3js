@@ -5,9 +5,10 @@
 \title{Set material properties of 3js object}
 \usage{
 material3js(mat = "phong", col = "black", opacity = 1, xpd = TRUE,
-  lwd = 1, interactive = NULL, label = NULL, toggle = NULL,
-  dimensions = NULL, depthWrite = NULL, polygonOffset = NULL,
-  polygonOffsetFactor = NULL, polygonOffsetUnits = NULL, faces = NULL)
+  lwd = 1, interactive = NULL, moveable = NULL, label = NULL,
+  toggle = NULL, dimensions = NULL, depthWrite = NULL,
+  polygonOffset = NULL, polygonOffsetFactor = NULL,
+  polygonOffsetUnits = NULL, faces = NULL)
 }
 \arguments{
 \item{opacity}{}

@@ -8,18 +8,19 @@ function rotateLocalAxes(viewport, axis, rotation){
 		norm.applyAxisAngle(world_axis, rotation);
 		viewport.clippingPlanes[i].set(norm, viewport.clippingPlanes[i].constant);
 	}
+	viewport.plotHolder.rotation.onChangeCallback();
 }
 
 
 function rotatePlotHolderOnAxis(viewport, axis, rotation){
 	rotateOnWorldAxis(viewport.plotHolder, axis, rotation);
 	rotateClippingPlanes(viewport, axis, rotation);
+	viewport.plotHolder.rotation.onChangeCallback();
 }
 
 function rotatePlotHolder(viewport, rotX, rotY){
 	rotatePlotHolderOnAxis(viewport, new THREE.Vector3(0,1,0), rotX);
 	rotatePlotHolderOnAxis(viewport, new THREE.Vector3(1,0,0), -rotY);
-	viewport.plotHolder.rotation.onChangeCallback();
 	update_labels(viewport);
 	viewport.transform.update(viewport);
 }
@@ -30,6 +31,9 @@ function rotationInertia(viewport){
 		viewport.damper.rotY = viewport.damper.rotY*0.9;
         rotatePlotHolder(viewport, viewport.damper.rotX*3, viewport.damper.rotY*3);
         viewport.damper.timeout = window.setTimeout(function(){rotationInertia(viewport)}, 20);
+        viewport.animate = true;
+    } else {
+    	viewport.animate = false;
     }
 }
 
@@ -61,12 +65,14 @@ function dampScroll(scrollDelta){
 }
 
 function navMouseMove(viewport){
-    if(viewport.mouse.down && !viewport.dragObject){
-      if(!viewport.mouse.event.metaKey && !viewport.mouse.event.shiftKey && viewport.touch.num <= 1){
-        viewport.mouseMove(viewport.mouse.deltaX, viewport.mouse.deltaY);
-      } else if(viewport.mouse.event.metaKey || viewport.touch.num == 3){
-        viewport.mouseMoveMeta(viewport.mouse.deltaX, viewport.mouse.deltaY);
-      }
+	if(viewport.navigable){
+	    if(viewport.mouse.down && !viewport.dragObject){
+	      if(!viewport.mouse.event.metaKey && !viewport.mouse.event.shiftKey && viewport.touch.num <= 1){
+	        viewport.mouseMove(viewport.mouse.deltaX, viewport.mouse.deltaY);
+	      } else if(viewport.mouse.event.metaKey || viewport.touch.num == 3){
+	        viewport.mouseMoveMeta(viewport.mouse.deltaX, viewport.mouse.deltaY);
+	      }
+	    }
     }
 }
 
@@ -82,6 +88,9 @@ function navScroll(viewport){
 
 function bind_navigation(viewport, dimensions){
     
+    // Add viewport variables
+    viewport.navigable = true;
+
     // Bind mouse events
     viewport.addEventListener("mousemove", function(){ 
     	navMouseMove(this); 

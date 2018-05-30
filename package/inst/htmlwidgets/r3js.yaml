@@ -22,3 +22,4 @@ dependencies:
       - functions/legend.js
       - functions/events.js
       - functions/axes.js
+      - functions/move.js

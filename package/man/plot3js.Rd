@@ -4,7 +4,8 @@
 \alias{plot3js}
 \title{Generic r3js plotting function}
 \usage{
-plot3js(x, y, z, aspect = c(1, 1, 1), ...)
+plot3js(x, y, z, aspect = c(1, 1, 1), fixed_aspect = FALSE,
+  show_plot = TRUE, label_axes = TRUE, show_grid = TRUE, ...)
 }
 \arguments{
 \item{...}{}

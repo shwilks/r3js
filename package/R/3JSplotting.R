@@ -50,6 +50,10 @@ pretty_axis <- function(x, n = 5, include_lims = TRUE){
 #' @examples
 plot3js <- function(x,y,z,
                     aspect = c(1, 1, 1),
+                    fixed_aspect = FALSE,
+                    show_plot  = TRUE,
+                    label_axes = TRUE,
+                    show_grid  = TRUE,
                     ...){
 
   # Setup plot
@@ -59,6 +63,12 @@ plot3js <- function(x,y,z,
   xlim <- extendrange(x)
   ylim <- extendrange(y)
   zlim <- extendrange(z)
+
+  if(fixed_aspect){
+    aspect <- c(1,
+                diff(range(ylim))/diff(range(xlim)),
+                diff(range(zlim))/diff(range(xlim)))
+  }
 
   data3js <- plot3js.window(data3js,
                             xlim = xlim,
@@ -71,28 +81,37 @@ plot3js <- function(x,y,z,
 
   # Add axes
   prettyx <- pretty(xlim, n = 8)
-  data3js <- axis3js(data3js,
-                     side = "x",
-                     loc = "front",
-                     at  = prettyx[prettyx < max(xlim) & prettyx > min(xlim)],
-                     lwd = 1)
-
   prettyy <- pretty(ylim, n = 8)
-  data3js <- axis3js(data3js,
-                     side = "y",
-                     loc = "front",
-                     at  = prettyy[prettyy < max(ylim) & prettyy > min(ylim)],
-                     lwd = 1)
-
   prettyz <- pretty(zlim, n = 8)
-  data3js <- axis3js(data3js,
-                     side = "z",
-                     loc = "front",
-                     at  = prettyz[prettyz < max(zlim) & prettyz > min(zlim)],
-                     lwd = 1)
+
+  xaxs_ticks <- prettyx[prettyx < max(xlim) & prettyx > min(xlim)]
+  yaxs_ticks <- prettyy[prettyy < max(ylim) & prettyy > min(ylim)]
+  zaxs_ticks <- prettyz[prettyz < max(zlim) & prettyz > min(zlim)]
+
+  if(label_axes){
+    data3js <- axis3js(data3js,
+                       side = "x",
+                       loc = "front",
+                       at  = xaxs_ticks,
+                       lwd = 1)
+
+    data3js <- axis3js(data3js,
+                       side = "y",
+                       loc = "front",
+                       at  = yaxs_ticks,
+                       lwd = 1)
+
+    data3js <- axis3js(data3js,
+                       side = "z",
+                       loc = "front",
+                       at  = zaxs_ticks,
+                       lwd = 1)
+  }
 
   # Add a grid
-  data3js <- grid3js(data3js)
+  if(show_grid){
+    data3js <- grid3js(data3js)
+  }
 
   # Add points
   data3js <- points3js(data3js,
@@ -103,7 +122,9 @@ plot3js <- function(x,y,z,
 
   # Create plot
   widget <- r3js(data3js)
-  print(widget)
+  if(show_plot){
+    print(widget)
+  }
 
   # Return plotting data
   invisible(data3js)
@@ -127,6 +148,7 @@ material3js <- function(mat = "phong",
                         xpd = TRUE,
                         lwd = 1,
                         interactive = NULL,
+                        moveable = NULL,
                         label = NULL,
                         toggle = NULL,
                         dimensions = NULL,
@@ -146,15 +168,16 @@ material3js <- function(mat = "phong",
                 lwd         = jsonlite::unbox(lwd),
                 transparent = jsonlite::unbox(opacity != 1.0))
 
-  if(!is.null(dimensions[1]))  { props$dimensions  <- jsonlite::unbox(dimensions)  }
-  if(!is.null(label[1]))       { props$label       <- jsonlite::unbox(label)       }
-  if(!is.null(interactive[1])) { props$interactive <- jsonlite::unbox(interactive) }
-  if(!is.null(toggle[1]))      { props$toggle      <- jsonlite::unbox(toggle)      }
-  if(!is.null(depthWrite[1]))  { props$depthWrite  <- jsonlite::unbox(depthWrite)  }
-  if(!is.null(polygonOffset[1])){ props$polygonOffset <- jsonlite::unbox(polygonOffset) }
-  if(!is.null(polygonOffsetFactor[1])){ props$polygonOffsetFactor <- jsonlite::unbox(polygonOffsetFactor) }
-  if(!is.null(polygonOffsetUnits[1])){  props$polygonOffsetUnits  <- jsonlite::unbox(polygonOffsetUnits) }
-  if(!is.null(faces[1])){  props$faces  <- faces }
+  if(!is.null(dimensions))  { props$dimensions  <- jsonlite::unbox(dimensions)  }
+  if(!is.null(label))       { props$label       <- jsonlite::unbox(label)       }
+  if(!is.null(interactive)) { props$interactive <- jsonlite::unbox(interactive) }
+  if(!is.null(moveable))    { props$draggable   <- jsonlite::unbox(moveable)    }
+  if(!is.null(toggle))      { props$toggle      <- jsonlite::unbox(toggle)      }
+  if(!is.null(depthWrite))  { props$depthWrite  <- jsonlite::unbox(depthWrite)  }
+  if(!is.null(polygonOffset)){ props$polygonOffset <- jsonlite::unbox(polygonOffset) }
+  if(!is.null(polygonOffsetFactor)){ props$polygonOffsetFactor <- jsonlite::unbox(polygonOffsetFactor) }
+  if(!is.null(polygonOffsetUnits)){  props$polygonOffsetUnits  <- jsonlite::unbox(polygonOffsetUnits) }
+  if(!is.null(faces)){  props$faces  <- faces }
 
 
   # Return properties
@@ -209,9 +232,6 @@ highlight3js <- function(data3js, highlight){
 #' @param col
 #' @param ...
 #'
-#' @return
-#'
-#' @examples
 point3js <- function(data3js,
                      x, y, z,
                      size,
@@ -231,6 +251,47 @@ point3js <- function(data3js,
   object$position <- c(x,y,z)
 
   data3js$plot[[length(data3js$plot)+1]] <- object
+  data3js
+
+}
+
+
+#' Add a sphere of defined radius to an r3js plot
+#'
+#' @param data3js
+#' @param x
+#' @param y
+#' @param z
+#' @param radius
+#' @param col
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+sphere3js <- function(data3js,
+                      x, y, z,
+                      radius,
+                      col,
+                      highlight,
+                      ...) {
+
+  object <- c()
+  object$type       <- "sphere"
+  object$radius     <- radius
+  object$properties <- material3js(col = col, ...)
+  object$position   <- c(x,y,z)
+
+  # Add the object to a plot
+  data3js$plot[[length(data3js$plot)+1]] <- object
+
+  # Create the highlights object if requested
+  if(!missing(highlight)){
+    data3js <- highlight3js(data3js, highlight)
+  }
+
+  # Return the data
   data3js
 
 }
@@ -588,7 +649,7 @@ axislines3js <- function(data3js, x, y, z, ax, lwd = 0.9, col = "grey80", ...){
                         y = line_data[[2]],
                         z = line_data[[3]],
                         lwd = 0.9,
-                        col = "grey80",
+                        col = col,
                         ...)
   }
 
@@ -609,7 +670,12 @@ axislines3js <- function(data3js, x, y, z, ax, lwd = 0.9, col = "grey80", ...){
 #' @export
 #'
 #' @examples
-sidegrid3js <- function(data3js, ax, side, at, dynamic = FALSE, ...){
+sidegrid3js <- function(data3js,
+                        ax,
+                        side,
+                        at,
+                        col = "grey80",
+                        dynamic = FALSE, ...){
 
   # Setup grid data
   grid_data <- list()
@@ -640,17 +706,110 @@ sidegrid3js <- function(data3js, ax, side, at, dynamic = FALSE, ...){
                  y = grid_data[[2]],
                  z = grid_data[[3]],
                  ax = ax,
-                 faces = side, ...)
+                 faces = side,
+                 col   = col,
+                 ...)
   } else {
     axislines3js(data3js,
                  x = grid_data[[1]],
                  y = grid_data[[2]],
                  z = grid_data[[3]],
-                 ax = ax, ...)
+                 ax  = ax,
+                 col = col,
+                 ...)
   }
 
 }
 
+
+#' Add a generic shape to an 3js plot
+#'
+#' @param data3js
+#' @param vertices
+#' @param faces
+#' @param col
+#' @param highlight
+#' @param label
+#' @param toggle
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+shape3js <- function(data3js,
+                     vertices,
+                     faces,
+                     col  = "black",
+                     highlight,
+                     label  = NULL,
+                     toggle = NULL,
+                     ...) {
+
+  object <- c()
+  object$type <- "shape"
+  object$vertices   <- vertices
+  object$faces      <- faces-1 # Need to convert to base 0
+  object$properties <- material3js(col = col,
+                                   label = label,
+                                   toggle = toggle,
+                                   ...)
+
+  data3js$plot[[length(data3js$plot)+1]] <- object
+
+  # Create the highlight object if requested
+  if(!missing(highlight)){
+    data3js <- highlight3js(data3js, highlight)
+  }
+
+  # Return the updated object
+  data3js
+
+}
+
+
+#' Add a triangle to an r3js plot
+#'
+#' @param data3js
+#' @param vertices
+#' @param col
+#' @param highlight
+#' @param label
+#' @param toggle
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+triangle3js <- function(data3js,
+                        vertices,
+                        col  = "black",
+                        highlight,
+                        label  = NULL,
+                        toggle = NULL,
+                        ...) {
+
+  object <- c()
+  object$type <- "triangle"
+  object$vertices   <- vertices
+
+  object$properties <- material3js(col = col,
+                                   label = label,
+                                   toggle = toggle,
+                                   ...)
+
+  data3js$plot[[length(data3js$plot)+1]] <- object
+
+  # Create the highlight object if requested
+  if(!missing(highlight)){
+    data3js <- highlight3js(data3js, highlight)
+  }
+
+  # Return the updated object
+  data3js
+
+}
 
 # legend3js <- function(position,
 #                       legend,

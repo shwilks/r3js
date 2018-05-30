@@ -9,9 +9,6 @@ point3js(data3js, x, y, z, size, col, pch = 16, highlight, ...)
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 Add point to a 3js object
 }

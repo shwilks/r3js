@@ -1,4 +1,107 @@
 
+// General function to populate the plot
+function populatePlot(viewport,
+                      plotData){
+    if(plotData.plot){
+        for(var i=0; i<plotData.plot.length; i++){
+            addPlotObject(plotData.plot[i], 
+                          viewport);
+        }
+    }
+}
+
+// Plot points
+function addPlotObject(plotobj, 
+                       viewport){
+
+    if(plotobj.type == "group"){
+        var group_objects = [];
+        for(var i=0; i<plotobj.plot.length; i++){
+            var obj = addPlotObject(plotobj.plot[i]);
+            group_objects.push(obj);
+            obj.group = group_objects;
+        }
+    } else {
+
+        // Set defaults for interactivity
+        if(typeof plotobj.properties.interactive === "undefined"){
+            plotobj.properties.interactive = plotobj.properties.label 
+                                             || plotobj.highlight;
+        }
+        
+        // Generate the plot object
+        if(!plotobj.properties.dimensions){
+            plotobj.properties.dimensions = 3
+        }
+        plotobj.lims     = plotData.lims;
+        plotobj.aspect   = plotData.aspect;
+        plotobj.viewport = viewport;
+        plotobj.normalise = true;
+        var object = make_object(plotobj);
+
+        // Add interactivity
+        if(plotobj.properties.interactive){
+            viewport.selectable_objects.push(object);
+        }
+
+        // Add highlighted point
+        if(plotobj.highlight){
+            var hlobj = plotobj.highlight;
+
+            // Generate the plot object
+            if(!hlobj.properties.dimensions){
+                hlobj.properties.dimensions = 3
+            }
+            hlobj.lims     = plotData.lims;
+            hlobj.aspect   = plotData.aspect;
+            hlobj.viewport = viewport;
+            hlobj.normalise = true;
+            var highlight = make_object(hlobj);
+
+            // Link plot and highlight objects
+            highlight.visible = false;
+            object.highlight = highlight;
+            viewport.plotPoints.add(highlight);
+
+        }
+
+        // Work out toggle behaviour
+        if(plotobj.properties.toggle){
+            var toggle = plotobj.properties.toggle;
+            var tog_index = viewport.toggles.names.indexOf(toggle);
+            if(tog_index == -1){
+                viewport.toggles.names.push(toggle);
+                viewport.toggles.objects.push([object]);
+            } else {
+                viewport.toggles.objects[tog_index].push(object);
+            }
+        }
+        
+        // Add label info
+        if(plotobj.properties.label){
+            object.label = plotobj.properties.label;
+        }
+
+        // Work out if object is dynamically associated with a face
+        if(plotobj.properties.faces){
+            viewport.dynamic_objects.push(object);
+            if(plotobj.properties.faces.indexOf("x+") != -1){ viewport.dynamicDeco.faces[0].push(object) }
+            if(plotobj.properties.faces.indexOf("y+") != -1){ viewport.dynamicDeco.faces[1].push(object) }
+            if(plotobj.properties.faces.indexOf("z+") != -1){ viewport.dynamicDeco.faces[2].push(object) }
+            if(plotobj.properties.faces.indexOf("x-") != -1){ viewport.dynamicDeco.faces[3].push(object) }
+            if(plotobj.properties.faces.indexOf("y-") != -1){ viewport.dynamicDeco.faces[4].push(object) }
+            if(plotobj.properties.faces.indexOf("z-") != -1){ viewport.dynamicDeco.faces[5].push(object) }
+        }
+
+        // Add the object to the plot
+        object.viewport = viewport;
+        viewport.plotPoints.add(object);
+
+        // Return the object
+        return(object);
+    }
+}
+
 
 function normalise_coord(coord,
                          lims,
@@ -77,8 +180,158 @@ function make_object(object){
     if(object.type == "grid"){
     	var plotobject = make_grid(object);
     }
+    if(object.type == "sphere"){
+        var plotobject = make_sphere(object);
+    }
+    if(object.type == "shape"){
+        var plotobject = make_shape(object);
+    }
+    if(object.type == "triangle"){
+        var plotobject = make_triangle(object);
+    }
     
     return(plotobject);
+
+}
+
+
+function make_triangle(object){
+
+    // Make geometry
+    var geo = new THREE.Geometry();
+
+    // Create vertices
+    for(var i=0; i<object.vertices.length; i++){
+
+        // Normalise the coordinates
+        var vertex = object.vertices[i];
+        if(object.normalise){
+            vertex = normalise_coords(vertex,
+                                      object.lims,
+                                      object.aspect);
+        }
+
+        // Append the vertex
+        geo.vertices.push( 
+            new THREE.Vector3().fromArray(vertex)
+        );
+
+    }
+
+    // Create faces
+    geo.faces.push(
+        new THREE.Face3(0, 1, 2)
+    );
+    geo.computeFaceNormals();
+
+    // Convert to buffer geometry
+    geo = new THREE.BufferGeometry().fromGeometry(geo);
+
+    // Get material
+    var mat = get_object_material(object);
+
+    // Make shape
+    var triangle = new THREE.Mesh(geo, mat);
+
+    // Return the shape
+    return(triangle);
+
+}
+
+function make_shape(object){
+
+    // Make geometry
+    var geo = new THREE.Geometry();
+
+    // Create vertices
+    for(var i=0; i<object.vertices.length; i++){
+
+        // Normalise the coordinates
+        var vertex = object.vertices[i];
+        if(object.normalise){
+            vertex = normalise_coords(vertex,
+                                      object.lims,
+                                      object.aspect);
+        }
+
+        // Append the vertex
+        geo.vertices.push( 
+            new THREE.Vector3().fromArray(vertex)
+        );
+
+    }
+
+    // Create faces
+    for(var i=0; i<object.faces.length; i++){
+
+        var face = object.faces[i];
+        geo.faces.push(
+            new THREE.Face3(face[0],
+                            face[1],
+                            face[2])
+        );
+
+    }
+    
+    //geo.mergeVertices();
+    geo.computeFaceNormals();
+    //geo.computeVertexNormals();
+    // geo.computeMorphNormals();
+
+    // Convert to buffer geometry
+    geo = new THREE.BufferGeometry().fromGeometry(geo);
+    
+    
+    var mat = get_object_material(object);
+    // mat.flatShading = true;
+    // mat.morphNormals = true;
+    // mat.morphTargets = true;
+    // mat.vertexColors = THREE.FaceColors;
+    // console.log(mat);
+
+    // Make shape
+    var shape = new THREE.Mesh(geo, mat);
+
+    // Return the shape
+    return(shape);
+
+}
+
+function make_sphere(object){
+
+    // Make geo
+    var geo = new THREE.SphereGeometry(object.radius, 32, 32);
+    var mat = get_object_material(object);
+
+    // Normalise the coords
+    if(object.normalise){
+        var lims   = object.lims;
+        var aspect = object.aspect;
+        for(var i=0; i<geo.vertices.length; i++){
+            geo.vertices[i].x = geo.vertices[i].x*aspect[0]/(lims[0][1] - lims[0][0]);
+            geo.vertices[i].y = geo.vertices[i].y*aspect[1]/(lims[1][1] - lims[1][0]);
+            geo.vertices[i].z = geo.vertices[i].z*aspect[2]/(lims[2][1] - lims[2][0]);
+        }
+        object.position = normalise_coords(object.position,
+                                           object.lims,
+                                           object.aspect);
+    }
+    geo.computeFaceNormals();
+    geo.computeVertexNormals();
+
+    // Make object
+    var sphere = new THREE.Mesh(geo, mat);
+
+    // Position object
+    sphere.position.set(object.position[0],
+                       object.position[1],
+                       object.position[2]);
+    if(!sphere.position.z){
+        sphere.position.z = 0;
+    }
+
+    // Return point
+    return(sphere);
 
 }
 
@@ -353,34 +606,38 @@ function make_lineShader(object){
 
 function make_arrow(object){
 
-    // Get direction and length
-	var from = object.position.from;
-	var to   = object.position.to;
-	var direction = new THREE.Vector3(to[0]-from[0],
-      	                              to[1]-from[1],
-      	                              to[2]-from[2]);
-    var line_length = direction.length();
+    // Set from and to
+    if(object.normalise){
+        var from = normalise_coords(object.position.from, 
+                                    object.lims, 
+                                    object.aspect);
+        var to   = normalise_coords(object.position.to, 
+                                    object.lims, 
+                                    object.aspect);
+    } else {
+        var from = object.position.from;
+        var to   = object.position.to;
+    }
 
 	// Set object geometry
-    var geometries = get_geos(object.properties.dimensions, object.properties.lwd);
-	var geo = new THREE.Geometry();
-	var line_geo = geometries.line(line_length-object.arrowhead_length, object.properties.lwd);
-	line_geo.translate(0,-object.arrowhead_length,0);
-	var head_geo = geometries.arrow(object.arrowhead_length, object.arrowhead_width);
-	geo.merge ( line_geo );
-	geo.merge ( head_geo );
-	geo = new THREE.BufferGeometry().fromGeometry( geo );
+    var arrow = {
+        headwidth  : 0.015,
+        headlength : 0.03
+    };
+	var geo = line_geo3D(from, 
+                         to, 
+                         object.properties.lwd*0.01, 
+                         false, 
+                         0, 
+                         0, 
+                         false,
+                         arrow);
 
 	// Set object material
     var mat = get_object_material(object);
 
     // Make arrow object
     var arrow = new THREE.Mesh(geo, mat);
-	
-	// Rotate to match direction and position
-	var axis = new THREE.Vector3(0, 1, 0);
-	arrow.position.set(to[0], to[1], to[2]);
-	arrow.quaternion.setFromUnitVectors(axis, direction.clone().normalize());
 
     // Return arrow
 	return(arrow);       

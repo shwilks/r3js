@@ -28,6 +28,14 @@ function addButtons(viewport){
 
 	// Create button to show viewer info
 	function show_info(){
+		var rotation = {x: viewport.plotHolder.rotation._x*180,
+		                y: viewport.plotHolder.rotation._y*180,
+		                z: viewport.plotHolder.rotation._z*180};
+		console.log([
+			rotation.x.toFixed(4),
+			rotation.y.toFixed(4),
+			rotation.z.toFixed(4),
+			]);
 	}
 	var grid_btn = createButton("Show info",
 		                        "<div style='font-family:viewerglyphs'>d</div>",

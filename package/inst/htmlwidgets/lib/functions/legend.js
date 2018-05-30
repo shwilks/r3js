@@ -1,49 +1,48 @@
 
+
+function apply_style(div, style){
+    for(var i in style) {
+        div.style[i] = style[i];
+    }
+}
+
 function addLegend(viewport){
 
-    console.log(viewport.plotData.legend);
     var legend   = viewport.plotData.legend;
     var plotData = viewport.plotData;
 
     // Create legend div
     var legend_div = document.createElement( 'div' );
-    legend_div.style.position = "absolute";
-    legend_div.style.top      = "10px";
-    legend_div.style.left     = "10px";
-    legend_div.style.background = "#ffffff";
-    legend_div.style.border = "solid 2px #eeeeee";
-    legend_div.style.borderRadius  = "8px";
-    legend_div.style.paddingBottom = "8px";
+    apply_style(legend_div, legend.style);
+
     viewport.appendChild(legend_div);
 
     // Create a legend title
-    var legend_title = document.createElement( 'div' );
-    legend_div.appendChild(legend_title);
-    legend_title.innerHTML = "<strong>Legend</strong>";
-    legend_title.style.padding = "10px";
+    if(legend.title){
+        var legend_title = document.createElement( 'div' );
+        legend_div.appendChild(legend_title);
+        legend_title.innerHTML = legend.title.name;
+        apply_style(legend_title, legend.title.style);
+    }
     
-    for(var i=0; i<viewport.plotData.legend.legend.length; i++){
+    for(var i=0; i<legend.items.length; i++){
 
-        // Generate the plot object
-        var plotobj = legend.points.plot[i];
-        addLegendLine(legend_div, 
-      	              legend.legend[i],
-      	              plotobj);
+        // Add to the legend
+        addLegendLine(legend.items[i], legend_div);
     }
 
 }
 
 
-function addLegendLine(legend_div,
-	                   description,
-	                   point_object){
+function addLegendLine(legend_data, legend_div){
 
     // Create a legend line
     var legend_line = document.createElement( 'div' );
     legend_div.appendChild(legend_line);
-    legend_line.style.padding  = "4px";
+    apply_style(legend_line, legend_data.style);
+
+    var width  = "15px";
     var height = "15px";
-    var width  = "30px";
 
     // Create div for legend point
     var legend_point = document.createElement( 'div' );
@@ -53,7 +52,8 @@ function addLegendLine(legend_div,
     legend_point.style.height = height;
     legend_point.style.lineHeight = height;
     legend_point.style.verticalAlign = "middle";
-    renderLegendPoint(legend_point, point_object);  
+    legend_point.style.backgroundColor = legend_data.fill;
+    // renderLegendPoint(legend_point, point_object);  
 
     // Create div for legend description
     var legend_description = document.createElement( 'div' );
@@ -64,7 +64,7 @@ function addLegendLine(legend_div,
     legend_description.style.paddingLeft  = "6px";
     legend_description.style.paddingRight = "12px";
     legend_description.style.fontSize = "80%";
-    legend_description.innerHTML = description;
+    legend_description.innerHTML = legend_data.legend;
     legend_line.appendChild(legend_description);
 
 }

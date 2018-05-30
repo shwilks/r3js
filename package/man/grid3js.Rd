@@ -5,7 +5,7 @@
 \title{Add axis grids to an r3js plot}
 \usage{
 grid3js(data3js, sides = c("x", "y", "z"), axes = c("x", "y", "z"), at,
-  dynamic = TRUE, ...)
+  dynamic = TRUE, col = "grey80", ...)
 }
 \arguments{
 \item{...}{}

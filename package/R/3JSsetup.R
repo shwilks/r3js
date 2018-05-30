@@ -353,7 +353,9 @@ box3js <- function(data3js,
 grid3js <- function(data3js,
                     sides = c("x","y","z"),
                     axes  = c("x","y","z"),
-                    at, dynamic = TRUE, ...){
+                    at, dynamic = TRUE,
+                    col = "grey80",
+                    ...){
 
   # Expand vector of sides
   faces <- NULL
@@ -375,7 +377,9 @@ grid3js <- function(data3js,
                              ax      = ax,
                              side    = side,
                              at      = at,
-                             dynamic = dynamic, ...)
+                             dynamic = dynamic,
+                             col     = col,
+                             ...)
     }
   }
 

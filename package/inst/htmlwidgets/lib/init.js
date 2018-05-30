@@ -78,9 +78,11 @@ function r3js(container, plotData, settings){
     viewport.toggles = {names:[], objects:[]};
     viewport.damper = {};
     viewport.dynamic_objects = [];
+    viewport.animate = false;
 
     // Create point arrays
     var selectable_objects = [];
+    viewport.selectable_objects = selectable_objects;
 
     // // Add buttons
     addButtons(viewport);
@@ -133,102 +135,8 @@ function r3js(container, plotData, settings){
         new THREE.Plane( new THREE.Vector3( 0, 0, -1 ), plotData.aspect[2]/2 )
     ];
 
-    // Plot points
-    function addPlotObject(plotobj){
-        if(plotobj.type == "group"){
-            var group_objects = [];
-            for(var i=0; i<plotobj.plot.length; i++){
-                var obj = addPlotObject(plotobj.plot[i]);
-                group_objects.push(obj);
-                obj.group = group_objects;
-            }
-        } else {
-
-            // Set defaults for interactivity
-            if(typeof plotobj.properties.interactive === "undefined"){
-                plotobj.properties.interactive = plotobj.properties.label 
-                                                 || plotobj.highlight;
-            }
-            
-            // Generate the plot object
-            if(!plotobj.properties.dimensions){
-                plotobj.properties.dimensions = 3
-            }
-            plotobj.lims     = plotData.lims;
-            plotobj.aspect   = plotData.aspect;
-            plotobj.viewport = viewport;
-            plotobj.normalise = true;
-            var object = make_object(plotobj);
-
-            // Add interactivity
-            if(plotobj.properties.interactive){
-                selectable_objects.push(object);
-            }
-
-            // Add highlighted point
-            if(plotobj.highlight){
-                var hlobj = plotobj.highlight;
-
-                // Generate the plot object
-                if(!hlobj.properties.dimensions){
-                    hlobj.properties.dimensions = 3
-                }
-                hlobj.lims     = plotData.lims;
-                hlobj.aspect   = plotData.aspect;
-                hlobj.viewport = viewport;
-                hlobj.normalise = true;
-                var highlight = make_object(hlobj);
-
-                // Link plot and highlight objects
-                highlight.visible = false;
-                object.highlight = highlight;
-                plotPoints.add(highlight);
-
-            }
-
-            // Work out toggle behaviour
-            if(plotobj.properties.toggle){
-                var toggle = plotobj.properties.toggle;
-                var tog_index = viewport.toggles.names.indexOf(toggle);
-                if(tog_index == -1){
-                    viewport.toggles.names.push(toggle);
-                    viewport.toggles.objects.push([object]);
-                } else {
-                    viewport.toggles.objects[tog_index].push(object);
-                }
-            }
-            
-            // Add label info
-            if(plotobj.properties.label){
-                object.label = plotobj.properties.label;
-            }
-
-            // Work out if object is dynamically associated with a face
-            if(plotobj.properties.faces){
-                viewport.dynamic_objects.push(object);
-                if(plotobj.properties.faces.indexOf("x+") != -1){ viewport.dynamicDeco.faces[0].push(object) }
-                if(plotobj.properties.faces.indexOf("y+") != -1){ viewport.dynamicDeco.faces[1].push(object) }
-                if(plotobj.properties.faces.indexOf("z+") != -1){ viewport.dynamicDeco.faces[2].push(object) }
-                if(plotobj.properties.faces.indexOf("x-") != -1){ viewport.dynamicDeco.faces[3].push(object) }
-                if(plotobj.properties.faces.indexOf("y-") != -1){ viewport.dynamicDeco.faces[4].push(object) }
-                if(plotobj.properties.faces.indexOf("z-") != -1){ viewport.dynamicDeco.faces[5].push(object) }
-            }
-
-            // Add the object to the plot
-            object.viewport = viewport;
-            plotPoints.add(object);
-
-            // Return the object
-            return(object);
-        }
-    }
-
-    // Cycle through data and add points
-    if(plotData.plot){
-        for(var i=0; i<plotData.plot.length; i++){
-            addPlotObject(plotData.plot[i]);
-        }
-    }
+    // Populate the plot with plot objects
+    populatePlot(viewport, plotData);
     
     // Create toggles
     var toggle_holder = document.createElement("div");
@@ -291,6 +199,9 @@ function r3js(container, plotData, settings){
 	// Bind navigation functions
 	bind_navigation(viewport, 3);
 
+    // Bind point movement functions
+    bind_point_movement(viewport);
+
 	// Add raycaster and function
     var raycaster = new THREE.Raycaster();
 	function raytrace() {
@@ -341,21 +252,34 @@ function r3js(container, plotData, settings){
     // Apply viewer settings
     if(settings){
 
-        // Rotate the scene
-        rotateLocalAxes(viewport, new THREE.Vector3(1,0,0), Math.PI*(settings.rotation[0]/180));
-        rotateLocalAxes(viewport, new THREE.Vector3(0,1,0), Math.PI*(settings.rotation[1]/180));
-        rotateLocalAxes(viewport, new THREE.Vector3(0,0,1), Math.PI*(settings.rotation[2]/180));
-        update_labels(viewport);
-        viewport.plotHolder.rotation.onChangeCallback();
+        if(settings.rotation){
+            // Rotate the scene
+            // rotateLocalAxes(viewport, new THREE.Vector3(1,0,0), Math.PI*(settings.rotation[0]/180));
+            // rotateLocalAxes(viewport, new THREE.Vector3(0,1,0), Math.PI*(settings.rotation[1]/180));
+            // rotateLocalAxes(viewport, new THREE.Vector3(0,0,1), Math.PI*(settings.rotation[2]/180));
+            var euler_rot = new THREE.Euler(
+                settings.rotation[0]/180,
+                settings.rotation[1]/180,
+                settings.rotation[2]/180,
+                'XYZ'
+            )
+            viewport.plotHolder.setRotationFromEuler(euler_rot);
+            update_labels(viewport);
+            viewport.plotHolder.rotation.onChangeCallback();
+        }
 
         // Zoom the scene
-        viewport.camera.position.z = viewport.camera.position.z*settings.zoom;
+        if(settings.zoom){
+            viewport.camera.position.z = viewport.camera.position.z*settings.zoom;
+        }
 
         // Pan the scene
-        plotPoints.position.x += settings.translation[0];
-        plotPoints.position.y += settings.translation[1];
-        plotPoints.position.z += settings.translation[2];
-        plotPoints.updateMatrixWorld();
+        if(settings.translation){
+            plotPoints.position.x += settings.translation[0];
+            plotPoints.position.y += settings.translation[1];
+            plotPoints.position.z += settings.translation[2];
+            plotPoints.updateMatrixWorld();
+        }
 
         if(settings.show_rotation){
             viewport.transform.style.display = "block";
@@ -367,11 +291,14 @@ function r3js(container, plotData, settings){
     // Animate the scene
     function animate() {
         
-        if(viewport.mouse.over && !viewport.mouse.down){
-            raytrace();
+        if(viewport.mouse.over || viewport.animate){
+            if(!viewport.mouse.down){
+                raytrace();
+            }
+            viewport.render();
         }
-        viewport.render();
-        viewport.animationFrame = requestAnimationFrame(animate);
+        requestAnimationFrame(animate);
+
     }
 
 
@@ -382,6 +309,19 @@ function r3js(container, plotData, settings){
     viewport.animate = animate;
     viewport.render();
     animate();
+
+    var rotnum = 0;
+    function rotate_axes(){
+        rotnum++;
+        rotateLocalAxes(viewport, new THREE.Vector3(1,0,0), Math.PI*(0.25/180));
+        saveImg(viewport);
+    }
+    
+    //setInterval(function(){ rotate_axes(); }, 10);
+    // for(var i=0; i<(360*4-1); i++){
+    //     rotate_axes();
+    // }
+    
 
 }
 

@@ -72,3 +72,22 @@ renderR3js <- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) { expr <- substitute(expr) } # force quoted
   htmlwidgets::shinyRenderWidget(expr, r3jsOutput, env, quoted = TRUE)
 }
+
+
+
+#' Write to the debug file
+#'
+#' @param data3js
+#'
+#' @return
+#' @export
+#'
+#' @examples
+debug3js <- function(data3js){
+
+  write(x    = paste0("json_data = '", jsonlite::toJSON(data3js), "';\n\nvar plotData = JSON.parse(json_data);"),
+        file = "~/Desktop/LabBook/r3js/package/inst/htmlwidgets/data/bug.js")
+
+}
+
+
