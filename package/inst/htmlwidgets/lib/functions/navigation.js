@@ -1,5 +1,15 @@
 
 
+function update_labels(viewport){
+    viewport.plotHolder.updateMatrixWorld();
+    for(var i=0; i<viewport.labels.length; i++){
+        var lab = viewport.labels[i];
+        // Negate any world rotation
+        var qrot = lab.parent.getWorldQuaternion();
+        lab.rotation.setFromQuaternion(qrot.conjugate());
+    }
+}
+
 function rotateLocalAxes(viewport, axis, rotation){
 	var world_axis = axis.clone().applyQuaternion(viewport.plotHolder.quaternion);
 	viewport.plotHolder.rotateOnAxis(axis, rotation);

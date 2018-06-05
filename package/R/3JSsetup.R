@@ -29,9 +29,17 @@
 #' r3js(data3js)
 #' @export
 #'
-plot3js.new <- function(){
+plot3js.new <- function(background = "#ffffff"){
+
   data3js <- list()
   data3js$ticks <- list(NULL,NULL,NULL)
+
+  # Set background color
+  data3js <- background3js(data3js = data3js,
+                           col     = background)
+
+  data3js
+
 }
 
 
@@ -171,6 +179,23 @@ plot3js.window <- function(data3js,
                        ylim,
                        zlim)
   data3js$aspect <- aspect
+  data3js
+
+}
+
+#' Set the background color of an r3js plot
+#'
+#' @param data3js The plotting object
+#' @param col The background color
+#'
+#' @return
+#' @export
+#'
+#' @examples
+background3js <- function(data3js,
+                          col){
+
+  data3js$scene$background <- convertCol3js(col)
   data3js
 
 }

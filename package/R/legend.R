@@ -35,6 +35,7 @@ legend3js <- function(data3js,
                       legend,
                       fill,
                       title,
+                      legend_style = list(),
                       line_spacing = "4px"){
 
   # Create legend object
@@ -61,10 +62,18 @@ legend3js <- function(data3js,
   legendData$items <- legendItems
 
   # Set legend styles
-  legendData$style <- style3js(backgroundColor = "#ffffff",
-                               position        = "absolute",
-                               top             = "10px",
-                               left            = "10px")
+  legend_style_args <- list(color           = "inherit",
+                            backgroundColor = "inherit",
+                            position        = "absolute",
+                            top             = "10px",
+                            left            = "10px",
+                            padding         = "4px")
+
+  for(x in seq_along(legend_style)){
+    legend_style_args[[names(legend_style)[x]]] <- legend_style[[x]]
+  }
+  legendData$style <- do.call(style3js, legend_style_args)
+
 
   # # Add the fill colors
   # legendObject$fill   <- fill

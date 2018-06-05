@@ -6,6 +6,7 @@
 	<script src="lib/threejs/three.min.js"></script>
 	<script src="lib/threejs/plugins/Detector.js"></script>
 	<script src="lib/threejs/plugins/THREE.MeshLine.js"></script>
+	<script src="lib/threejs/renderers/CSS2DRenderer_r3js.js"></script>
 	<script src="lib/threejs/fonts/helvetiker_regular.typeface.js"></script>
 	<script src="lib/init.js"></script>
 	<script src="lib/functions/grid.js"></script>
@@ -20,12 +21,16 @@
 	<script src="lib/functions/legend.js"></script>
 	<script src="lib/functions/events.js"></script>
 	<script src="lib/functions/axes.js"></script>
+	<script src="lib/functions/move.js"></script>
 	<script src="data/bug.js"></script>
 	<link rel="stylesheet" type="text/css" href="lib/styles/r3js.css">
 	<script>
 		window.onload = function() {
 			var container = document.getElementById("r3js-viewer");
-			r3js(container, plotData);
+			r3js(container, 
+				plotData,
+				{rotation: [40.1258, -228.2551, 243.2951],
+				 zoom: [0.7]});
 		};
 	</script>
 </head>

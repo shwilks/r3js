@@ -1,19 +1,33 @@
 
+
 // General function to populate the plot
 function populatePlot(viewport,
-                      plotData){
+                      plotData,
+                      directcoords){
     if(plotData.plot){
         for(var i=0; i<plotData.plot.length; i++){
             addPlotObject(plotData.plot[i], 
-                          viewport);
+                          plotData,
+                          viewport,
+                          directcoords);
         }
     }
 }
 
 // Plot points
 function addPlotObject(plotobj, 
-                       viewport){
+                       plotData,
+                       viewport,
+                       directcoords){
 
+    // Check whether the coordinates of the point should be normalised
+    if(directcoords){
+        plotobj.normalise = false;
+    } else {
+        plotobj.normalise = true;
+    }
+
+    // Check if object is part of a group
     if(plotobj.type == "group"){
         var group_objects = [];
         for(var i=0; i<plotobj.plot.length; i++){
@@ -36,7 +50,6 @@ function addPlotObject(plotobj,
         plotobj.lims     = plotData.lims;
         plotobj.aspect   = plotData.aspect;
         plotobj.viewport = viewport;
-        plotobj.normalise = true;
         var object = make_object(plotobj);
 
         // Add interactivity
@@ -113,11 +126,13 @@ function normalise_coords(coords,
                           lims, 
                           aspect){
 
-    return([
-        normalise_coord(coords[0], lims[0], aspect[0]),
-        normalise_coord(coords[1], lims[1], aspect[1]),
-        normalise_coord(coords[2], lims[2], aspect[2])
-    ]);
+    norm_coords = [];
+    for(var i=0; i<coords.length; i++){
+        norm_coords.push(
+            normalise_coord(coords[i], lims[i], aspect[i])
+        );
+    }
+    return(norm_coords);
 
 }
 
@@ -125,9 +140,9 @@ function get_object_material(object){
 
     // Convert colors
     if(!object.properties.color.isColor){
-        object.properties.color = new THREE.Color(object.properties.color.red[0],
-                                                  object.properties.color.green[0],
-                                                  object.properties.color.blue[0]);
+        object.properties.color = new THREE.Color(object.properties.color.red,
+                                                  object.properties.color.green,
+                                                  object.properties.color.blue);
     }
 
     // Set object material
@@ -166,19 +181,19 @@ function get_object_material(object){
 function make_object(object){
 
     if(object.type == "point"){
-    	var plotobject = make_point(object);
+        var plotobject = make_point(object);
     }
     if(object.type == "line"){
-    	var plotobject = make_line(object);
+        var plotobject = make_line(object);
     }
     if(object.type == "arrow"){
-    	var plotobject = make_arrow(object);
+        var plotobject = make_arrow(object);
     }
     if(object.type == "surface"){
-    	var plotobject = make_surface(object);
+        var plotobject = make_surface(object);
     }
     if(object.type == "grid"){
-    	var plotobject = make_grid(object);
+        var plotobject = make_grid(object);
     }
     if(object.type == "sphere"){
         var plotobject = make_sphere(object);
@@ -188,6 +203,9 @@ function make_object(object){
     }
     if(object.type == "triangle"){
         var plotobject = make_triangle(object);
+    }
+    if(object.type == "text"){
+        var plotobject = make_textobject(object);
     }
     
     return(plotobject);
@@ -324,8 +342,8 @@ function make_sphere(object){
 
     // Position object
     sphere.position.set(object.position[0],
-                       object.position[1],
-                       object.position[2]);
+                        object.position[1],
+                        object.position[2]);
     if(!sphere.position.z){
         sphere.position.z = 0;
     }
@@ -340,7 +358,7 @@ function make_point(object){
     // Set object geometry
     var geometries = get_geos(object.properties.dimensions);
     var geo = geometries[object.shape](object);
-  	
+    
     // Set object material
     var mat = get_object_material(object);
 
@@ -348,9 +366,11 @@ function make_point(object){
     var point = new THREE.Mesh(geo, mat);
 
     // Scale object
-    point.scale.set(object.size/10, 
-    	            object.size/10, 
-    	            object.size/10);
+    if(object.normalise){
+        point.scale.set(object.size/10, 
+                        object.size/10, 
+                        object.size/10);
+    }
 
     // Normalise the coords
     if(object.normalise){
@@ -361,10 +381,10 @@ function make_point(object){
 
     // Position object
     point.position.set(object.position[0],
-    	               object.position[1],
-    	               object.position[2]);
+                       object.position[1],
+                       object.position[2]);
     if(!point.position.z){
-    	point.position.z = 0;
+        point.position.z = 0;
     }
 
     // Return object
@@ -576,8 +596,8 @@ function make_line(object){
     var line = make_lineMesh(from, to, material, object.properties.lwd, object.properties.dimensions);
 
     // Return line
-	return(line);
-	
+    return(line);
+    
 }
 
 function make_lineShader(object){
@@ -619,12 +639,12 @@ function make_arrow(object){
         var to   = object.position.to;
     }
 
-	// Set object geometry
+    // Set object geometry
     var arrow = {
         headwidth  : 0.015,
         headlength : 0.03
     };
-	var geo = line_geo3D(from, 
+    var geo = line_geo3D(from, 
                          to, 
                          object.properties.lwd*0.01, 
                          false, 
@@ -633,15 +653,15 @@ function make_arrow(object){
                          false,
                          arrow);
 
-	// Set object material
+    // Set object material
     var mat = get_object_material(object);
 
     // Make arrow object
     var arrow = new THREE.Mesh(geo, mat);
 
     // Return arrow
-	return(arrow);       
-	
+    return(arrow);       
+    
 }
 
 function make_grid(object){
@@ -799,7 +819,7 @@ function make_surface(object){
     var n = 0;
     var nas = [];
     for(var i=0; i<object.x.length; i++){
-    	for(var j=0; j<object.x[0].length; j++){
+        for(var j=0; j<object.x[0].length; j++){
             if(!isNaN(object.z[i][j])){
                 if(object.normalise){
                     var coords = normalise_coords(
@@ -821,23 +841,23 @@ function make_surface(object){
                     null,
                     null
                 );
-            	nas.push(n);
+                nas.push(n);
             };
             n++;
-    	}
+        }
     }
 
     // Remove faces with nas
     var i=0
     while(i<geo.faces.length){
-    	var face = geo.faces[i];
-    	if(nas.indexOf(face.a) != -1 || 
-    	   nas.indexOf(face.b) != -1 || 
-    	   nas.indexOf(face.c) != -1){
+        var face = geo.faces[i];
+        if(nas.indexOf(face.a) != -1 || 
+           nas.indexOf(face.b) != -1 || 
+           nas.indexOf(face.c) != -1){
             geo.faces.splice(i,1);
-    	} else {
-    		i++;
-    	}
+        } else {
+            i++;
+        }
     }
 
     // Calculate normals
@@ -854,13 +874,13 @@ function make_surface(object){
 
 
 function get_geos(dimensions, lwd){
-	if(dimensions == 2){
-		var square = function(object){
-			return(new THREE.PlaneBufferGeometry(0.3, 0.3));
-		};
-		var circle = function(object){
-			return(new THREE.CircleBufferGeometry(0.2, 32));
-		}
+    if(dimensions == 2){
+        var square = function(object){
+            return(new THREE.PlaneBufferGeometry(0.3, 0.3));
+        };
+        var circle = function(object){
+            return(new THREE.CircleBufferGeometry(0.2, 32));
+        }
         var ocircle = function(object){
             return(new THREE.RingGeometry( 0.2-object.properties.lwd/25, 0.2, 32 ));
             
@@ -894,39 +914,39 @@ function get_geos(dimensions, lwd){
             geo.rotateZ( Math.PI/4 );
             return(geo);
         }
-		var line = function(length, width){
-			var geo = new THREE.PlaneGeometry( width*0.05, length );
-			geo.translate( 0, -length/2, 0 );
-			return(geo);
-		};
-		var arrow = function(length, width){
-			var geo = new THREE.Geometry();
-			geo.vertices.push(
-				new THREE.Vector3( 0, 0, 0 ),
-				new THREE.Vector3( width/2, length, 0 ),
-				new THREE.Vector3( -width/2, length, 0 )
-			);
-			geo.faces.push( new THREE.Face3( 0, 1, 2 ) );
-			return(geo);
-		};
-	}
-	if(dimensions == 3){
-		var circle = function(){
-			return(new THREE.SphereBufferGeometry(0.2, 25, 25));
-		}
-		var square = function(){
-			return(new THREE.BoxBufferGeometry( 0.3, 0.3, 0.3 ));
-		};
-		var line = function(length, width){
-			var geo = new THREE.CylinderGeometry( width*0.025, width*0.025, length, 32 );
-			geo.translate( 0, -length/2, 0 );
-			return(geo);
-		};
-		var arrow = function(length, width){
-			var geo = new THREE.ConeGeometry( width/2, length, 32 );
+        var line = function(length, width){
+            var geo = new THREE.PlaneGeometry( width*0.05, length );
             geo.translate( 0, -length/2, 0 );
-			return(geo);
-		};
+            return(geo);
+        };
+        var arrow = function(length, width){
+            var geo = new THREE.Geometry();
+            geo.vertices.push(
+                new THREE.Vector3( 0, 0, 0 ),
+                new THREE.Vector3( width/2, length, 0 ),
+                new THREE.Vector3( -width/2, length, 0 )
+            );
+            geo.faces.push( new THREE.Face3( 0, 1, 2 ) );
+            return(geo);
+        };
+    }
+    if(dimensions == 3){
+        var circle = function(){
+            return(new THREE.SphereBufferGeometry(0.2, 25, 25));
+        }
+        var square = function(){
+            return(new THREE.BoxBufferGeometry( 0.3, 0.3, 0.3 ));
+        };
+        var line = function(length, width){
+            var geo = new THREE.CylinderGeometry( width*0.025, width*0.025, length, 32 );
+            geo.translate( 0, -length/2, 0 );
+            return(geo);
+        };
+        var arrow = function(length, width){
+            var geo = new THREE.ConeGeometry( width/2, length, 32 );
+            geo.translate( 0, -length/2, 0 );
+            return(geo);
+        };
         var osquare = function(object){
             var size = 0.3;
             var lwd  = object.properties.lwd/25;
@@ -987,27 +1007,114 @@ function get_geos(dimensions, lwd){
             return(geo);
         };
         var ocircle = circle;
-	}
-	return({
-		square:  square,
+    }
+    return({
+        square:  square,
         osquare: osquare,
-		circle:  circle,
+        circle:  circle,
         ocircle: ocircle,
-		line:    line,
-		arrow:   arrow
-	})
+        line:    line,
+        arrow:   arrow
+    })
 }
 
+function make_textobject(object){
 
-function make_text(string, pos, size, alignment){
+    if(object.normalise){
+        object.position = normalise_coords(object.position,
+                                           object.lims,
+                                           object.aspect);
+    }
+    
+    if(object.rendering == "geometry"){
+        object.alignment[0] = -object.alignment[0]/2 + 0.5;
+        object.alignment[1] = -object.alignment[1]/2 + 0.5;
+        
+        if(object.normalise){
+            object.offset[0] = object.offset[0]*0.025;
+            object.offset[1] = object.offset[1]*0.025;
+            object.size = object.size*0.025
+        }
+        var textobject = make_text(object.text,
+                                   object.position,
+                                   object.size,
+                                   object.alignment,
+                                   object.offset,
+                                   object.properties.color);
+        object.viewport.labels.push(textobject);
+    }
+    if(object.rendering == "html"){
+        var textobject = make_htmltext(object);
+    }
+    return(textobject);
+
+}
+
+function make_htmltext(object){
+
+
+    // Create text div
+    var textdiv     = document.createElement( 'div' );
+    
+    // Define color as hex
+    if(object.properties.color.red){
+        var color = new THREE.Color(
+                object.properties.color.red, 
+                object.properties.color.green, 
+                object.properties.color.blue
+        );
+        textdiv.style.color = '#'+color.getHexString();
+    } else {
+        textdiv.style.color = 'inherit';
+    }
+    
+    // Set other styles and content
+    textdiv.style.fontSize = object.size*100+"%";
+    textdiv.textContent = object.text;
+    apply_style(textdiv, object.style);
+    
+    // Create CSS text object
+    var textobject = new THREE.CSS2DObject( textdiv );
+
+    // Set text object alignment
+    textobject.alignment = {
+        x: -50 + 50*object.alignment[0],
+        y: -50 - 50*object.alignment[1]
+    };
+
+    // Set text offset
+    textdiv.style.marginLeft = object.offset[0]+"px";
+    textdiv.style.marginTop  = object.offset[1]+"px";
+
+    // Set text object position
+    textobject.position.set(
+        object.position[0],
+        object.position[1],
+        object.position[2]
+    );
+
+    return(textobject);
+
+}
+
+function make_text(string, pos, size, alignment, offset, color){
 
     var shapes    = font.generateShapes( string, size, 4 );
     var geometry  = new THREE.ShapeGeometry( shapes );
     var textShape = new THREE.BufferGeometry();
     textShape.fromGeometry( geometry );
 
+    if(color && color.red){
+        color = new THREE.Color(
+            color.red, 
+            color.green, 
+            color.blue
+        );
+    } else {
+        color = new THREE.Color("#000000");
+    }
     var matLite = new THREE.MeshBasicMaterial( {
-        color: "black",
+        color: color,
         side: THREE.DoubleSide
     } );
 
@@ -1016,6 +1123,11 @@ function make_text(string, pos, size, alignment){
     xMid = - 0.5 * ( textShape.boundingBox.max.x - textShape.boundingBox.min.x );
     yMid = - 0.5 * ( textShape.boundingBox.max.y - textShape.boundingBox.min.y );
     textShape.translate( xMid*2*alignment[0], yMid*2*alignment[1], 0 );
+
+    // Offset text
+    if(offset){
+        textShape.translate( offset[0], offset[1], 0 );
+    }
 
     var text = new THREE.Mesh( textShape, matLite )
     text.position.set(pos[0], pos[1], pos[2])
@@ -1037,6 +1149,8 @@ function lineMeshSegments(geo, mat, lwd){
     return(new THREE.Mesh(segments, mat));
 
 }
+
+
 
 
 

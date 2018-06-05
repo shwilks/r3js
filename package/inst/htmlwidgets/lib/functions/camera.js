@@ -17,6 +17,9 @@ function addCamera(viewport, dimensions){
     // Set resize function
     camera.resize = function(){
     	this.renderer.setSize( this.viewport.offsetWidth, this.viewport.offsetHeight);
+    	if(this.viewport.labelRenderer){
+	 	  this.viewport.labelRenderer.setSize( this.viewport.offsetWidth, this.viewport.offsetHeight);
+	    }
     	var aspect = this.viewport.offsetWidth / this.viewport.offsetHeight;
 		this.left   = aspect/2;
 		this.right  = -aspect/2;
@@ -100,6 +103,9 @@ function addCamera(viewport, dimensions){
     // Set resize function
     camera.resize = function(){
       this.renderer.setSize( this.viewport.offsetWidth, this.viewport.offsetHeight );
+      if(this.viewport.labelRenderer){
+	 	this.viewport.labelRenderer.setSize( this.viewport.offsetWidth, this.viewport.offsetHeight);
+	  }
       this.aspect = this.viewport.offsetWidth / this.viewport.offsetHeight;
       this.updateProjectionMatrix();
       this.viewport.render();

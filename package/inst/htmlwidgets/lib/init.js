@@ -59,7 +59,11 @@ function r3js(container, plotData, settings){
     scene.add(plotHolder);
 
     // Set scene background color
-    scene.background = new THREE.Color("#ffffff");
+    var bg_col = new THREE.Color(plotData.scene.background.red,
+                                 plotData.scene.background.green,
+                                 plotData.scene.background.blue);
+    scene.background = bg_col;
+    viewport.style.backgroundColor = "#"+bg_col.getHexString();
 
     // Add container variables
     viewport.viewer = viewer;
@@ -110,6 +114,21 @@ function r3js(container, plotData, settings){
     viewport.appendChild(renderer.domElement);
     viewport.render = function(){
       this.renderer.render( this.scene, this.camera );
+    }
+
+    // Add label renderer if needed
+    if(plotData.label_renderer){
+        labelRenderer = new THREE.CSS2DRenderer();
+        labelRenderer.setSize( viewport.offsetWidth, viewport.offsetHeight);
+        viewport.labelRenderer = labelRenderer;
+        labelRenderer.domElement.style.position = 'absolute';
+        labelRenderer.domElement.style.top = '0';
+        labelRenderer.domElement.style.pointerEvents = 'none';
+        viewport.appendChild(labelRenderer.domElement);
+        viewport.render = function(){
+          this.renderer.render( this.scene, this.camera );
+          labelRenderer.render(viewport.scene, viewport.camera);
+        }
     }
 
 	// Add camera
@@ -190,7 +209,7 @@ function r3js(container, plotData, settings){
 
     // Create legend
     if(plotData.legend){
-      addLegend(viewport);  
+      addLegend(viewport, plotData);  
     }
 
     // Bind event listeners
@@ -296,6 +315,7 @@ function r3js(container, plotData, settings){
                 raytrace();
             }
             viewport.render();
+
         }
         requestAnimationFrame(animate);
 

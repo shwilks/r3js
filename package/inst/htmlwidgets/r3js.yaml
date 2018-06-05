@@ -8,6 +8,7 @@ dependencies:
     script:
       - threejs/three.min.js
       - threejs/plugins/Detector.js
+      - threejs/renderers/CSS2DRenderer_r3js.js
       - threejs/fonts/helvetiker_regular.typeface.js
       - init.js
       - functions/grid.js

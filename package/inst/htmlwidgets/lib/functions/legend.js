@@ -6,15 +6,13 @@ function apply_style(div, style){
     }
 }
 
-function addLegend(viewport){
+function addLegend(viewport, plotData){
 
-    var legend   = viewport.plotData.legend;
-    var plotData = viewport.plotData;
+    var legend   = plotData.legend;
 
     // Create legend div
     var legend_div = document.createElement( 'div' );
     apply_style(legend_div, legend.style);
-
     viewport.appendChild(legend_div);
 
     // Create a legend title
@@ -72,7 +70,7 @@ function addLegendLine(legend_data, legend_div){
 
 function renderLegendPoint(element, point_object){
 
-	// Create scene
+    // Create scene
     var scene  = new THREE.Scene();
     scene.background = new THREE.Color("#ffffff");
     var width  = element.offsetWidth / element.offsetHeight;
@@ -96,7 +94,7 @@ function renderLegendPoint(element, point_object){
 
     // Create camera
     var camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
-	camera.position.z = 5;
+    camera.position.z = 5;
 
     // Create renderer
     var renderer = new THREE.WebGLRenderer({

@@ -158,11 +158,8 @@ material3js <- function(mat = "phong",
                         polygonOffsetUnits = NULL,
                         faces = NULL){
 
-  col <- col2rgb(col)/255
   props <- list(mat         = jsonlite::unbox(mat),
-                color       = list(red   = col[1,],
-                                   green = col[2,],
-                                   blue  = col[3,]),
+                color       = convertCol3js(col),
                 opacity     = jsonlite::unbox(opacity),
                 xpd         = jsonlite::unbox(xpd),
                 lwd         = jsonlite::unbox(lwd),
@@ -184,6 +181,24 @@ material3js <- function(mat = "phong",
   props
 
 }
+
+
+#' Internal function to convert color to an rgb list
+#'
+#' @param col The color to convert in a format R understands
+#'
+#' @return Returns a list with red, green and blue values
+#'
+convertCol3js <- function(col){
+  if(col == "inherit"){
+    return(NULL)
+  }
+  col <- col2rgb(col)/255
+  list(red   = jsonlite::unbox(col[1,]),
+       green = jsonlite::unbox(col[2,]),
+       blue  = jsonlite::unbox(col[3,]))
+}
+
 
 #' Add an r3js highlight object
 #'
@@ -804,6 +819,124 @@ triangle3js <- function(data3js,
   # Create the highlight object if requested
   if(!missing(highlight)){
     data3js <- highlight3js(data3js, highlight)
+  }
+
+  # Return the updated object
+  data3js
+
+}
+
+#' Add a single text string to a 3js plot
+#'
+#' @param x
+#' @param y
+#' @param z
+#' @param labels
+#' @param pos
+#'
+string3js <- function(data3js,
+                      x, y, z,
+                      text,
+                      size = 1,
+                      col = "inherit",
+                      type   = "geometry",
+                      label  = NULL,
+                      toggle = NULL,
+                      alignment = "center",
+                      offset = c(0, 0),
+                      style  = list(),
+                      ...){
+
+  object <- c()
+  object$type      <- "text"
+  object$rendering <- jsonlite::unbox(type)
+  object$position  <- c(x,y,z)
+  object$text      <- text
+  object$size      <- size
+  object$offset    <- offset
+
+  # Set text aligment
+  if(alignment == "center"){ object$alignment <- c(0 ,0 ) }
+
+  if(alignment == "top")   { object$alignment <- c(0 ,1 ) }
+  if(alignment == "bottom"){ object$alignment <- c(0 ,-1) }
+  if(alignment == "left")  { object$alignment <- c(-1,0 ) }
+  if(alignment == "right") { object$alignment <- c(1 ,0 ) }
+
+  if(alignment == "topright")    { object$alignment <- c(1 ,1 ) }
+  if(alignment == "topleft")     { object$alignment <- c(-1,1 ) }
+  if(alignment == "bottomright") { object$alignment <- c(1 ,-1) }
+  if(alignment == "bottomleft")  { object$alignment <- c(-1,-1) }
+
+  # If the type is html text turn on the label renderer and set text style
+  if(type == "html"){
+    data3js$label_renderer = TRUE
+    object$style <- do.call(style3js, args = style)
+  }
+
+  # Set object properties
+  object$properties <- material3js(label = label,
+                                   toggle = toggle,
+                                   col = col,
+                                   ...)
+
+  data3js$plot[[length(data3js$plot)+1]] <- object
+
+  # Return the updated object
+  data3js
+
+}
+
+
+#' Add text to a 3js plot
+#'
+#' @param data3js
+#' @param x
+#' @param y
+#' @param z
+#' @param size
+#' @param col
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+text3js <- function(data3js,
+                    x, y, z,
+                    text,
+                    size = 1,
+                    col    = "inherit",
+                    label  = NULL,
+                    toggle = NULL,
+                    type   = "geometry",
+                    alignment = "center",
+                    offset    = c(0, 0),
+                    style     = list(),
+                    ...){
+
+  # Repeat arguments to match length of points
+  col  <- rep_len(col,  length(x))
+  size <- rep_len(size, length(x))
+  text <- rep_len(text, length(x))
+  type <- rep_len(type, length(x))
+  if(!is.null(label)) { label  <- rep_len(label,  length(x)) }
+  if(!is.null(toggle)){ toggle <- rep_len(toggle, length(x)) }
+
+  # Create the points
+  for(n in 1:length(x)){
+    data3js <- string3js(data3js,
+                         x[n], y[n], z[n],
+                         text[n],
+                         size   = size[n],
+                         col    = col[n],
+                         label  = label[n],
+                         toggle = toggle[n],
+                         alignment = alignment,
+                         offset    = offset,
+                         type      = type[n],
+                         style     = style,
+                         ...)
   }
 
   # Return the updated object

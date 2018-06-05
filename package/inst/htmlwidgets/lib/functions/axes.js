@@ -197,16 +197,6 @@ function add_rotation_listener(viewport){
 
 }
 
-function update_labels(viewport){
-    viewport.plotHolder.updateMatrixWorld();
-    for(var i=0; i<viewport.labels.length; i++){
-        var lab = viewport.labels[i];
-        // Negate any world rotation
-        var qrot = lab.parent.getWorldQuaternion();
-        lab.rotation.setFromQuaternion(qrot.conjugate());
-    }
-}
-
 function make_label(viewport, label_object, scene_object){
 
     label_object.scene_object = scene_object;

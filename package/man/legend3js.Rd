@@ -4,7 +4,8 @@
 \alias{legend3js}
 \title{Add a legend to a 3js plot}
 \usage{
-legend3js(data3js, legend, fill, title, line_spacing = "4px")
+legend3js(data3js, legend, fill, title, legend_style = list(),
+  line_spacing = "4px")
 }
 \arguments{
 \item{data3js}{The r3js plotting data.}

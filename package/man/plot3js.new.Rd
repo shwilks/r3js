@@ -4,7 +4,7 @@
 \alias{plot3js.new}
 \title{Setup a new r3js plot}
 \usage{
-plot3js.new()
+plot3js.new(background = "#ffffff")
 }
 \value{
 Returns an r3js plotting object in the form of a list.
