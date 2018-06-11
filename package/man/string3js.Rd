@@ -4,9 +4,9 @@
 \alias{string3js}
 \title{Add a single text string to a 3js plot}
 \usage{
-string3js(data3js, x, y, z, text, size = 1, col = "black",
-  type = "geometry", label = NULL, toggle = NULL, pos = c(0.5, 0.5),
-  offset = c(0, 0), ...)
+string3js(data3js, x, y, z, text, size = 1, col = "inherit",
+  type = "geometry", label = NULL, toggle = NULL, alignment = "center",
+  offset = c(0, 0), style = list(), ...)
 }
 \arguments{
 \item{pos}{}
