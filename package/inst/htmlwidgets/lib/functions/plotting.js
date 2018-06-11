@@ -31,7 +31,12 @@ function addPlotObject(plotobj,
     if(plotobj.type == "group"){
         var group_objects = [];
         for(var i=0; i<plotobj.plot.length; i++){
-            var obj = addPlotObject(plotobj.plot[i]);
+            var obj = addPlotObject(
+                plotobj.plot[i],
+                plotData,
+                viewport,
+                directcoords
+            );
             group_objects.push(obj);
             obj.group = group_objects;
         }
@@ -140,9 +145,9 @@ function get_object_material(object){
 
     // Convert colors
     if(!object.properties.color.isColor){
-        object.properties.color = new THREE.Color(object.properties.color.red,
-                                                  object.properties.color.green,
-                                                  object.properties.color.blue);
+        object.properties.color = new THREE.Color(object.properties.color[0][0],
+                                                  object.properties.color[1][0],
+                                                  object.properties.color[2][0]);
     }
 
     // Set object material
@@ -669,7 +674,7 @@ function make_grid(object){
     var colors  = Object.assign({}, object.properties.color);
     var mat = get_object_material(object);
     
-    var vertex_cols = colors.red.length > 1;
+    var vertex_cols = colors[0].length > 1;
     if(vertex_cols){
         mat.color = new THREE.Color();
         mat.vertexColors = THREE.VertexColors;
@@ -705,12 +710,12 @@ function make_grid(object){
                 if(vertex_cols){
                     var n1 = i*(object.x[0].length)+j;
                     var n2 = i*(object.x[0].length)+(j+1);
-                    geo.colors.push(new THREE.Color(colors.red[n1],
-                                                    colors.green[n1],
-                                                    colors.blue[n1]));
-                    geo.colors.push(new THREE.Color(colors.red[n2],
-                                                    colors.green[n2],
-                                                    colors.blue[n2]));
+                    geo.colors.push(new THREE.Color(colors[0][n1],
+                                                    colors[1][n1],
+                                                    colors[2][n1]));
+                    geo.colors.push(new THREE.Color(colors[0][n2],
+                                                    colors[1][n2],
+                                                    colors[2][n2]));
                 }
             }
         }
@@ -745,12 +750,12 @@ function make_grid(object){
                 if(vertex_cols){
                     var n1 = j*(object.x[0].length)+i;
                     var n2 = (j+1)*(object.x[0].length)+i;
-                    geo.colors.push(new THREE.Color(colors.red[n1],
-                                                    colors.green[n1],
-                                                    colors.blue[n1]));
-                    geo.colors.push(new THREE.Color(colors.red[n2],
-                                                    colors.green[n2],
-                                                    colors.blue[n2]));
+                    geo.colors.push(new THREE.Color(colors[0][n1],
+                                                    colors[1][n1],
+                                                    colors[2][n1]));
+                    geo.colors.push(new THREE.Color(colors[0][n2],
+                                                    colors[1][n2],
+                                                    colors[2][n2]));
                 }
             }
         }
@@ -776,22 +781,22 @@ function make_surface(object){
     var mat = get_object_material(object);
 
     // Color surface by vertices if more than one color supplied
-    if(surface_cols.red.length > 1){
+    if(surface_cols[0].length > 1){
         for(var i=0; i<geo.faces.length; i++){
             geo.faces[i].vertexColors[0] = new THREE.Color(
-                surface_cols.red[geo.faces[i].a],
-                surface_cols.green[geo.faces[i].a],
-                surface_cols.blue[geo.faces[i].a],
+                surface_cols[0][geo.faces[i].a],
+                surface_cols[1][geo.faces[i].a],
+                surface_cols[2][geo.faces[i].a],
             );
             geo.faces[i].vertexColors[1] = new THREE.Color(
-                surface_cols.red[geo.faces[i].b],
-                surface_cols.green[geo.faces[i].b],
-                surface_cols.blue[geo.faces[i].b],
+                surface_cols[0][geo.faces[i].b],
+                surface_cols[1][geo.faces[i].b],
+                surface_cols[2][geo.faces[i].b],
             );
             geo.faces[i].vertexColors[2] = new THREE.Color(
-                surface_cols.red[geo.faces[i].c],
-                surface_cols.green[geo.faces[i].c],
-                surface_cols.blue[geo.faces[i].c],
+                surface_cols[0][geo.faces[i].c],
+                surface_cols[1][geo.faces[i].c],
+                surface_cols[2][geo.faces[i].c],
             );
         }
         mat.vertexColors = THREE.VertexColors;

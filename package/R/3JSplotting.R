@@ -190,13 +190,7 @@ material3js <- function(mat = "phong",
 #' @return Returns a list with red, green and blue values
 #'
 convertCol3js <- function(col){
-  if(col == "inherit"){
-    return(NULL)
-  }
-  col <- col2rgb(col)/255
-  list(red   = jsonlite::unbox(col[1,]),
-       green = jsonlite::unbox(col[2,]),
-       blue  = jsonlite::unbox(col[3,]))
+  col2rgb(col)/255
 }
 
 
