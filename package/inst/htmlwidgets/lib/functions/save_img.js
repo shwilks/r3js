@@ -9,18 +9,27 @@ function downloadURI(uri, name) {
   delete link;
 }
 
-function saveImg(viewport){
-    var save_renderer = new THREE.WebGLRenderer({
+function getImgData(viewport){
+  if(!viewport.save_renderer){
+    viewport.save_renderer = new THREE.WebGLRenderer({
       preserveDrawingBuffer: true,
       physicallyCorrectLights: true,
       antialias: true,
       alpha: true
     });
-    save_renderer.setSize(viewport.offsetWidth,
-    	                  viewport.offsetHeight);
-    save_renderer.setPixelRatio( window.devicePixelRatio );
-    save_renderer.render( viewport.scene, viewport.camera );
-    var img_data = save_renderer.domElement.toDataURL();
-    downloadURI(img_data, "map.png");
+  }
+  viewport.save_renderer.setSize(viewport.offsetWidth,
+                                 viewport.offsetHeight);
+  viewport.save_renderer.setPixelRatio( window.devicePixelRatio );
+  viewport.save_renderer.render( viewport.scene, viewport.camera );
+  var img_data = viewport.save_renderer.domElement.toDataURL();
+  return(img_data);
+}
+
+function saveImg(viewport, filename = "map.png"){
+    
+    var img_data = getImgData(viewport);
+    downloadURI(img_data, filename);
+
 }
 

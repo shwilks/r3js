@@ -1,97 +1,72 @@
 
 
 // General function to populate the plot
-function populatePlot(viewport,
+function populatePlot(parent,
                       plotData,
-                      directcoords){
+                      scene){
+    
     if(plotData.plot){
         for(var i=0; i<plotData.plot.length; i++){
-            addPlotObject(plotData.plot[i], 
+            addPlotObject(plotData.plot[i],
                           plotData,
-                          viewport,
-                          directcoords);
+                          parent,
+                          scene);
         }
     }
+
 }
 
 // Plot points
 function addPlotObject(plotobj, 
                        plotData,
-                       viewport,
-                       directcoords){
-
-    // Check whether the coordinates of the point should be normalised
-    if(directcoords){
-        plotobj.normalise = false;
-    } else {
-        plotobj.normalise = true;
-    }
+                       parent,
+                       scene){
 
     // Check if object is part of a group
     if(plotobj.type == "group"){
+        
         var group_objects = [];
         for(var i=0; i<plotobj.plot.length; i++){
-            var obj = addPlotObject(
+            var object = addPlotObject(
                 plotobj.plot[i],
                 plotData,
-                viewport,
-                directcoords
+                parent,
+                scene
             );
-            group_objects.push(obj);
-            obj.group = group_objects;
+            group_objects.push(object);
+            object.group = group_objects;
         }
+
     } else {
-
-        // Set defaults for interactivity
-        if(typeof plotobj.properties.interactive === "undefined"){
-            plotobj.properties.interactive = plotobj.properties.label 
-                                             || plotobj.highlight;
-        }
         
-        // Generate the plot object
-        if(!plotobj.properties.dimensions){
-            plotobj.properties.dimensions = 3
-        }
-        plotobj.lims     = plotData.lims;
-        plotobj.aspect   = plotData.aspect;
-        plotobj.viewport = viewport;
-        var object = make_object(plotobj);
-
-        // Add interactivity
-        if(plotobj.properties.interactive){
-            viewport.selectable_objects.push(object);
-        }
+        // Make the object
+        var object = make_object(plotobj, plotData, parent, scene);
 
         // Add highlighted point
         if(plotobj.highlight){
-            var hlobj = plotobj.highlight;
-
-            // Generate the plot object
-            if(!hlobj.properties.dimensions){
-                hlobj.properties.dimensions = 3
-            }
-            hlobj.lims     = plotData.lims;
-            hlobj.aspect   = plotData.aspect;
-            hlobj.viewport = viewport;
-            hlobj.normalise = true;
-            var highlight = make_object(hlobj);
-
+            
             // Link plot and highlight objects
-            highlight.visible = false;
-            object.highlight = highlight;
-            viewport.plotPoints.add(highlight);
+            var hlobj = make_object(plotobj.highlight, plotData, parent, scene);
+            hlobj.visible = false;
+            object.highlight = hlobj;
+            parent.add(hlobj);
 
+        }
+
+        // Add interactivity
+        if(plotobj.properties.interactive || plotobj.properties.label){
+            scene.selectable_objects.push(object);
         }
 
         // Work out toggle behaviour
         if(plotobj.properties.toggle){
             var toggle = plotobj.properties.toggle;
-            var tog_index = viewport.toggles.names.indexOf(toggle);
+            var tog_index = scene.toggles.names.indexOf(toggle);
             if(tog_index == -1){
-                viewport.toggles.names.push(toggle);
-                viewport.toggles.objects.push([object]);
+                scene.toggles.names.push(toggle);
+                scene.toggles.objects.push([object]);
             } else {
-                viewport.toggles.objects[tog_index].push(object);
+                scene.toggles.objects[tog_index].push(object);
             }
         }
         
@@ -102,18 +77,51 @@ function addPlotObject(plotobj,
 
         // Work out if object is dynamically associated with a face
         if(plotobj.properties.faces){
-            viewport.dynamic_objects.push(object);
-            if(plotobj.properties.faces.indexOf("x+") != -1){ viewport.dynamicDeco.faces[0].push(object) }
-            if(plotobj.properties.faces.indexOf("y+") != -1){ viewport.dynamicDeco.faces[1].push(object) }
-            if(plotobj.properties.faces.indexOf("z+") != -1){ viewport.dynamicDeco.faces[2].push(object) }
-            if(plotobj.properties.faces.indexOf("x-") != -1){ viewport.dynamicDeco.faces[3].push(object) }
-            if(plotobj.properties.faces.indexOf("y-") != -1){ viewport.dynamicDeco.faces[4].push(object) }
-            if(plotobj.properties.faces.indexOf("z-") != -1){ viewport.dynamicDeco.faces[5].push(object) }
+            scene.dynamic_objects.push(object);
+            if(plotobj.properties.faces.indexOf("x+") != -1){ scene.dynamicDeco.faces[0].push(object) }
+            if(plotobj.properties.faces.indexOf("y+") != -1){ scene.dynamicDeco.faces[1].push(object) }
+            if(plotobj.properties.faces.indexOf("z+") != -1){ scene.dynamicDeco.faces[2].push(object) }
+            if(plotobj.properties.faces.indexOf("x-") != -1){ scene.dynamicDeco.faces[3].push(object) }
+            if(plotobj.properties.faces.indexOf("y-") != -1){ scene.dynamicDeco.faces[4].push(object) }
+            if(plotobj.properties.faces.indexOf("z-") != -1){ scene.dynamicDeco.faces[5].push(object) }
+        }
+        if(plotobj.properties.corners){
+            
+            scene.dynamic_objects.push(object);
+            
+            var corners  = plotobj.properties.corners[0];
+            var edgecode = corners.substring(0,3);
+            var poscode  = corners.substring(3,4);
+            var a;
+            var b;
+
+            if(edgecode == "x--"){ a = 0  }
+            if(edgecode == "x-+"){ a = 1  }
+            if(edgecode == "x++"){ a = 2  }
+            if(edgecode == "x+-"){ a = 3  }
+            if(edgecode == "-y-"){ a = 4  }
+            if(edgecode == "-y+"){ a = 5  }
+            if(edgecode == "+y+"){ a = 6  }
+            if(edgecode == "+y-"){ a = 7  }
+            if(edgecode == "--z"){ a = 8  }
+            if(edgecode == "-+z"){ a = 9  }
+            if(edgecode == "++z"){ a = 10 }
+            if(edgecode == "+-z"){ a = 11 }
+
+            if(poscode == "r"){ b = 0 } // Up
+            if(poscode == "u"){ b = 1 } // Down
+            if(poscode == "f"){ b = 2 } // Front
+            if(poscode == "l"){ b = 3 } // Left
+            if(poscode == "d"){ b = 4 } // Right
+            if(poscode == "b"){ b = 5 } // Back
+
+            scene.dynamicDeco.edges[a][b].push(object);
+
         }
 
         // Add the object to the plot
-        object.viewport = viewport;
-        viewport.plotPoints.add(object);
+        object.scene = scene;
+        parent.add(object);
 
         // Return the object
         return(object);
@@ -155,18 +163,6 @@ function get_object_material(object){
     if(object.properties.mat == "lambert")  { var mat = new THREE.MeshLambertMaterial(); }
     if(object.properties.mat == "phong")    { var mat = new THREE.MeshPhongMaterial();   }
     if(object.properties.mat == "line")     { var mat = new THREE.LineBasicMaterial();   }
-    if(object.properties.mat == "linemesh") { 
-        var mat = new MeshLineMaterial( {
-            useMap: false,
-            color: object.properties.color,
-            resolution: new THREE.Vector2( object.viewport.offsetWidth, 
-                                           object.viewport.offsetHeight ),
-            sizeAttenuation: !false,
-            lineWidth: object.properties.lwd*0.01,
-            near: object.viewport.camera.near,
-            far: object.viewport.camera.far
-        });
-    }
 
     // Set object material properties
     Object.assign(mat, object.properties);
@@ -174,7 +170,7 @@ function get_object_material(object){
 
     // Set clipping
     if(!object.properties.xpd){
-        mat.clippingPlanes = object.viewport.clippingPlanes;
+        mat.clippingPlanes = object.parent.clippingPlanes;
     }
 
     return(mat);
@@ -183,7 +179,17 @@ function get_object_material(object){
 
 
 // Function for plotting an object such as a line or a shape
-function make_object(object){
+function make_object(object, plotData, parent, scene){
+
+    // Set defaults
+    object.lims      = plotData.lims;
+    object.aspect    = plotData.aspect;
+    object.normalise = plotData.normalise;
+    object.parent    = parent;
+    object.scene     = scene;
+    if(!object.properties.dimensions){
+        object.properties.dimensions = 3;
+    }
 
     if(object.type == "point"){
         var plotobject = make_point(object);
@@ -211,6 +217,23 @@ function make_object(object){
     }
     if(object.type == "text"){
         var plotobject = make_textobject(object);
+    }
+
+    if(object.properties.rotation){
+        plotobject.geometry.rotateX(object.properties.rotation[0]);
+        plotobject.geometry.rotateY(object.properties.rotation[1]);
+        plotobject.geometry.rotateZ(object.properties.rotation[2]);
+    }
+
+    // Apply any special transformations
+    if(object.properties.renderSidesSeparately){
+        plotobject = separate_sides(plotobject);
+    }
+    if(object.properties.removeSelfTransparency){
+        plotobject = remove_self_transparency(plotobject);
+    }
+    if(object.properties.breakupMesh){
+        plotobject = breakup_mesh(plotobject);
     }
     
     return(plotobject);
@@ -358,76 +381,10 @@ function make_sphere(object){
 
 }
 
-function make_point(object){
-    
-    // Set object geometry
-    var geometries = get_geos(object.properties.dimensions);
-    var geo = geometries[object.shape](object);
-    
-    // Set object material
-    var mat = get_object_material(object);
-
-    // Make object
-    var point = new THREE.Mesh(geo, mat);
-
-    // Scale object
-    if(object.normalise){
-        point.scale.set(object.size/10, 
-                        object.size/10, 
-                        object.size/10);
-    }
-
-    // Normalise the coords
-    if(object.normalise){
-        object.position = normalise_coords(object.position,
-                                           object.lims,
-                                           object.aspect);
-    }
-
-    // Position object
-    point.position.set(object.position[0],
-                       object.position[1],
-                       object.position[2]);
-    if(!point.position.z){
-        point.position.z = 0;
-    }
-
-    // Return object
-    return(point);
-
-}
 
 
-function make_lineMeshGeo(from, to, linewidth, dimensions){
 
-    // Get direction and length
-    var direction = new THREE.Vector3(to[0]-from[0],
-                                      to[1]-from[1],
-                                      to[2]-from[2]);
-    var line_length = direction.length();
 
-    // Set object geometry
-    var geometries = get_geos(dimensions);
-    var geo = geometries.line(line_length, linewidth/20);
-
-    // Make translation matrix
-    var transmat = new THREE.Matrix4();
-    transmat.makeTranslation(to[0], to[1], to[2]);
-
-    // Make rotation matrix
-    var axis = new THREE.Vector3(0, 1, 0);
-    var quat = new THREE.Quaternion().setFromUnitVectors(axis, direction.clone().normalize());
-
-    var rotmat = new THREE.Matrix4();
-    rotmat.makeRotationFromQuaternion(quat);
-    
-    // Rotate to match direction and position
-    geo.applyMatrix(rotmat);
-    geo.applyMatrix(transmat);
-
-    return(geo);
-
-}
 
 
 function line_geo2D(from, to, 
@@ -595,6 +552,7 @@ function make_line(object){
         var from = object.position.from;
         var to   = object.position.to;
     }
+
     var material = get_object_material(object);
 
     // Make the line
@@ -786,17 +744,17 @@ function make_surface(object){
             geo.faces[i].vertexColors[0] = new THREE.Color(
                 surface_cols[0][geo.faces[i].a],
                 surface_cols[1][geo.faces[i].a],
-                surface_cols[2][geo.faces[i].a],
+                surface_cols[2][geo.faces[i].a]
             );
             geo.faces[i].vertexColors[1] = new THREE.Color(
                 surface_cols[0][geo.faces[i].b],
                 surface_cols[1][geo.faces[i].b],
-                surface_cols[2][geo.faces[i].b],
+                surface_cols[2][geo.faces[i].b]
             );
             geo.faces[i].vertexColors[2] = new THREE.Color(
                 surface_cols[0][geo.faces[i].c],
                 surface_cols[1][geo.faces[i].c],
-                surface_cols[2][geo.faces[i].c],
+                surface_cols[2][geo.faces[i].c]
             );
         }
         mat.vertexColors = THREE.VertexColors;
@@ -838,7 +796,7 @@ function make_surface(object){
                 geo.vertices[n].set(
                     coords[0],
                     coords[1],
-                    coords[2],
+                    coords[2]
                 )
             } else {
                 geo.vertices[n].set(
@@ -878,150 +836,7 @@ function make_surface(object){
 
 
 
-function get_geos(dimensions, lwd){
-    if(dimensions == 2){
-        var square = function(object){
-            return(new THREE.PlaneBufferGeometry(0.3, 0.3));
-        };
-        var circle = function(object){
-            return(new THREE.CircleBufferGeometry(0.2, 32));
-        }
-        var ocircle = function(object){
-            return(new THREE.RingGeometry( 0.2-object.properties.lwd/25, 0.2, 32 ));
-            
-            // var shape = new THREE.Shape();
-            // shape.moveTo(-0.1, -0.1);
-            // shape.lineTo(0.1, -0.1);
-            // shape.lineTo(0.1, 0.1);
-            // shape.lineTo(-0.1, 0.1);
 
-            // var hole = new THREE.Path();
-            // hole.moveTo(-0.08, -0.08);
-            // hole.lineTo(0.08, -0.08);
-            // hole.lineTo(0.08, 0.08);
-            // hole.lineTo(-0.08, 0.08);
-
-            // shape.holes.push(hole);
-            // var extrudeSettings = {
-            //     steps: 1,
-            //     amount: 0.1,
-            //     bevelEnabled: false
-            // };
-            // var geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-            // return(geometry);
-        }
-        var osquare = function(object){
-            var lwd  = object.properties.lwd/25;
-            var size = 0.3;
-            var inner = Math.sqrt((Math.pow(size,2))/2);
-            var outer = Math.sqrt((Math.pow(size+lwd,2))/2);
-            var geo = new THREE.RingBufferGeometry(inner, outer, 4, 1);
-            geo.rotateZ( Math.PI/4 );
-            return(geo);
-        }
-        var line = function(length, width){
-            var geo = new THREE.PlaneGeometry( width*0.05, length );
-            geo.translate( 0, -length/2, 0 );
-            return(geo);
-        };
-        var arrow = function(length, width){
-            var geo = new THREE.Geometry();
-            geo.vertices.push(
-                new THREE.Vector3( 0, 0, 0 ),
-                new THREE.Vector3( width/2, length, 0 ),
-                new THREE.Vector3( -width/2, length, 0 )
-            );
-            geo.faces.push( new THREE.Face3( 0, 1, 2 ) );
-            return(geo);
-        };
-    }
-    if(dimensions == 3){
-        var circle = function(){
-            return(new THREE.SphereBufferGeometry(0.2, 25, 25));
-        }
-        var square = function(){
-            return(new THREE.BoxBufferGeometry( 0.3, 0.3, 0.3 ));
-        };
-        var line = function(length, width){
-            var geo = new THREE.CylinderGeometry( width*0.025, width*0.025, length, 32 );
-            geo.translate( 0, -length/2, 0 );
-            return(geo);
-        };
-        var arrow = function(length, width){
-            var geo = new THREE.ConeGeometry( width/2, length, 32 );
-            geo.translate( 0, -length/2, 0 );
-            return(geo);
-        };
-        var osquare = function(object){
-            var size = 0.3;
-            var lwd  = object.properties.lwd/25;
-            var geo = new THREE.Geometry();
-            var lims = [-size/2-lwd/4, size/2+lwd/4];
-
-            // Draw lines
-            for(var i=0; i<2; i++){
-              for(var j=0; j<2; j++){
-                var line = line_geo3D([lims[i], 
-                                       lims[j],
-                                       lims[0]], 
-                                      [lims[i], 
-                                       lims[j],
-                                       lims[1]], 
-                                       lwd, false, lwd/2, 0, true);
-                geo.merge(line);
-              }
-            }
-            for(var i=0; i<2; i++){
-              for(var j=0; j<2; j++){
-                var line = line_geo3D([lims[0], 
-                                       lims[i],
-                                       lims[j]], 
-                                      [lims[1], 
-                                       lims[i],
-                                       lims[j]], 
-                                       lwd, false, lwd/2, 0, true);
-                geo.merge(line);
-              }
-            }
-            for(var i=0; i<2; i++){
-              for(var j=0; j<2; j++){
-                var line = line_geo3D([lims[i], 
-                                       lims[0],
-                                       lims[j]], 
-                                      [lims[i], 
-                                       lims[1],
-                                       lims[j]], 
-                                       lwd, false, lwd/2, 0, true);
-                geo.merge(line);
-              }
-            }
-
-            // Add corner pieces
-            for(var i=0; i<2; i++){
-              for(var j=0; j<2; j++){
-                for(var k=0; k<2; k++){
-                  var corner = new THREE.BoxGeometry( lwd/2, lwd/2, lwd/2 );
-                  corner.translate(lims[i], lims[j], lims[k]);
-                  geo.merge(corner);
-                }
-              }
-            }
-            
-            geo.mergeVertices();
-            geo = new THREE.BufferGeometry().fromGeometry(geo);
-            return(geo);
-        };
-        var ocircle = circle;
-    }
-    return({
-        square:  square,
-        osquare: osquare,
-        circle:  circle,
-        ocircle: ocircle,
-        line:    line,
-        arrow:   arrow
-    })
-}
 
 function make_textobject(object){
 
@@ -1046,7 +861,7 @@ function make_textobject(object){
                                    object.alignment,
                                    object.offset,
                                    object.properties.color);
-        object.viewport.labels.push(textobject);
+        object.scene.labels.push(textobject);
     }
     if(object.rendering == "html"){
         var textobject = make_htmltext(object);
@@ -1155,8 +970,126 @@ function lineMeshSegments(geo, mat, lwd){
 
 }
 
+function breakup_mesh(full_mesh){
+
+    // Make a group for the new broken mesh
+    var broken_mesh = new THREE.Group();
+
+    // Get the geometry
+    var geo = full_mesh.geometry;
+    if(!geo.isBufferGeometry){
+        geo = new THREE.BufferGeometry().fromGeometry(geo);
+    }
+
+    // Get the material
+    var mat = clone_material(full_mesh.material);
+
+    // Break apart the geometry
+    for(var i=0; i<(geo.attributes.position.count/3); i++){
+    
+        var x_mean = (geo.attributes.position.array[i*9] + geo.attributes.position.array[i*9+3] + geo.attributes.position.array[i*9+6])/3
+        var y_mean = (geo.attributes.position.array[i*9+1] + geo.attributes.position.array[i*9+4] + geo.attributes.position.array[i*9+7])/3
+        var z_mean = (geo.attributes.position.array[i*9+2] + geo.attributes.position.array[i*9+5] + geo.attributes.position.array[i*9+8])/3
+        var g = new THREE.BufferGeometry();
+        var v = new Float32Array( [
+            geo.attributes.position.array[i*9] - x_mean,
+            geo.attributes.position.array[i*9+1] - y_mean,
+            geo.attributes.position.array[i*9+2] - z_mean,
+            geo.attributes.position.array[i*9+3] - x_mean,
+            geo.attributes.position.array[i*9+4] - y_mean,
+            geo.attributes.position.array[i*9+5] - z_mean,
+            geo.attributes.position.array[i*9+6] - x_mean,
+            geo.attributes.position.array[i*9+7] - y_mean,
+            geo.attributes.position.array[i*9+8] - z_mean
+        ] );
+        g.addAttribute( 'position', new THREE.BufferAttribute( v, 3 ) );
+        var c = new Float32Array( [
+            geo.attributes.color.array[i*9],
+            geo.attributes.color.array[i*9+1],
+            geo.attributes.color.array[i*9+2],
+            geo.attributes.color.array[i*9+3],
+            geo.attributes.color.array[i*9+4],
+            geo.attributes.color.array[i*9+5],
+            geo.attributes.color.array[i*9+6],
+            geo.attributes.color.array[i*9+7],
+            geo.attributes.color.array[i*9+8]
+        ] );
+        g.addAttribute( 'color', new THREE.BufferAttribute( c, 3 ) );
+        var n = new Float32Array( [
+            geo.attributes.normal.array[i*9],
+            geo.attributes.normal.array[i*9+1],
+            geo.attributes.normal.array[i*9+2],
+            geo.attributes.normal.array[i*9+3],
+            geo.attributes.normal.array[i*9+4],
+            geo.attributes.normal.array[i*9+5],
+            geo.attributes.normal.array[i*9+6],
+            geo.attributes.normal.array[i*9+7],
+            geo.attributes.normal.array[i*9+8]
+        ] );
+        g.addAttribute( 'normal', new THREE.BufferAttribute( n, 3 ) );
+        
+        // Set clipping
+        var mesh = new THREE.Mesh( g, mat );
+        mesh.position.set(x_mean, y_mean, z_mean);
+        broken_mesh.add(mesh);
+
+    }
+    
+    // Return the mesh as a new group
+    return(broken_mesh);
+
+}
 
 
+function separate_sides(full_mesh){
+    
+    var mat = full_mesh.material;
+    var geo = full_mesh.geometry;
 
+    // mat.colorWrite = false;
+    mat.side = THREE.FrontSide;
+    var mat_cw = clone_material(mat);
+    // mat_cw.colorWrite = true;
+    mat_cw.side = THREE.BackSide;
+
+    var mesh  = THREE.SceneUtils.createMultiMaterialObject( 
+        geo,[mat,mat_cw]
+    );
+
+    return(mesh);
+
+}
+
+
+function remove_self_transparency(full_mesh){
+    
+    var mat = full_mesh.material;
+    var geo = full_mesh.geometry;
+
+    mat.colorWrite = false;
+    // mat.side = THREE.FrontSide;
+    var mat_cw = clone_material(mat);
+    mat_cw.colorWrite = true;
+    // mat_cw.side = THREE.BackSide;
+
+    var mesh  = THREE.SceneUtils.createMultiMaterialObject( 
+        geo,[mat,mat_cw]
+    );
+
+    return(mesh);
+
+}
+
+
+function clone_material(material){
+    
+    var mat = material.clone();
+    if(material.clippingPlanes){
+        mat.clippingPlanes = material.clippingPlanes;
+    }
+
+    return(mat);
+
+}
 
 

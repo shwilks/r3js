@@ -4,9 +4,9 @@
 \alias{text3js}
 \title{Add text to a 3js plot}
 \usage{
-text3js(data3js, x, y, z, text, size = 1, col = "inherit", label = NULL,
-  toggle = NULL, type = "geometry", alignment = "center", offset = c(0,
-  0), style = list(), ...)
+text3js(data3js, x, y, z, text, size = 1, col = "inherit",
+  label = NULL, toggle = NULL, type = "geometry",
+  alignment = "center", offset = c(0, 0), style = list(), ...)
 }
 \arguments{
 \item{...}{}

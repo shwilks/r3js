@@ -11,24 +11,14 @@ function median(values) {
         return (values[half-1] + values[half]) / 2.0;
 }
 
-function addGrid(viewport){
-    
-    var viewer    = viewport.viewer;
-    var scene     = viewport.scene;
-    var mapPoints = viewport.mapPoints;
 
-	var bbox    = new THREE.Box3().setFromObject(mapPoints);
+function generateGrid(viewport, plotPoints, dimensions){
+
+	var bbox    = new THREE.Box3().setFromObject(plotPoints);
 	var bsphere = bbox.getBoundingSphere();
 
 	// Get maximum distance from origin
-	var max_dist = bsphere.radius;
-	// var origin = new THREE.Vector3(0,0,0);
-	// for(var i=0; i<viewport.pt_objects.length; i++){
-	// 	var dist = viewport.pt_objects[i].getWorldPosition().distanceTo( origin );
-	// 	if(dist > max_dist){
-	// 		max_dist = dist;
-	// 	}
-	// }
+	var max_dist = bsphere.radius/viewport.scene.scale.x;
 
 	var min_val  = Math.floor(-max_dist);
 	var max_val  = Math.ceil(max_dist);
@@ -39,11 +29,11 @@ function addGrid(viewport){
 	bbox.max.y = max_val;
 	bbox.max.z = max_val;
 
-    var grid_geo   = new THREE.Geometry();
-	if(viewer.mapData.dimensions == 2){
+    // Set variables based on number of dimensions
+	if(dimensions == 2){
 		var num_grids = 1;
-		bbox.min.z = -1;
-		bbox.max.z = -1;
+		bbox.min.z = -20;
+		bbox.max.z = -20;
 		var range_x = bbox.max.x - bbox.min.x;
 		var range_y = bbox.max.y - bbox.min.y;
 		bbox.min.x = bbox.min.x - range_x;
@@ -56,6 +46,8 @@ function addGrid(viewport){
 		var grid_col = new THREE.Color( "#cccccc" );
 	}
 
+    // Generate the geometry
+    var grid_geo   = new THREE.Geometry();
 	for(var j=0; j<num_grids; j++){
 
 		if(j==2){ var k = 0;   }
@@ -97,16 +89,21 @@ function addGrid(viewport){
 
 	}
 
+    // Set the grid material
 	var grid_mat = new THREE.LineBasicMaterial( {
 		//color: new THREE.Color("#cccccc"),
 		vertexColors: THREE.VertexColors
 	} );
 	var grid = new THREE.LineSegments(grid_geo, grid_mat);
+
+	// Add to a grid holder
 	var grid_holder = new THREE.Object3D();
 	grid_holder.add(grid);
 
+
 	// Rotate grid and fade grid lines
-	if(viewer.mapData.dimensions == 3){
+	if(dimensions == 3){
+		
 		grid_holder.rotateX(Math.PI/16);
 		grid_holder.rotateY(-Math.PI/4);
 		grid_holder.updateMatrixWorld();
@@ -153,15 +150,12 @@ function addGrid(viewport){
 
 	    var grid_outline = new THREE.LineSegments(grid_outline_geo, grid_mat);
 	    grid_holder.add(grid_outline);
+
 	}
 
-	scene.add(grid_holder);
-	viewport.grid = grid_holder;
+	// Return the grid object
+	return(grid_holder);
 
-}
-
-function toggleGrid(viewport){
-	viewport.grid.visible = !viewport.grid.visible;
 }
 
 

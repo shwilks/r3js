@@ -30,8 +30,8 @@ function bind_point_movement(viewport){
     // Set variables    	
     var camera     = viewport.camera;
     var mouse      = viewport.mouse;
-	var plotPoints = viewport.mapPoints;
-	var dragObject = viewport.dragObject;
+	  var plotPoints = viewport.mapPoints;
+	  var dragObject = viewport.dragObject;
     
     // Store current point position
     var orig_position = dragObject.position.clone();

@@ -4,7 +4,8 @@
 \alias{box3js}
 \title{Add a box to an r3js plot}
 \usage{
-box3js(data3js, sides = c("x", "y", "z"), dynamic = TRUE, ...)
+box3js(data3js, sides = c("x", "y", "z"), dynamic = TRUE,
+  col = "grey50", ...)
 }
 \arguments{
 \item{type}{}

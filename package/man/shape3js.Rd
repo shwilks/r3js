@@ -4,8 +4,8 @@
 \alias{shape3js}
 \title{Add a generic shape to an 3js plot}
 \usage{
-shape3js(data3js, vertices, faces, col = "black", highlight, label = NULL,
-  toggle = NULL, ...)
+shape3js(data3js, vertices, faces, col = "black", highlight,
+  label = NULL, toggle = NULL, ...)
 }
 \arguments{
 \item{...}{}

@@ -4,9 +4,8 @@
 \alias{axis3js}
 \title{Add axes to an r3js plot}
 \usage{
-axis3js(data3js, side, loc = "front", lims = "--", at = NULL,
-  labels = NULL, title = NULL, lwd = 1, tcl = 0.2, mgp = c(3, 1, 0),
-  mat = "basic", cex.axis = 1, ...)
+axis3js(data3js, side, at = NULL, labels = NULL, cornerside = "f",
+  ...)
 }
 \arguments{
 \item{at}{}

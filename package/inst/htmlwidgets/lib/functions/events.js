@@ -1,9 +1,16 @@
 
 function bind_events(viewport){
 
+    // Set variables
+    viewport.mouse       = new THREE.Vector2();
+    viewport.mouse.down  = false;
+    viewport.mouse.over  = false;
+    viewport.touch       = {num:0};
+
     // Add some general event listeners
     window.addEventListener("resize", function(){ 
         viewport.camera.resize();
+        viewport.render();
     });
 
     // Function to get mouse position
@@ -26,6 +33,7 @@ function bind_events(viewport){
         this.mouse.deltaY = mouse.y - this.mouse.y;
         this.mouse.x = mouse.x;
         this.mouse.y = mouse.y;
+        this.raytraceNeeded = true;
     }
     viewport.addEventListener("mousemove", viewportMouseMove);
 
@@ -77,11 +85,11 @@ function bind_events(viewport){
     // Add mouse down and up listeners
     function viewportMouseDown(event) {
         //event.preventDefault();
-        document.activeElement.blur();
         this.mouse.down  = true;
         this.mouse.event = event;
     }
     function viewportMouseUp(event) {
+        document.activeElement.blur();
         this.mouse.down  = false;
         this.mouse.event = event;
     }
@@ -143,7 +151,7 @@ function bind_events(viewport){
       this.mouse.over = false;
       this.mouse.down = false;
       if(viewport.intersected){
-        dehover_point(viewport.intersected);
+        viewport.dehover_point(viewport.intersected[0].object);
         viewport.intersected = null;
       }
       viewport.render();

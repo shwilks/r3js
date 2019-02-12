@@ -8,19 +8,27 @@ dependencies:
     script:
       - threejs/three.min.js
       - threejs/plugins/Detector.js
+      - threejs/plugins/PLYExporter.js
       - threejs/renderers/CSS2DRenderer_r3js.js
       - threejs/fonts/helvetiker_regular.typeface.js
+      - threejs/utils/SceneUtils.js
       - init.js
       - functions/grid.js
       - functions/buttons.js
       - functions/navigation.js
-      - functions/highlight_functions.js
+      - functions/highlight.js
       - functions/save_img.js
-      - functions/graphics.js
       - functions/camera.js
       - functions/viewer.js
       - functions/plotting.js
       - functions/legend.js
       - functions/events.js
-      - functions/axes.js
       - functions/move.js
+      - functions/raytrace.js
+      - functions/scene.js
+      - functions/renderer.js
+      - functions/lines.js
+      - functions/points.js
+      - functions/dynamic.js
+      - functions/toggle.js
+      - functions/api.js

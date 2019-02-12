@@ -5,7 +5,7 @@
 \title{Plot r3js data}
 \usage{
 r3js(data3js, width = NULL, height = NULL, elementId = NULL,
-  rotation = c(-45, 0, 0), zoom = 1, translation = c(0, 0, 0),
+  rotation = NULL, zoom = NULL, translation = NULL,
   show_rotation = FALSE)
 }
 \description{

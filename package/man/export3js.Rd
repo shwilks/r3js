@@ -2,7 +2,7 @@
 % Please edit documentation in R/3JSsetup.R
 \name{export3js}
 \alias{export3js}
-\title{Export a r3js plot}
+\title{Export an r3js plot}
 \usage{
 export3js(data3js, file, title = "r3js plot", ...)
 }

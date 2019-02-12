@@ -13,9 +13,9 @@ function addButtons(viewport){
     viewport.btns = btn_holder;
 
     // Create function to make buttons
-    function createButton(title,
-    	                  symbol,
-    	                  event){
+    var createButton = function(title,
+    	                        symbol,
+    	                        event){
 	    var btn = document.createElement( 'div' );
 	    btn.classList.add("glyph-btn");
 	    btn.classList.add('not-selectable');
@@ -25,17 +25,12 @@ function addButtons(viewport){
 	    btn_holder.appendChild(btn);
 	    return(btn);
 	}
+	viewport.btns.createButton = createButton;
 
 	// Create button to show viewer info
 	function show_info(){
-		var rotation = {x: viewport.plotHolder.rotation._x*180,
-		                y: viewport.plotHolder.rotation._y*180,
-		                z: viewport.plotHolder.rotation._z*180};
-		console.log([
-			rotation.x.toFixed(4),
-			rotation.y.toFixed(4),
-			rotation.z.toFixed(4),
-			]);
+		viewport.infoDiv.update(true);
+		viewport.infoDiv.toggle();
 	}
 	var grid_btn = createButton("Show info",
 		                        "<div style='font-family:viewerglyphs'>d</div>",
@@ -44,6 +39,10 @@ function addButtons(viewport){
 
 	// Create button to re-center plot
     function btn_centerMap(){
+    	viewport.scene.resetTransformation();
+    	viewport.scene.showhideDynamics(viewport.camera);
+    	viewport.sceneChange = true;
+    	viewport.infoDiv.update();
     }
 	var centerMap_btn = createButton("Reset orientation",
 		                             "<div style='font-family:viewerglyphs'>c</div>",

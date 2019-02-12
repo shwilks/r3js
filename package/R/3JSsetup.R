@@ -210,61 +210,137 @@ background3js <- function(data3js,
 #' @export
 #'
 #' @examples
+# Make axis data
 axis3js <- function(data3js,
                     side,
-                    loc    = "front",
-                    lims   = "--",
                     at     = NULL,
                     labels = NULL,
-                    title  = NULL,
-                    lwd    = 1,
-                    tcl    = 0.2,
-                    mgp    = c(3, 1, 0),
-                    mat    = "basic",
-                    cex.axis = 1,
+                    cornerside = "f",
                     ...){
 
-  # Convert side to numeric value
-  side <- match(side, c("x","y","z"))
-
-  # Use pretty values if at is null
+  # Set locations of tick marks
   if(is.null(at)){
-    at <- pretty_axis(data3js$lims[[side]])
+      at <- pretty_axis(data3js$lims[[match(side, c("x", "y", "z"))]])
   }
 
   # Use number labels if none supplie
   if(is.null(labels)){
-    labels <- as.character(at)
+      labels <- as.character(at)
   }
 
+  for(a in c(1,2)){
+    for(b in c(1,2)){
+      for(n in seq_along(labels)){
+        ap <- c("-", "+")[a]
+        bp <- c("-", "+")[b]
 
-  # Make axis data
-  axis3js <- list()
-  axis3js$at         <- at
-  axis3js$labels     <- labels
-  axis3js$title      <- jsonlite::unbox(title)
-  axis3js$properties <- material3js(mat = mat, ...)
-  axis3js$lwd        <- lwd
-  axis3js$tcl        <- jsonlite::unbox(tcl)
-  axis3js$loc        <- loc
-  axis3js$cex        <- cex.axis
-  axis3js$mgp        <- mgp
+        if(side == "x"){
+          x <- at[n]
+          y <- data3js$lims[[2]][a]+(a-1.5)*0.08
+          z <- data3js$lims[[3]][b]+(b-1.5)*0.08
+          cornercode <- paste0("x",ap,bp,cornerside)
+        }
+        if(side == "y"){
+          x <- data3js$lims[[1]][a]+(a-1.5)*0.08
+          y <- at[n]
+          z <- data3js$lims[[3]][b]+(b-1.5)*0.08
+          cornercode <- paste0(ap,"y",bp,cornerside)
+        }
+        if(side == "z"){
+          x <- data3js$lims[[1]][b]+(b-1.5)*0.08
+          y <- data3js$lims[[2]][a]+(a-1.5)*0.08
+          z <- at[n]
+          cornercode <- paste0(ap,bp,"z",cornerside)
+        }
 
-  # Break down axis sides
-  axis3js$dim  <- side - 1
-  axis3js$lims <- c(c(0,1)[match(substr(lims, 1, 1), c("-","+"))],
-                    c(0,1)[match(substr(lims, 2, 2), c("-","+"))])
+        data3js <- text3js(data3js,
+                           x = x,
+                           y = y,
+                           z = z,
+                           text = labels[n],
+                           corners = cornercode,
+                           col = "black",
+                           type = "html",
+                           ...)
+      }
+    }
+  }
 
-  # Add to plot data
-  data3js$axes[[length(data3js$axes)+1]] <- axis3js
-
-  # Save the location of the tick marks
-  data3js$ticks[[side]] <- at
-
-  # Return plot data
+  # Return the update plotting object
   data3js
 
 }
+
+
+
+#' Add text to a margin
+#'
+#' @param data3js
+#' @param text
+#' @param side
+#' @param at
+#' @param labels
+#' @param cornerside
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+mtext3js <- function(data3js,
+                     text,
+                     side,
+                     line   = 0,
+                     at     = 0.5,
+                     cornerside = "f",
+                     ...){
+
+  # Add text to each corner
+  for(a in c(1,2)){
+    for(b in c(1,2)){
+
+      ap <- c("-", "+")[a]
+      bp <- c("-", "+")[b]
+
+      if(side == "x"){
+        x <- at*data3js$aspect[1]
+        y <- (a-1)*data3js$aspect[2]+(a-1.5)*0.1*line
+        z <- (b-1)*data3js$aspect[3]+(b-1.5)*0.1*line
+        cornercode <- paste0("x",ap,bp,cornerside)
+      }
+      if(side == "y"){
+        x <- (a-1)*data3js$aspect[1]+(a-1.5)*0.1*line
+        y <- at*data3js$aspect[2]
+        z <- (b-1)*data3js$aspect[3]+(b-1.5)*0.1*line
+        cornercode <- paste0(ap,"y",bp,cornerside)
+      }
+      if(side == "z"){
+        x <- (b-1)*data3js$aspect[1]+(b-1.5)*0.1*line
+        y <- (a-1)*data3js$aspect[2]+(a-1.5)*0.1*line
+        z <- at*data3js$aspect[3]
+        cornercode <- paste0(ap,bp,"z",cornerside)
+      }
+
+      data3js <- text3js(data3js,
+                         x         = x,
+                         y         = y,
+                         z         = z,
+                         text      = text,
+                         corners   = cornercode,
+                         col       = "black",
+                         type      = "html",
+                         normalise = FALSE,
+                         ...)
+
+    }
+  }
+
+  # Return the update plotting object
+  data3js
+
+}
+
+
 
 #' Add a box to an r3js plot
 #'
@@ -278,6 +354,7 @@ axis3js <- function(data3js,
 box3js <- function(data3js,
                    sides = c("x","y","z"),
                    dynamic = TRUE,
+                   col = "grey50",
                    ...){
 
   # Expand vector of sides
@@ -308,6 +385,7 @@ box3js <- function(data3js,
                             y = rep(data3js$lims[[2]][i], 2),
                             z = rep(data3js$lims[[3]][j], 2),
                             faces = faces,
+                            col = col,
                             ...)
       }
     }
@@ -329,6 +407,7 @@ box3js <- function(data3js,
                             y = data3js$lims[[2]],
                             z = rep(data3js$lims[[3]][j], 2),
                             faces = faces,
+                            col = col,
                             ...)
       }
     }
@@ -350,6 +429,7 @@ box3js <- function(data3js,
                             y = rep(data3js$lims[[2]][j], 2),
                             z = data3js$lims[[3]],
                             faces = faces,
+                            col = col,
                             ...)
       }
     }
@@ -378,7 +458,7 @@ box3js <- function(data3js,
 grid3js <- function(data3js,
                     sides = c("x","y","z"),
                     axes  = c("x","y","z"),
-                    at, dynamic = TRUE,
+                    at = NULL, dynamic = TRUE,
                     col = "grey80",
                     ...){
 
@@ -414,7 +494,7 @@ grid3js <- function(data3js,
 }
 
 
-#' Export a r3js plot
+#' Export an r3js plot
 #'
 #' Exports a r3js plot to an external html file.
 #'
@@ -433,6 +513,29 @@ export3js <- function(data3js,
   # Create the widget
   widget <- r3js(data3js = data3js,
                  ...)
+
+  # Export the widget
+  export3jsWidget(widget = widget,
+                  file   = file,
+                  title  = title)
+
+}
+
+
+#' Export an r3js html widget
+#'
+#' Export an r3js html widget to an external html file.
+#'
+#' @param widget The
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+export3jsWidget <- function(widget,
+                            file,
+                            title = "r3js plot") {
 
   # Check file has .html extension
   if(!grepl("\\.html$", file)){
@@ -456,4 +559,27 @@ export3js <- function(data3js,
 }
 
 
+#' Create a clipping plane object
+#'
+#' This function can be used to create a clipping plane that can then be applied
+#' to individual objects in a plot
+#'
+#' @param normal The normal of the plane
+#' @param coplanarPoint A point coplanar to the plane
+#' @param coplanarPoints A matrix of 3 points coplanar to the plane
+#'
+#' @return Returns and r3js clipping plane object
+#' @export
+#'
+#' @examples
+clippingPlane3js <- function(normal         = NULL,
+                             coplanarPoint  = NULL,
+                             coplanarPoints = NULL){
 
+  clippingPlane <- c()
+  if(!is.null(normal))        { clippingPlane$normal         = normal         }
+  if(!is.null(coplanarPoint)) { clippingPlane$coplanarPoint  = coplanarPoint  }
+  if(!is.null(coplanarPoints)){ clippingPlane$coplanarPoints = coplanarPoints }
+  clippingPlane
+
+}

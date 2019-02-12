@@ -10,16 +10,17 @@ r3js <- function(data3js,
                  width       = NULL,
                  height      = NULL,
                  elementId   = NULL,
-                 rotation    = c(-45,0,0),
-                 zoom        = 1,
-                 translation = c(0,0,0),
+                 rotation    = NULL,
+                 zoom        = NULL,
+                 translation = NULL,
                  show_rotation = FALSE) {
 
   # Create a list that contains the settings
+  if(!is.null(rotation))    { data3js$scene$rotation    <- rotation    }
+  if(!is.null(zoom))        { data3js$scene$zoom        <- zoom        }
+  if(!is.null(translation)) { data3js$scene$translation <- translation }
+
   settings <- list(
-    rotation      = rotation,
-    zoom          = zoom,
-    translation   = translation,
     show_rotation = show_rotation
   )
 
@@ -86,7 +87,7 @@ renderR3js <- function(expr, env = parent.frame(), quoted = FALSE) {
 debug3js <- function(data3js){
 
   write(x    = paste0("json_data = '", jsonlite::toJSON(data3js), "';\n\nvar plotData = JSON.parse(json_data);"),
-        file = "~/Desktop/LabBook/r3js/package/inst/htmlwidgets/data/bug.js")
+        file = "~/Dropbox/LabBook/r3js/package/inst/htmlwidgets/data/bug.js")
 
 }
 

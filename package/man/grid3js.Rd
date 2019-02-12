@@ -4,8 +4,8 @@
 \alias{grid3js}
 \title{Add axis grids to an r3js plot}
 \usage{
-grid3js(data3js, sides = c("x", "y", "z"), axes = c("x", "y", "z"), at,
-  dynamic = TRUE, col = "grey80", ...)
+grid3js(data3js, sides = c("x", "y", "z"), axes = c("x", "y", "z"),
+  at = NULL, dynamic = TRUE, col = "grey80", ...)
 }
 \arguments{
 \item{...}{}

@@ -8,7 +8,9 @@ material3js(mat = "phong", col = "black", opacity = 1, xpd = TRUE,
   lwd = 1, interactive = NULL, moveable = NULL, label = NULL,
   toggle = NULL, dimensions = NULL, depthWrite = NULL,
   polygonOffset = NULL, polygonOffsetFactor = NULL,
-  polygonOffsetUnits = NULL, faces = NULL)
+  polygonOffsetUnits = NULL, faces = NULL, corners = NULL,
+  rotation = NULL, normalise = NULL, clippingPlanes = NULL,
+  doubleSide = FALSE)
 }
 \arguments{
 \item{opacity}{}

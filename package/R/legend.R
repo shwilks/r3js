@@ -75,8 +75,8 @@ legend3js <- function(data3js,
   legendData$style <- do.call(style3js, legend_style_args)
 
 
-  # # Add the fill colors
-  # legendObject$fill   <- fill
+  # Add the fill colors
+  legendData$fill   <- fill
 
   # # Add points to the legend
   # legendObject$points <- list()

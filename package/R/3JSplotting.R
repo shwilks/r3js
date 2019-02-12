@@ -21,7 +21,16 @@ allargs <- function(orig_values = FALSE) {
 }
 
 
-# Function to generate pretty axis labels that don't go outside range of x
+#' Function to generate pretty axis labels that don't go outside range of x
+#'
+#' @param x
+#' @param n
+#' @param include_lims
+#'
+#' @return
+#' @export
+#'
+#' @examples
 pretty_axis <- function(x, n = 5, include_lims = TRUE){
 
   prettyx <- pretty(x, n = 5)
@@ -49,20 +58,25 @@ pretty_axis <- function(x, n = 5, include_lims = TRUE){
 #'
 #' @examples
 plot3js <- function(x,y,z,
+                    xlim = extendrange(x),
+                    ylim = extendrange(y),
+                    zlim = extendrange(z),
+                    xlab = NULL,
+                    ylab = NULL,
+                    zlab = NULL,
+                    axisline = 3,
                     aspect = c(1, 1, 1),
                     fixed_aspect = FALSE,
                     show_plot  = TRUE,
                     label_axes = TRUE,
                     show_grid  = TRUE,
+                    grid_lwd   = 1,
+                    axis_lwd   = grid_lwd,
+                    box_lwd    = grid_lwd,
                     ...){
 
   # Setup plot
   data3js <- plot3js.new()
-
-  # Define plotting space
-  xlim <- extendrange(x)
-  ylim <- extendrange(y)
-  zlim <- extendrange(z)
 
   if(fixed_aspect){
     aspect <- c(1,
@@ -77,48 +91,77 @@ plot3js <- function(x,y,z,
                             aspect = aspect)
 
   # Add a box
-  data3js <- box3js(data3js)
+  data3js <- box3js(data3js, lwd = box_lwd)
 
   # Add axes
-  prettyx <- pretty(xlim, n = 8)
-  prettyy <- pretty(ylim, n = 8)
-  prettyz <- pretty(zlim, n = 8)
-
-  xaxs_ticks <- prettyx[prettyx < max(xlim) & prettyx > min(xlim)]
-  yaxs_ticks <- prettyy[prettyy < max(ylim) & prettyy > min(ylim)]
-  zaxs_ticks <- prettyz[prettyz < max(zlim) & prettyz > min(zlim)]
+  xaxs_ticks <- pretty_axis(xlim, n = 8)
+  yaxs_ticks <- pretty_axis(ylim, n = 8)
+  zaxs_ticks <- pretty_axis(zlim, n = 8)
 
   if(label_axes){
     data3js <- axis3js(data3js,
                        side = "x",
-                       loc = "front",
+                       cornerside = "f",
                        at  = xaxs_ticks,
-                       lwd = 1)
+                       lwd = axis_lwd)
 
     data3js <- axis3js(data3js,
                        side = "y",
-                       loc = "front",
+                       cornerside = "f",
                        at  = yaxs_ticks,
-                       lwd = 1)
+                       lwd = axis_lwd)
 
     data3js <- axis3js(data3js,
                        side = "z",
-                       loc = "front",
+                       cornerside = "f",
                        at  = zaxs_ticks,
-                       lwd = 1)
+                       lwd = axis_lwd)
+  }
+
+  # Add margin text
+  if(!is.null(xlab)){
+    data3js <- mtext3js(data3js,
+                        text       = xlab,
+                        side       = "x",
+                        line       = axisline,
+                        at         = 0.5,
+                        cornerside = "f")
+  }
+  if(!is.null(ylab)){
+    data3js <- mtext3js(data3js,
+                        text       = ylab,
+                        side       = "y",
+                        line       = axisline,
+                        at         = 0.5,
+                        cornerside = "f")
+  }
+  if(!is.null(zlab)){
+    data3js <- mtext3js(data3js,
+                        text       = zlab,
+                        side       = "z",
+                        line       = axisline,
+                        at         = 0.5,
+                        cornerside = "f")
   }
 
   # Add a grid
   if(show_grid){
-    data3js <- grid3js(data3js)
+    data3js <- grid3js(data3js,
+                       lwd = grid_lwd)
   }
 
   # Add points
-  data3js <- points3js(data3js,
-                       x = x,
-                       y = y,
-                       z = z,
-                       ...)
+  if(!missing(x)
+     && !missing(y)
+     && !missing(z)){
+
+    data3js <- points3js(data3js,
+                         x = x,
+                         y = y,
+                         z = z,
+                         ...)
+
+  }
 
   # Create plot
   widget <- r3js(data3js)
@@ -153,10 +196,19 @@ material3js <- function(mat = "phong",
                         toggle = NULL,
                         dimensions = NULL,
                         depthWrite = NULL,
+                        depthTest = NULL,
                         polygonOffset = NULL,
                         polygonOffsetFactor = NULL,
                         polygonOffsetUnits = NULL,
-                        faces = NULL){
+                        faces     = NULL,
+                        corners   = NULL,
+                        rotation  = NULL,
+                        normalise = NULL,
+                        clippingPlanes = NULL,
+                        doubleSide = TRUE,
+                        renderSidesSeparately = NULL,
+                        removeSelfTransparency = NULL,
+                        breakupMesh = NULL){
 
   props <- list(mat         = jsonlite::unbox(mat),
                 color       = convertCol3js(col),
@@ -165,16 +217,25 @@ material3js <- function(mat = "phong",
                 lwd         = jsonlite::unbox(lwd),
                 transparent = jsonlite::unbox(opacity != 1.0))
 
-  if(!is.null(dimensions))  { props$dimensions  <- jsonlite::unbox(dimensions)  }
-  if(!is.null(label))       { props$label       <- jsonlite::unbox(label)       }
-  if(!is.null(interactive)) { props$interactive <- jsonlite::unbox(interactive) }
-  if(!is.null(moveable))    { props$draggable   <- jsonlite::unbox(moveable)    }
-  if(!is.null(toggle))      { props$toggle      <- jsonlite::unbox(toggle)      }
-  if(!is.null(depthWrite))  { props$depthWrite  <- jsonlite::unbox(depthWrite)  }
-  if(!is.null(polygonOffset)){ props$polygonOffset <- jsonlite::unbox(polygonOffset) }
-  if(!is.null(polygonOffsetFactor)){ props$polygonOffsetFactor <- jsonlite::unbox(polygonOffsetFactor) }
-  if(!is.null(polygonOffsetUnits)){  props$polygonOffsetUnits  <- jsonlite::unbox(polygonOffsetUnits) }
-  if(!is.null(faces)){  props$faces  <- faces }
+  if(!is.null(dimensions))             { props$dimensions             <- jsonlite::unbox(dimensions)             }
+  if(!is.null(label))                  { props$label                  <- jsonlite::unbox(label)                  }
+  if(!is.null(interactive))            { props$interactive            <- jsonlite::unbox(interactive)            }
+  if(!is.null(moveable))               { props$draggable              <- jsonlite::unbox(moveable)               }
+  if(!is.null(toggle))                 { props$toggle                 <- jsonlite::unbox(toggle)                 }
+  if(!is.null(depthWrite))             { props$depthWrite             <- jsonlite::unbox(depthWrite)             }
+  if(!is.null(depthTest))              { props$depthTest              <- jsonlite::unbox(depthTest)              }
+  if(!is.null(polygonOffset))          { props$polygonOffset          <- jsonlite::unbox(polygonOffset)          }
+  if(!is.null(polygonOffsetFactor))    { props$polygonOffsetFactor    <- jsonlite::unbox(polygonOffsetFactor)    }
+  if(!is.null(polygonOffsetUnits))     { props$polygonOffsetUnits     <- jsonlite::unbox(polygonOffsetUnits)     }
+  if(!is.null(faces))                  { props$faces                  <- faces                                   }
+  if(!is.null(corners))                { props$corners                <- corners                                 }
+  if(!is.null(rotation))               { props$rotation               <- (rotation/180)*pi                       }
+  if(!is.null(normalise))              { props$normalise              <- jsonlite::unbox(normalise)              }
+  if(!is.null(clippingPlanes))         { props$clippingPlanes         <- clippingPlanes                          }
+  if(!is.null(renderSidesSeparately))  { props$renderSidesSeparately  <- jsonlite::unbox(renderSidesSeparately)  }
+  if(!is.null(removeSelfTransparency)) { props$removeSelfTransparency <- jsonlite::unbox(removeSelfTransparency) }
+  if(!is.null(breakupMesh))            { props$breakupMesh            <- jsonlite::unbox(breakupMesh)            }
+  props$doubleSide <- jsonlite::unbox(doubleSide)
 
 
   # Return properties
@@ -657,7 +718,7 @@ axislines3js <- function(data3js, x, y, z, ax, lwd = 0.9, col = "grey80", ...){
                         x = line_data[[1]],
                         y = line_data[[2]],
                         z = line_data[[3]],
-                        lwd = 0.9,
+                        lwd = lwd,
                         col = col,
                         ...)
   }
@@ -682,7 +743,7 @@ axislines3js <- function(data3js, x, y, z, ax, lwd = 0.9, col = "grey80", ...){
 sidegrid3js <- function(data3js,
                         ax,
                         side,
-                        at,
+                        at = NULL,
                         col = "grey80",
                         dynamic = FALSE, ...){
 
@@ -691,10 +752,10 @@ sidegrid3js <- function(data3js,
   axnum <- match(ax, c("x","y","z"))
 
   # Set where the tick marks will be drawn
-  if(missing(at)){
+  if(is.null(at)){
     at <- data3js$ticks[[axnum]]
     if(is.null(at)){
-      pretty_axis(data3js$lims[[axnum]])
+      at <- pretty_axis(data3js$lims[[axnum]])
     }
   }
   grid_data[[axnum]] <- at
@@ -938,23 +999,6 @@ text3js <- function(data3js,
 
 }
 
-# legend3js <- function(position,
-#                       legend,
-#                       fill     = NULL,
-#                       border   = "black",
-#                       divstyle = list(),
-#                       lty,
-#                       lwd,
-#                       pch,
-#                       bty = "o",
-#                       bg = par("bg"),
-#                       box.lwd = par("lwd"),
-#                       box.lty = par("lty"),
-#                       box.col = par("fg"), pt.bg = NA, cex = 1, pt.cex = cex, pt.lwd = lwd,
-#                       xjust = 0, yjust = 1, x.intersp = 1, y.intersp = 1, adj = c(0,
-#                                                                                   0.5), text.width = NULL, text.col = par("col"), text.font = NULL,
-#                       merge = do.lines && has.pch, trace = FALSE, plot = TRUE,
-#                       ncol = 1, horiz = FALSE, title = NULL, inset = 0, xpd, title.col = text.col,
-#                       title.adj = 0.5, seg.len = 2)
+
 
 
