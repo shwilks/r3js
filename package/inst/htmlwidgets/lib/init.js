@@ -49,8 +49,8 @@ function r3js(container, plotData, settings){
 
     // Update visibility of dynamic components
     viewport.scene.showhideDynamics( viewport.camera );
-    
-    
+
+
     // Bind navigation functions
     bind_navigation(viewport);
 
@@ -68,7 +68,7 @@ function r3js(container, plotData, settings){
 
     // Add toggles
     addToggles(viewport);
-    
+
     // Run any resize functions
     for(var i=0; i<viewport.onResize.length; i++){
         viewport.onResize[i]();
@@ -77,10 +77,10 @@ function r3js(container, plotData, settings){
     // Animate the scene
     viewport.render();
     viewport.scene.render = function(){
-        viewport.render()
+        viewport.render();
     };
     function animate() {
-        
+
         if(viewport.raytraceNeeded || viewport.sceneChange){
             viewport.raytraceNeeded = false;
             viewport.raytrace();
@@ -92,12 +92,14 @@ function r3js(container, plotData, settings){
         requestAnimationFrame(animate);
 
     }
-    animate();
 
-    // Create legend
-    if(plotData.legend){
-      addLegend(viewport, plotData);  
-    }
+    // Call the rotation event listener
+    viewport.plotHolder.rotation.onChangeCallback();
+
+    // Start the animation
+    viewport.animate = animate;
+    viewport.render();
+    animate();
 
 }
 
