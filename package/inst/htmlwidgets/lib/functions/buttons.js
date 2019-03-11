@@ -21,8 +21,18 @@ function addButtons(viewport){
 	    btn.classList.add('not-selectable');
 	    btn.title = title;
 	    btn.innerHTML = symbol;
-	    btn.addEventListener('mousedown', event);
+	    btn.event = event;
+	    btn.addEventListener('mousedown', function(e){
+	    	e.stopPropagation();
+	    });
+	    btn.addEventListener('mouseup', function(e){
+	    	this.event();
+	    	e.stopPropagation();
+	    });
 	    btn_holder.appendChild(btn);
+	    btn.updateSymbol = function(symbol){
+	    	this.innerHTML = symbol;
+	    }
 	    return(btn);
 	}
 	viewport.btns.createButton = createButton;
@@ -38,15 +48,15 @@ function addButtons(viewport){
 
 
 	// Create button to re-center plot
-    function btn_centerMap(){
+    function btn_centerScene(){
     	viewport.scene.resetTransformation();
     	viewport.scene.showhideDynamics(viewport.camera);
     	viewport.sceneChange = true;
-    	viewport.infoDiv.update();
     }
-	var centerMap_btn = createButton("Reset orientation",
-		                             "<div style='font-family:viewerglyphs'>c</div>",
-		                             btn_centerMap);
+	var centerScene_btn = createButton("Reset orientation",
+		                               "<div style='font-family:viewerglyphs'>c</div>",
+		                               btn_centerScene);
+	viewport.btns.centerScene = centerScene_btn;
 
 	// Create button to download image
 	function btn_saveImg(){

@@ -6,13 +6,14 @@ dependencies:
     stylesheet:
       - styles/r3js.css
     script:
+      - init.js
       - threejs/three.min.js
       - threejs/plugins/Detector.js
       - threejs/plugins/PLYExporter.js
       - threejs/renderers/CSS2DRenderer_r3js.js
       - threejs/fonts/helvetiker_regular.typeface.js
       - threejs/utils/SceneUtils.js
-      - init.js
+      - threejs/utils/BufferGeometryUtils.js
       - functions/grid.js
       - functions/buttons.js
       - functions/navigation.js
@@ -32,3 +33,14 @@ dependencies:
       - functions/dynamic.js
       - functions/toggle.js
       - functions/api.js
+      - functions/glpoints.js
+      - functions/gllines.js
+      - functions/shaders.js
+      - functions/sprites.js
+      - threejs/lines/LineSegmentsGeometry.js
+      - threejs/lines/LineGeometry.js
+      - threejs/lines/WireframeGeometry2.js
+      - threejs/lines/LineMaterial.js
+      - threejs/lines/LineSegments2.js
+      - threejs/lines/Line2.js
+      - threejs/lines/Wireframe.js

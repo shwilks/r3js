@@ -64,11 +64,12 @@ plot3js <- function(x,y,z,
                     xlab = NULL,
                     ylab = NULL,
                     zlab = NULL,
+                    type = "p",
                     axisline = 3,
                     aspect = c(1, 1, 1),
                     fixed_aspect = FALSE,
                     show_plot  = TRUE,
-                    label_axes = TRUE,
+                    label_axes = "xyz",
                     show_grid  = TRUE,
                     grid_lwd   = 1,
                     axis_lwd   = grid_lwd,
@@ -98,19 +99,21 @@ plot3js <- function(x,y,z,
   yaxs_ticks <- pretty_axis(ylim, n = 8)
   zaxs_ticks <- pretty_axis(zlim, n = 8)
 
-  if(label_axes){
+  if(grepl("x", label_axes)){
     data3js <- axis3js(data3js,
                        side = "x",
                        cornerside = "f",
                        at  = xaxs_ticks,
                        lwd = axis_lwd)
-
+  }
+  if(grepl("y", label_axes)){
     data3js <- axis3js(data3js,
                        side = "y",
                        cornerside = "f",
                        at  = yaxs_ticks,
                        lwd = axis_lwd)
-
+  }
+  if(grepl("z", label_axes)){
     data3js <- axis3js(data3js,
                        side = "z",
                        cornerside = "f",
@@ -155,11 +158,21 @@ plot3js <- function(x,y,z,
      && !missing(y)
      && !missing(z)){
 
-    data3js <- points3js(data3js,
-                         x = x,
-                         y = y,
-                         z = z,
-                         ...)
+    if(type == "p"){
+      data3js <- points3js(data3js,
+                           x = x,
+                           y = y,
+                           z = z,
+                           ...)
+    }
+
+    if(type == "l"){
+      data3js <- lines3js(data3js,
+                          x = x,
+                          y = y,
+                          z = z,
+                          ...)
+    }
 
   }
 
@@ -190,6 +203,10 @@ material3js <- function(mat = "phong",
                         opacity = 1.0,
                         xpd = TRUE,
                         lwd = 1,
+                        lend = 0,
+                        ljoin = 0,
+                        dashSize = NULL,
+                        gapSize = NULL,
                         interactive = NULL,
                         moveable = NULL,
                         label = NULL,
@@ -204,8 +221,10 @@ material3js <- function(mat = "phong",
                         corners   = NULL,
                         rotation  = NULL,
                         normalise = NULL,
+                        poffset = NULL,
                         clippingPlanes = NULL,
                         doubleSide = TRUE,
+                        renderOrder = NULL,
                         renderSidesSeparately = NULL,
                         removeSelfTransparency = NULL,
                         breakupMesh = NULL){
@@ -215,26 +234,32 @@ material3js <- function(mat = "phong",
                 opacity     = jsonlite::unbox(opacity),
                 xpd         = jsonlite::unbox(xpd),
                 lwd         = jsonlite::unbox(lwd),
-                transparent = jsonlite::unbox(opacity != 1.0))
+                lend        = jsonlite::unbox(lend),
+                ljoin       = jsonlite::unbox(ljoin),
+                transparent = jsonlite::unbox(opacity < 1.0))
 
-  if(!is.null(dimensions))             { props$dimensions             <- jsonlite::unbox(dimensions)             }
-  if(!is.null(label))                  { props$label                  <- jsonlite::unbox(label)                  }
-  if(!is.null(interactive))            { props$interactive            <- jsonlite::unbox(interactive)            }
-  if(!is.null(moveable))               { props$draggable              <- jsonlite::unbox(moveable)               }
-  if(!is.null(toggle))                 { props$toggle                 <- jsonlite::unbox(toggle)                 }
-  if(!is.null(depthWrite))             { props$depthWrite             <- jsonlite::unbox(depthWrite)             }
-  if(!is.null(depthTest))              { props$depthTest              <- jsonlite::unbox(depthTest)              }
-  if(!is.null(polygonOffset))          { props$polygonOffset          <- jsonlite::unbox(polygonOffset)          }
-  if(!is.null(polygonOffsetFactor))    { props$polygonOffsetFactor    <- jsonlite::unbox(polygonOffsetFactor)    }
-  if(!is.null(polygonOffsetUnits))     { props$polygonOffsetUnits     <- jsonlite::unbox(polygonOffsetUnits)     }
-  if(!is.null(faces))                  { props$faces                  <- faces                                   }
-  if(!is.null(corners))                { props$corners                <- corners                                 }
-  if(!is.null(rotation))               { props$rotation               <- (rotation/180)*pi                       }
-  if(!is.null(normalise))              { props$normalise              <- jsonlite::unbox(normalise)              }
-  if(!is.null(clippingPlanes))         { props$clippingPlanes         <- clippingPlanes                          }
-  if(!is.null(renderSidesSeparately))  { props$renderSidesSeparately  <- jsonlite::unbox(renderSidesSeparately)  }
-  if(!is.null(removeSelfTransparency)) { props$removeSelfTransparency <- jsonlite::unbox(removeSelfTransparency) }
-  if(!is.null(breakupMesh))            { props$breakupMesh            <- jsonlite::unbox(breakupMesh)            }
+  if(!is.null(dimensions))                            { props$dimensions             <- jsonlite::unbox(dimensions)             }
+  if(!is.null(label))                                 { props$label                  <- jsonlite::unbox(label)                  }
+  if(!is.null(interactive) && interactive)            { props$interactive            <- jsonlite::unbox(interactive)            }
+  if(!is.null(moveable) && moveable)                  { props$draggable              <- jsonlite::unbox(moveable)               }
+  if(!is.null(toggle))                                { props$toggle                 <- jsonlite::unbox(toggle)                 }
+  if(!is.null(dashSize))                              { props$dashSize               <- jsonlite::unbox(dashSize)               }
+  if(!is.null(gapSize))                               { props$gapSize                <- jsonlite::unbox(gapSize)                }
+  if(!is.null(depthWrite))                            { props$depthWrite             <- jsonlite::unbox(depthWrite)             }
+  if(!is.null(depthTest))                             { props$depthTest              <- jsonlite::unbox(depthTest)              }
+  if(!is.null(polygonOffset))                         { props$polygonOffset          <- jsonlite::unbox(polygonOffset)          }
+  if(!is.null(polygonOffsetFactor))                   { props$polygonOffsetFactor    <- jsonlite::unbox(polygonOffsetFactor)    }
+  if(!is.null(polygonOffsetUnits))                    { props$polygonOffsetUnits     <- jsonlite::unbox(polygonOffsetUnits)     }
+  if(!is.null(faces))                                 { props$faces                  <- faces                                   }
+  if(!is.null(corners))                               { props$corners                <- corners                                 }
+  if(!is.null(rotation))                              { props$rotation               <- (rotation/180)*pi                       }
+  if(!is.null(normalise))                             { props$normalise              <- jsonlite::unbox(normalise)              }
+  if(!is.null(poffset))                               { props$poffset                <- poffset                                 }
+  if(!is.null(clippingPlanes))                        { props$clippingPlanes         <- clippingPlanes                          }
+  if(!is.null(renderOrder))                           { props$renderOrder            <- renderOrder                             }
+  if(!is.null(renderSidesSeparately) && opacity < 1)  { props$renderSidesSeparately  <- jsonlite::unbox(renderSidesSeparately)  }
+  if(!is.null(removeSelfTransparency) && opacity < 1) { props$removeSelfTransparency <- jsonlite::unbox(removeSelfTransparency) }
+  if(!is.null(breakupMesh) && opacity < 1)            { props$breakupMesh            <- jsonlite::unbox(breakupMesh)            }
   props$doubleSide <- jsonlite::unbox(doubleSide)
 
 
@@ -292,401 +317,6 @@ highlight3js <- function(data3js, highlight){
 }
 
 
-#' Add point to a 3js object
-#'
-#' @param data3js
-#' @param x
-#' @param y
-#' @param z
-#' @param size
-#' @param col
-#' @param ...
-#'
-point3js <- function(data3js,
-                     x, y, z,
-                     size,
-                     col,
-                     pch = 16,
-                     highlight,
-                     ...){
-
-  object <- c()
-  object$type <- "point"
-  if(pch == 0) { object$shape <- "osquare" }
-  if(pch == 1) { object$shape <- "ocircle" }
-  if(pch == 15){ object$shape <- "square"  }
-  if(pch == 16){ object$shape <- "circle"  }
-  object$size <- size
-  object$properties <- material3js(col = col, ...)
-  object$position <- c(x,y,z)
-
-  data3js$plot[[length(data3js$plot)+1]] <- object
-  data3js
-
-}
-
-
-#' Add a sphere of defined radius to an r3js plot
-#'
-#' @param data3js
-#' @param x
-#' @param y
-#' @param z
-#' @param radius
-#' @param col
-#' @param ...
-#'
-#' @return
-#' @export
-#'
-#' @examples
-sphere3js <- function(data3js,
-                      x, y, z,
-                      radius,
-                      col,
-                      highlight,
-                      ...) {
-
-  object <- c()
-  object$type       <- "sphere"
-  object$radius     <- radius
-  object$properties <- material3js(col = col, ...)
-  object$position   <- c(x,y,z)
-
-  # Add the object to a plot
-  data3js$plot[[length(data3js$plot)+1]] <- object
-
-  # Create the highlights object if requested
-  if(!missing(highlight)){
-    data3js <- highlight3js(data3js, highlight)
-  }
-
-  # Return the data
-  data3js
-
-}
-
-
-#' Add points to a 3js object
-#'
-#' @param data3js
-#' @param x
-#' @param y
-#' @param z
-#' @param size
-#' @param col
-#' @param ...
-#'
-#' @return
-#' @export
-#'
-#' @examples
-points3js <- function(data3js,
-                      x, y, z,
-                      size = 1,
-                      col  = "black",
-                      pch  = 16,
-                      highlight,
-                      label  = NULL,
-                      toggle = NULL,
-                      ...){
-
-  # Repeat arguments to match length of points
-  col    <- rep_len(col,    length(x))
-  size   <- rep_len(size,   length(x))
-  pch    <- rep_len(pch,    length(x))
-  if(!is.null(label)) { label  <- rep_len(label,  length(x)) }
-  if(!is.null(toggle)){ toggle <- rep_len(toggle, length(x)) }
-
-  # Create the points
-  for(n in 1:length(x)){
-      data3js <- point3js(data3js = data3js,
-                          x = x[n],
-                          y = y[n],
-                          z = z[n],
-                          size = size[n],
-                          col = col[n],
-                          pch = pch[n],
-                          label = label[n],
-                          toggle = toggle[n],
-                          ...)
-  }
-
-  # Create the highlights object if requested
-  if(!missing(highlight)){
-    data3js <- highlight3js(data3js, highlight)
-  }
-
-  # Return the updated object
-  data3js
-
-}
-
-
-#' Add a line to a 3js object
-#'
-#' @param data3js
-#' @param x0
-#' @param y0
-#' @param z0
-#' @param x1
-#' @param y1
-#' @param z1
-#' @param lwd
-#' @param col
-#' @param mat
-#' @param ...
-#'
-#' @return
-#'
-#' @examples
-line3js <- function(data3js,
-                    x0, y0, z0,
-                    x1, y1, z1,
-                    lwd = 1,
-                    col = "black",
-                    mat = "basic",
-                    ...){
-
-  object <- c()
-  object$type <- "line"
-  object$properties <- material3js(mat = mat, lwd = lwd, col = col, ...)
-  object$position$from <- c(x0,y0,z0)
-  object$position$to   <- c(x1,y1,z1)
-  object
-
-  data3js$plot[[length(data3js$plot)+1]] <- object
-  data3js
-
-}
-
-
-#' Add lines segments a 3js object
-#'
-#' @param data3js
-#' @param x
-#' @param y
-#' @param z
-#' @param lwd
-#' @param col
-#' @param ...
-#'
-#' @return
-#' @export
-#'
-#' @examples
-segments3js <- function(data3js,
-                        x, y, z,
-                        lwd = 1,
-                        col = "black",
-                        highlight,
-                        ...){
-
-  # Create the points
-  for(n in seq(from = 2, to = length(x), by = 2)){
-    data3js <- line3js(data3js = data3js,
-                       x0 = x[n-1],
-                       y0 = y[n-1],
-                       z0 = z[n-1],
-                       x1 = x[n],
-                       y1 = y[n],
-                       z1 = z[n],
-                       lwd = lwd,
-                       col = col,
-                       ...)
-  }
-
-  # Create the highlights object if requested
-  if(!missing(highlight)){
-    data3js <- highlight3js(data3js, highlight)
-  }
-
-  # Return the updated object
-  data3js
-
-}
-
-
-
-#' Add lines to a 3js object
-#'
-#' @param data3js
-#' @param x
-#' @param y
-#' @param z
-#' @param lwd
-#' @param col
-#' @param ...
-#'
-#' @return
-#' @export
-#'
-#' @examples
-lines3js <- function(data3js,
-                     x, y, z,
-                     lwd = 1,
-                     col = "black",
-                     highlight,
-                     ...){
-
-  # Create the points
-  for(n in 2:length(x)){
-    data3js <- line3js(data3js = data3js,
-                       x0 = x[n-1],
-                       y0 = y[n-1],
-                       z0 = z[n-1],
-                       x1 = x[n],
-                       y1 = y[n],
-                       z1 = z[n],
-                       lwd = lwd,
-                       col = col,
-                       ...)
-  }
-
-  # Create the highlights object if requested
-  if(!missing(highlight)){
-    data3js <- highlight3js(data3js, highlight)
-  }
-
-  # Return the updated object
-  data3js
-
-}
-
-
-#' Add an arrow to a 3js object
-#'
-#' @param data3js
-#' @param x
-#' @param y
-#' @param z
-#' @param lwd
-#' @param arrowhead_width
-#' @param arrowhead_length
-#' @param col
-#' @param mat
-#' @param ...
-#'
-#' @return
-#' @export
-#'
-#' @examples
-arrow3js <- function(data3js,
-                     x, y, z,
-                     lwd = 1,
-                     arrowhead_width = 0.2,
-                     arrowhead_length = 0.5,
-                     col,
-                     mat = "basic",
-                     ...){
-
-  object <- c()
-  object$type <- "arrow"
-  object$lwd <- lwd
-  object$arrowhead_length <- arrowhead_length
-  object$arrowhead_width  <- arrowhead_width
-  object$properties       <- material3js(mat = mat, col = col, ...)
-  object$position$from <- c(x[1],y[1],z[1])
-  object$position$to   <- c(x[2],y[2],z[2])
-  object
-
-  data3js$plot[[length(data3js$plot)+1]] <- object
-  data3js
-
-}
-
-
-#' Add a surface to an r3js object
-#'
-#' This function behaves very similarly to the \code{surface3d} function in the \code{rgl}
-#' package, although the handling of NA values is more robust in this implementation.
-#'
-#' @param data3js The r3js object to add the surface to.
-#' @param x Values corresponding to rows of z, or matrix of x coordinates
-#' @param y Values corresponding to the columns of z, or matrix of y coordinates
-#' @param z Matrix of heights
-#' @param col The color of the surface as either a single value, vector or matrix.
-#' @param mat The material to use when drawing the matrix, for a solid surface the default is
-#' "phong", for a wireframe the default is "line".
-#' @param wireframe Logical value for if the surface should be displayed as a mesh
-#' @param ... Material and texture properties. See \code{\link{material3js}} for details
-#'
-#' @return Returns the updated r3js object in the form of a list.
-#' @export
-#'
-#' @examples
-#' # Taken from "persp"
-#' data(volcano)
-#'
-#' z <- 2 * volcano        # Exaggerate the relief
-#' x <- 10 * (1:nrow(z))   # 10 meter spacing (S to N)
-#' y <- 10 * (1:ncol(z))   # 10 meter spacing (E to W)
-#'
-#' zlim <- range(y)
-#' zlen <- zlim[2] - zlim[1] + 1
-#' colorlut <- terrain.colors(zlen) # height color lookup table
-#' col <- colorlut[ z - zlim[1] + 1 ] # assign colors to heights for each point
-#'
-#' # Setup r3js plot
-#' data3js <- plot3js.new()
-#' data3js <- plot3js.window(data3js,
-#'                           xlim = range(x),
-#'                           ylim = range(y),
-#'                           zlim = range(z),
-#'                           aspect = c(diff(range(x))/diff(range(y)),
-#'                                      1,
-#'                                      0.5))
-#'
-#' # Plot surface
-#' data3js <- surface3js(data3js,
-#'                       x = x,
-#'                       y = y,
-#'                       z = z,
-#'                       col = col)
-#'
-#' # Display plot
-#' print(r3js(data3js))
-#'
-surface3js <- function(data3js,
-                       x, y, z,
-                       col,
-                       mat,
-                       wireframe = FALSE,
-                       highlight,
-                       ...){
-
-  # Convert x, y and colors into matrices if necessary
-  if(!is.matrix(x))  { x   <- matrix(x, nrow = nrow(z), ncol = ncol(z), byrow = FALSE) }
-  if(!is.matrix(y))  { y   <- matrix(y, nrow = nrow(z), ncol = ncol(z), byrow = TRUE)  }
-  if(!is.matrix(col)){ col <- matrix(col, nrow = nrow(z), ncol = ncol(z))              }
-
-  object <- c()
-  if(wireframe){
-    object$type <- "grid"
-    if(missing(mat)){ mat <- "line" }
-  } else {
-    object$type <- "surface"
-    if(missing(mat)){ mat <- "phong" }
-  }
-  object$properties <- material3js(mat = mat, col = t(col), ...)
-  object$x <- x
-  object$y <- y
-  object$z <- z
-  object
-
-  # Add to data object
-  data3js$plot[[length(data3js$plot)+1]] <- object
-
-  # Add highlight if given
-  if(!missing(highlight)){
-    data3js <- highlight3js(data3js, highlight)
-  }
-
-  # Return plot data
-  data3js
-
-}
-
 
 #' Add a grid to an r3js plot
 #'
@@ -702,7 +332,7 @@ surface3js <- function(data3js,
 #' @export
 #'
 #' @examples
-axislines3js <- function(data3js, x, y, z, ax, lwd = 0.9, col = "grey80", ...){
+axislines3js <- function(data3js, x, y, z, ax, lwd = 0.9, col = "grey80", geometry = FALSE, ...){
 
   # Setup grid
   grid_data <- list(x,y,z)
@@ -720,6 +350,7 @@ axislines3js <- function(data3js, x, y, z, ax, lwd = 0.9, col = "grey80", ...){
                         z = line_data[[3]],
                         lwd = lwd,
                         col = col,
+                        geometry = geometry,
                         ...)
   }
 
@@ -727,6 +358,9 @@ axislines3js <- function(data3js, x, y, z, ax, lwd = 0.9, col = "grey80", ...){
   data3js
 
 }
+
+
+
 
 #' Add grid lines to an axis
 #'
@@ -745,7 +379,8 @@ sidegrid3js <- function(data3js,
                         side,
                         at = NULL,
                         col = "grey80",
-                        dynamic = FALSE, ...){
+                        dynamic = FALSE,
+                        geometry = FALSE, ...){
 
   # Setup grid data
   grid_data <- list()
@@ -778,6 +413,7 @@ sidegrid3js <- function(data3js,
                  ax = ax,
                  faces = side,
                  col   = col,
+                 geometry = geometry,
                  ...)
   } else {
     axislines3js(data3js,
@@ -786,161 +422,19 @@ sidegrid3js <- function(data3js,
                  z = grid_data[[3]],
                  ax  = ax,
                  col = col,
+                 geometry = geometry,
                  ...)
   }
 
 }
 
 
-#' Add a generic shape to an 3js plot
-#'
-#' @param data3js
-#' @param vertices
-#' @param faces
-#' @param col
-#' @param highlight
-#' @param label
-#' @param toggle
-#' @param ...
-#'
-#' @return
-#' @export
-#'
-#' @examples
-shape3js <- function(data3js,
-                     vertices,
-                     faces,
-                     col  = "black",
-                     highlight,
-                     label  = NULL,
-                     toggle = NULL,
-                     ...) {
-
-  object <- c()
-  object$type <- "shape"
-  object$vertices   <- vertices
-  object$faces      <- faces-1 # Need to convert to base 0
-  object$properties <- material3js(col = col,
-                                   label = label,
-                                   toggle = toggle,
-                                   ...)
-
-  data3js$plot[[length(data3js$plot)+1]] <- object
-
-  # Create the highlight object if requested
-  if(!missing(highlight)){
-    data3js <- highlight3js(data3js, highlight)
-  }
-
-  # Return the updated object
-  data3js
-
-}
 
 
-#' Add a triangle to an r3js plot
-#'
-#' @param data3js
-#' @param vertices
-#' @param col
-#' @param highlight
-#' @param label
-#' @param toggle
-#' @param ...
-#'
-#' @return
-#' @export
-#'
-#' @examples
-triangle3js <- function(data3js,
-                        vertices,
-                        col  = "black",
-                        highlight,
-                        label  = NULL,
-                        toggle = NULL,
-                        ...) {
 
-  object <- c()
-  object$type <- "triangle"
-  object$vertices   <- vertices
 
-  object$properties <- material3js(col = col,
-                                   label = label,
-                                   toggle = toggle,
-                                   ...)
 
-  data3js$plot[[length(data3js$plot)+1]] <- object
 
-  # Create the highlight object if requested
-  if(!missing(highlight)){
-    data3js <- highlight3js(data3js, highlight)
-  }
-
-  # Return the updated object
-  data3js
-
-}
-
-#' Add a single text string to a 3js plot
-#'
-#' @param x
-#' @param y
-#' @param z
-#' @param labels
-#' @param pos
-#'
-string3js <- function(data3js,
-                      x, y, z,
-                      text,
-                      size = 1,
-                      col = "inherit",
-                      type   = "geometry",
-                      label  = NULL,
-                      toggle = NULL,
-                      alignment = "center",
-                      offset = c(0, 0),
-                      style  = list(),
-                      ...){
-
-  object <- c()
-  object$type      <- "text"
-  object$rendering <- jsonlite::unbox(type)
-  object$position  <- c(x,y,z)
-  object$text      <- text
-  object$size      <- size
-  object$offset    <- offset
-
-  # Set text aligment
-  if(alignment == "center"){ object$alignment <- c(0 ,0 ) }
-
-  if(alignment == "top")   { object$alignment <- c(0 ,1 ) }
-  if(alignment == "bottom"){ object$alignment <- c(0 ,-1) }
-  if(alignment == "left")  { object$alignment <- c(-1,0 ) }
-  if(alignment == "right") { object$alignment <- c(1 ,0 ) }
-
-  if(alignment == "topright")    { object$alignment <- c(1 ,1 ) }
-  if(alignment == "topleft")     { object$alignment <- c(-1,1 ) }
-  if(alignment == "bottomright") { object$alignment <- c(1 ,-1) }
-  if(alignment == "bottomleft")  { object$alignment <- c(-1,-1) }
-
-  # If the type is html text turn on the label renderer and set text style
-  if(type == "html"){
-    data3js$label_renderer = TRUE
-    object$style <- do.call(style3js, args = style)
-  }
-
-  # Set object properties
-  object$properties <- material3js(label = label,
-                                   toggle = toggle,
-                                   col = col,
-                                   ...)
-
-  data3js$plot[[length(data3js$plot)+1]] <- object
-
-  # Return the updated object
-  data3js
-
-}
 
 
 #' Add text to a 3js plot

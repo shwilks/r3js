@@ -5,7 +5,7 @@
 \title{Add grid lines to an axis}
 \usage{
 sidegrid3js(data3js, ax, side, at = NULL, col = "grey80",
-  dynamic = FALSE, ...)
+  dynamic = FALSE, geometry = FALSE, ...)
 }
 \arguments{
 \item{...}{}

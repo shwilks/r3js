@@ -5,12 +5,15 @@
 \title{Set material properties of 3js object}
 \usage{
 material3js(mat = "phong", col = "black", opacity = 1, xpd = TRUE,
-  lwd = 1, interactive = NULL, moveable = NULL, label = NULL,
-  toggle = NULL, dimensions = NULL, depthWrite = NULL,
+  lwd = 1, lend = 0, ljoin = 0, dashSize = NULL, gapSize = NULL,
+  interactive = NULL, moveable = NULL, label = NULL, toggle = NULL,
+  dimensions = NULL, depthWrite = NULL, depthTest = NULL,
   polygonOffset = NULL, polygonOffsetFactor = NULL,
   polygonOffsetUnits = NULL, faces = NULL, corners = NULL,
-  rotation = NULL, normalise = NULL, clippingPlanes = NULL,
-  doubleSide = FALSE)
+  rotation = NULL, normalise = NULL, poffset = NULL,
+  clippingPlanes = NULL, doubleSide = TRUE, renderOrder = NULL,
+  renderSidesSeparately = NULL, removeSelfTransparency = NULL,
+  breakupMesh = NULL)
 }
 \arguments{
 \item{opacity}{}

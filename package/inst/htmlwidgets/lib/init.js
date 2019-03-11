@@ -13,11 +13,23 @@ function r3js(container, plotData, settings){
     // Create viewport
     var viewport = generateViewport(plotData, viewer);
 
+    // Bind event listeners
+    bind_events(viewport);
+
     // Generate the scene from the plot data
-    addScene(viewport,    plotData);
     addRenderer(viewport, plotData);
+    addScene(viewport,    plotData);
     addCamera(viewport,   plotData);
 
+    // Set camera limits
+    if(plotData.camera){
+        if(plotData.camera.min_zoom){
+            viewport.camera.min_zoom = plotData.camera.min_zoom;
+        }
+        if(plotData.camera.max_zoom){
+            viewport.camera.max_zoom = plotData.camera.max_zoom;
+        }
+    }
 
     // Rotate scene
     if(plotData.scene.rotation){
@@ -38,8 +50,6 @@ function r3js(container, plotData, settings){
     // Update visibility of dynamic components
     viewport.scene.showhideDynamics( viewport.camera );
     
-    // Bind event listeners
-    bind_events(viewport);
     
     // Bind navigation functions
     bind_navigation(viewport);
@@ -58,10 +68,17 @@ function r3js(container, plotData, settings){
 
     // Add toggles
     addToggles(viewport);
-
+    
+    // Run any resize functions
+    for(var i=0; i<viewport.onResize.length; i++){
+        viewport.onResize[i]();
+    }
 
     // Animate the scene
     viewport.render();
+    viewport.scene.render = function(){
+        viewport.render()
+    };
     function animate() {
         
         if(viewport.raytraceNeeded || viewport.sceneChange){
@@ -77,43 +94,10 @@ function r3js(container, plotData, settings){
     }
     animate();
 
-
- //    // Add container variables
- //    viewport.viewer             = viewer;
- //    viewport.scene              = scene;
- //    viewport.plotPoints         = plotPoints;
- //    viewport.plotHolder         = plotHolder;
- //    viewport.intersected        = null;
- //    viewport.dragmode           = false;
- //    viewport.plotData           = plotData;
- //    viewport.labels             = [];
- //    viewport.axes               = [];
- //    viewport.toggles            = {names:[], objects:[]};
- //    viewport.dynamic_objects    = [];
- //    viewport.animate            = false;
- //    viewport.selectable_objects = [];
- //    //viewport.style.backgroundColor = "#"+bg_col.getHexString();
-
-
- //    // Add axes
- //    if(plotData.axes){
- //        for(var i=0; i<plotData.axes.length; i++){
- //            add_axis(viewport, plotData.axes[i]);
- //        }
- //    }
-
- 
-
     // Create legend
     if(plotData.legend){
       addLegend(viewport, plotData);  
     }
-
- //    // Bind event listeners
- //    bind_events(viewport);
-
- //    // Bind point movement functions
- //    bind_point_movement(viewport);   
 
 }
 

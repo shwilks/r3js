@@ -3,7 +3,9 @@ function bind_point_movement(viewport){
 
   // Set event listeners
   viewport.addEventListener("mousedown", function(){
-  	if(viewport.intersected && viewport.intersected[0].object.material.draggable){
+  	if(viewport.intersected 
+      && viewport.intersected[0].object 
+      && viewport.intersected[0].object.material.draggable){
       viewport.navigable = false;
       viewport.dragObject = viewport.intersected[0].object;
       viewport.addEventListener("mousemove", dragpoint);
@@ -17,7 +19,9 @@ function bind_point_movement(viewport){
   });
 
   viewport.addEventListener("mousemove", function(){
-  	if(viewport.intersected && viewport.intersected[0].object.material.draggable){
+  	if(viewport.intersected 
+      && viewport.intersected[0].object 
+      && viewport.intersected[0].object.material.draggable){
   		viewport.style.cursor = "move";
   	} else {
   		viewport.style.cursor = "default";

@@ -62,8 +62,8 @@ function makePerspectiveCamera(viewport){
 	}
 	camera.rezoom = function(zoom){
 		zoom = -zoom;
-		var min_zoom = camera.min_zoom;
-		var max_zoom = camera.max_zoom;
+		var min_zoom = this.min_zoom;
+		var max_zoom = this.max_zoom;
 		zoom = zoom*camera.zoom_damper;
 		if(this.position.z + zoom <= max_zoom 
 			&& this.position.z + zoom >= min_zoom){

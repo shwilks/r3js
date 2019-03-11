@@ -6,11 +6,22 @@ function bind_events(viewport){
     viewport.mouse.down  = false;
     viewport.mouse.over  = false;
     viewport.touch       = {num:0};
+    viewport.onResize    = [];
 
     // Add some general event listeners
     window.addEventListener("resize", function(){ 
+        
+        // Resize camera
         viewport.camera.resize();
+        
+        // Run any resize functions
+        for(var i=0; i<viewport.onResize.length; i++){
+            viewport.onResize[i]();
+        }
+
+        // Render the scene
         viewport.render();
+
     });
 
     // Function to get mouse position

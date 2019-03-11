@@ -25,45 +25,6 @@ source("../labbook_code/scripts/chull.R")
 coords <- as.matrix(pdata)
 chull  <- chull3d(coords)
 
-# # Cross product function
-# CrossProduct3D <- function(U, V) {
-#
-#   c(U[2]*V[3]-U[3]*V[2],
-#     U[3]*V[1]-U[1]*V[3],
-#     U[1]*V[2]-U[2]*V[1])
-#
-# }
-#
-#
-# for(x in seq_len(nrow(chull))){
-#
-#   tri_i <- chull[x,]
-#
-#   for(n in seq_len(nrow(delauney))){
-#     vmatch <- delauney[n,] %in% tri_i
-#     if(sum(vmatch) == 3){
-#       ntri_i <- delauney[n,][!vmatch]
-#       break
-#     }
-#   }
-#
-#   # Calculate the surface normal
-#   tri_norm <- CrossProduct3D(
-#     coords[tri_i[1],] - coords[tri_i[2],],
-#     coords[tri_i[1],] - coords[tri_i[3],]
-#   )
-#   tri_norm <- tri_norm/sqrt(sum(tri_norm^2))
-#
-#   # Get the vector
-#   pv <- coords[ntri_i,] - coords[tri_i[2],]
-#
-#   dp <- t(tri_norm) %*% pv
-#   if(dp > 0){
-#     chull[x,] <- rev(chull[x,])
-#   }
-#
-# }
-
 
 # Add the chull to the plot
 for(x in 1:nrow(chull)){
@@ -86,8 +47,6 @@ for(x in 1:nrow(chull)){
                       col = "black")
 }
 
-
-
 # Generate clipping planes
 clipping_planes <- apply(chull, 1, function(i){
 
@@ -102,9 +61,8 @@ data3js <- sphere3js(data3js,
                      z = 0,
                      radius = 2,
                      col = "red",
+                     xpd = FALSE,
                      clippingPlanes = clipping_planes)
-
-debug3js(data3js)
 
 # Show the plot
 r3js(data3js)

@@ -44,6 +44,7 @@ r3js <- function(data3js,
       browser.padding = 0
     )
   )
+
 }
 
 #' Shiny bindings for r3js

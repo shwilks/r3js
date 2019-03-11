@@ -39,6 +39,7 @@ function generate_scene(plotData){
     scene.background = bg_col;
 
     // Set scene variables
+    scene.primary_objects       = [];
     scene.selectable_objects    = [];
     scene.dynamic_objects       = [];
     scene.dynamic_cornerObjects = [];
@@ -58,7 +59,62 @@ function generate_scene(plotData){
         new THREE.Plane( new THREE.Vector3( 0, 0, -1 ), plotData.aspect[2] )
     ];
 
-    scene.clippingPlanes = [];
+    scene.clippingPlanes = {};
+    scene.clippingPlanes.planes = [];
+    scene.clippingPlanes.includeAndReferencePlane     = function(plane){
+        
+        // See if plane is already referenced
+        for(var i=0; i<scene.clippingPlanes.planes.length; i++){
+            
+            var scene_plane = scene.clippingPlanes.planes[i];
+            if(scene_plane.constant == plane.constant &&
+                scene_plane.normal.x == plane.normal.x && 
+                scene_plane.normal.y == plane.normal.y && 
+                scene_plane.normal.z == plane.normal.z){
+                return(scene_plane);
+            }
+
+        }
+
+        // If not then add a reference
+        scene.clippingPlanes.planes.push(plane);
+        return(plane);
+
+    }
+    scene.clippingPlanes.includeAndReferencePlaneData = function(object){
+        
+        var clippingPlaneData = object.properties.clippingPlanes;
+        clippingPlanes = [];
+        
+        for(var i=0; i<clippingPlaneData.length; i++){
+            
+            var planeData = clippingPlaneData[i];
+            
+            // Normalise coordinates
+            if(object.normalise){
+                if(planeData.coplanarPoints){
+                    for(var j=0; j<planeData.coplanarPoints.length; j++){
+                        planeData.coplanarPoints[j] = normalise_coords(planeData.coplanarPoints[j],
+                                                                       object.lims,
+                                                                       object.aspect);
+                    }
+                }
+                if(planeData.coplanarPoint){
+                    planeData.coplanarPoint = normalise_coords(planeData.coplanarPoint,
+                                                               object.lims,
+                                                               object.aspect);
+                }
+            }
+
+            var plane = generatePlane(planeData);
+            clippingPlanes.push(
+                scene.clippingPlanes.includeAndReferencePlane(plane)
+            );
+
+        }
+        return(clippingPlanes);
+
+    };
 
 
     // Add support for dynamic objects
@@ -103,10 +159,10 @@ function generate_scene(plotData){
 			this.plotPoints.clippingPlanes[i].set(norm, this.plotPoints.clippingPlanes[i].constant);
 		}
 
-        for(var i=0; i<this.clippingPlanes.length; i++){
-            var norm = this.clippingPlanes[i].normal;
+        for(var i=0; i<this.clippingPlanes.planes.length; i++){
+            var norm = this.clippingPlanes.planes[i].normal;
             norm.applyAxisAngle(world_axis, rotation);
-            this.clippingPlanes[i].set(norm, this.clippingPlanes[i].constant);
+            this.clippingPlanes.planes[i].set(norm, this.clippingPlanes.planes[i].constant);
         }
 
     }
@@ -166,13 +222,13 @@ function generate_scene(plotData){
 			this.plotPoints.clippingPlanes[i].constant -= offset;
 		}
 
-        for(var i=0; i<this.clippingPlanes.length; i++){
+        for(var i=0; i<this.clippingPlanes.planes.length; i++){
             var pos = globalpos.clone();
-            var norm = this.clippingPlanes[i].normal.clone();
+            var norm = this.clippingPlanes.planes[i].normal.clone();
             var orignorm = norm.clone().applyMatrix4(this.plotHolder.matrixWorld);
             pos.projectOnVector(norm);
             var offset = pos.length()*pos.clone().normalize().dot(norm);
-            this.clippingPlanes[i].constant -= offset;
+            this.clippingPlanes.planes[i].constant -= offset;
         }
 
 	}
@@ -275,3 +331,22 @@ function scene_to_triangles(scene, camera){
 }
 
 
+function generatePlane(planeData){
+
+    var plane = new THREE.Plane();
+    if(planeData.coplanarPoints){
+        plane.setFromCoplanarPoints(
+            new THREE.Vector3().fromArray(planeData.coplanarPoints[0]),
+            new THREE.Vector3().fromArray(planeData.coplanarPoints[1]),
+            new THREE.Vector3().fromArray(planeData.coplanarPoints[2])
+        );
+    }
+    if(planeData.normal && planeData.coplanarPoint){
+        plane.setFromNormalAndCoplanarPoint(
+            new THREE.Vector3().fromArray(planeData.normal),
+            new THREE.Vector3().fromArray(planeData.coplanarPoint)
+        );
+    }
+    return(plane);
+
+}

@@ -5,7 +5,7 @@
 \title{Add axes to an r3js plot}
 \usage{
 axis3js(data3js, side, at = NULL, labels = NULL, cornerside = "f",
-  ...)
+  mgp = c(3, 1, 0) * 0.1, ...)
 }
 \arguments{
 \item{at}{}

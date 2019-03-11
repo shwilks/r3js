@@ -1,73 +1,11 @@
 
 
-function make_glpoint(object){
-    
-    var vertices = new THREE.BoxGeometry( 1, 1, 1, 16, 16, 16 ).vertices;
-    var positions = new Float32Array( vertices.length * 3 );
-    var colors = new Float32Array( vertices.length * 3 );
-    var sizes = new Float32Array( vertices.length );
-
-    var vertex;
-    var color = new THREE.Color();
-    for ( var i = 0, l = vertices.length; i < l; i ++ ) {
-      vertex = vertices[ i ];
-      vertex.toArray( positions, i * 3 );
-      // color.setHSL( 0.01 + 0.1 * ( i / l ), 1.0, 0.5 );
-      // color.toArray( colors, i * 3 );
-      // sizes[ i ] = 0.1 * 0.5;
-    }
-
-    var geometry = new THREE.BufferGeometry();
-    geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
-    // geometry.addAttribute( 'customColor', new THREE.BufferAttribute( colors, 3 ) );
-    // geometry.addAttribute( 'size', new THREE.BufferAttribute( sizes, 1 ) );
-
-    var material = new THREE.PointsMaterial( { 
-      size: 0.01,
-      color: 0x888888 
-    } );
-
-    var point = new THREE.Points( geometry, material );
-
-    // // Set object geometry
-    // var geometries = new THREE.BufferGeometry();
-    // var geo = geometries[object.shape](object);
-    
-    // // Set object material
-    // var mat = get_object_material(object);
-
-    // // Make object
-    // var point = new THREE.Mesh(geo, mat);
-
-    // // Scale object
-    // if(object.normalise){
-    //     point.scale.set(object.size/10, 
-    //                     object.size/10, 
-    //                     object.size/10);
-    // }
-
-    // // Normalise the coords
-    // if(object.normalise){
-    //     object.position = normalise_coords(object.position,
-    //                                        object.lims,
-    //                                        object.aspect);
-    // }
-
-    // // Position object
-    // point.position.set(object.position[0],
-    //                    object.position[1],
-    //                    object.position[2]);
-    // if(!point.position.z){
-    //     point.position.z = 0;
-    // }
-
-    // Return object
-    return(point);
-
-}
-
-
 function make_point(object){
+    
+    // Set default dimensionality
+    if(!object.properties.dimensions){
+        object.properties.dimensions = 3;
+    }
     
     // Set object geometry
     var geometries = get_pointGeos(object.properties.dimensions);
@@ -118,27 +56,6 @@ function get_pointGeos(dimensions, lwd){
         }
         var ocircle = function(object){
             return(new THREE.RingGeometry( 0.2-object.properties.lwd/25, 0.2, 32 ));
-            
-            // var shape = new THREE.Shape();
-            // shape.moveTo(-0.1, -0.1);
-            // shape.lineTo(0.1, -0.1);
-            // shape.lineTo(0.1, 0.1);
-            // shape.lineTo(-0.1, 0.1);
-
-            // var hole = new THREE.Path();
-            // hole.moveTo(-0.08, -0.08);
-            // hole.lineTo(0.08, -0.08);
-            // hole.lineTo(0.08, 0.08);
-            // hole.lineTo(-0.08, 0.08);
-
-            // shape.holes.push(hole);
-            // var extrudeSettings = {
-            //     steps: 1,
-            //     amount: 0.1,
-            //     bevelEnabled: false
-            // };
-            // var geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-            // return(geometry);
         }
         var lcircle = function(object){
             var geo = new THREE.BufferGeometry();

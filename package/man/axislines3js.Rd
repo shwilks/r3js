@@ -4,7 +4,8 @@
 \alias{axislines3js}
 \title{Add a grid to an r3js plot}
 \usage{
-axislines3js(data3js, x, y, z, ax, lwd = 0.9, col = "grey80", ...)
+axislines3js(data3js, x, y, z, ax, lwd = 0.9, col = "grey80",
+  geometry = FALSE, ...)
 }
 \arguments{
 \item{z}{}

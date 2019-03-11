@@ -2,17 +2,21 @@
 library(r3js)
 rm(list=ls())
 
-setup_plot <- function(){
+setup_plot <- function(
+  xlim = c(0,10),
+  ylim = c(0,10),
+  zlim = c(0,1)
+){
 
   # Initialise new plot
   data3js <- plot3js.new()
 
   # Set plot dimensions and aspect ratios
   data3js <- plot3js.window(data3js,
-                            xlim = c(0,10),
-                            ylim = c(0,10),
-                            zlim = c(0,1),
-                            aspect = c(1,1,0.1))
+                            xlim = xlim,
+                            ylim = ylim,
+                            zlim = zlim,
+                            aspect = c(1,1,diff(range(zlim))/diff(range(ylim))))
 
   # Add box
   data3js <- box3js(data3js, col = "grey50")
@@ -31,47 +35,57 @@ setup_plot <- function(){
 }
 
 ## Setup the plot
-data3js <- setup_plot()
+data3js <- setup_plot(zlim = c(0,10))
 
-glpoints3js <- function(data3js,
-                        x, y, z,
-                        size,
-                        col,
-                        pch = 16,
-                        highlight,
-                        ...){
 
-  object <- c()
-  object$type <- "glpoint"
-  if(pch == 0) { object$shape <- "osquare" }
-  if(pch == 1) { object$shape <- "ocircle" }
-  if(pch == 15){ object$shape <- "square"  }
-  if(pch == 16){ object$shape <- "circle"  }
-  object$size <- size
-  object$properties <- material3js(col = col, ...)
-  object$position   <- cbind(x,y,z)
+# data3js <- glpoints3js(data3js,
+#                        x    = runif(10),
+#                        y    = runif(10),
+#                        z    = runif(10),
+#                        size = runif(10, min = 1, max = 5),
+#                        col  = rainbow(10))
 
-  data3js$plot[[length(data3js$plot)+1]] <- object
-  data3js
+n <- 100000
 
-}
+# A <- 3
+# B <- 1
+# t <- seq(from = 1, to = 6, length.out = n)
+#
+# x <- 0.1*t*A*cos(t)+5
+# y <- 0.1*t*A*sin(t)+5
+# z <- B*t
+#
+# sd <- c(
+#   seq(from = 0.01, to = 1, length.out = n)
+# )
+#
+# x <- x + rnorm(n, sd = sd)
+# y <- y + rnorm(n, sd = sd)
+# z <- z + rnorm(n, sd = sd)
+#
+# data3js <- glpoints3js(data3js,
+#                        x    = x,
+#                        y    = y,
+#                        z    = z,
+#                        size = runif(n, min = 0.05, max = 0.1),
+#                        col  = rainbow(n)[sample(n)])
 
 data3js <- glpoints3js(data3js,
-                       x    = runif(10),
-                       y    = runif(10),
-                       z    = runif(10),
-                       size = runif(10, min = 1, max = 5),
-                       col  = rainbow(10))
+                       x    = rnorm(n)+5,
+                       y    = rnorm(n)+5,
+                       z    = rnorm(n)+5,
+                       size = runif(n, min = 0.01, max = 0.1),
+                       col  = rainbow(n))
 
+print(r3js(data3js))
+# ## Points
+# data3js <- points3js(data3js,
+#                      x = runif(10),
+#                      y = runif(10),
+#                      z = runif(10),
+#                      col = rainbow(10))
 debug3js(data3js)
-# stop()
-
-## Points
-data3js <- points3js(data3js,
-                     x = runif(10),
-                     y = runif(10),
-                     z = runif(10),
-                     col = rainbow(10))
+stop()
 
 ## Lines
 data3js <- lines3js(data3js,
@@ -136,7 +150,7 @@ data3js <- triangle3js(data3js,
                                         c(1,2,0)),
                        col = "orange")
 
-print(r3js(data3js))
+# print(r3js(data3js))
 
 
 
@@ -162,6 +176,7 @@ plotData <- plot3js(x   = runif(10),
                     ylab = "y axis",
                     zlab = "z axis",
                     col = rainbow(10))
+stop()
 # plotData <- plot3js.new()
 plotData <- mtext3js(data3js = plotData,
                      text    = "x axis",

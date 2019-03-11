@@ -22,11 +22,9 @@ function bind_highlight_fns(viewport){
 
     // What to do when a point is hovered over
     viewport.hover_point = function(object){
-      if(!object.group){
-        viewport.highlight_object(object);
-      } else {
+      if(object.group){
         for(var i=0; i<object.group.length; i++){
-          viewport.highlight_object(object.group[i]);
+          viewport.highlight_object(viewport.scene.primary_objects[object.group[i]]);
         }
       }
       // Show name in browser
@@ -38,11 +36,9 @@ function bind_highlight_fns(viewport){
 
     // What to do when a point is dehovered over
     viewport.dehover_point = function(object){
-      if(!object.group){
-        viewport.dehighlight_object(object);
-      } else {
+      if(object.group){
         for(var i=0; i<object.group.length; i++){
-          viewport.dehighlight_object(object.group[i]);
+          viewport.dehighlight_object(viewport.scene.primary_objects[object.group[i]]);
         }
       }
       // Clear browser

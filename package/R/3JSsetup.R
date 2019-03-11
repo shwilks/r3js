@@ -31,7 +31,7 @@
 #'
 plot3js.new <- function(background = "#ffffff"){
 
-  data3js <- list()
+  data3js <-  structure(list(), class = c("data3js", "list"))
   data3js$ticks <- list(NULL,NULL,NULL)
 
   # Set background color
@@ -43,119 +43,6 @@ plot3js.new <- function(background = "#ffffff"){
 }
 
 
-
-
-#' Start a new r3js object group
-#'
-#' This function can be used to build plot objects together into a group before
-#' combining them into a main plotting object with the \code{\link{combine3js}}
-#' function. See details.
-#'
-#' @details r3js provides support for plot rollover highlighting of plotted objects
-#' through the \code{highlight} argument. Sometimes, however you may wish for several
-#' plotted objects to be associated with each other such that interaction with one
-#' or any of them causes all other objects in the group to be highlighted. This is
-#' where the \code{group3js} function comes in, allowing you to associate objects as
-#' a group before adding them to a main plotting object created using \code{\link{plot3js.new}}.
-#' By explicitely setting \code{interactive = FALSE} for certain objects of the group
-#' you are also still able to control interactivity on a per-object basis, even though
-#' highlighting behaviour will now be linked (see examples).
-#'
-#' @return Returns an empty r3js group object in the form of a list.
-#' @export
-#'
-#' @examples
-#' # Using groups
-#' x <- runif(100, 0, 50)
-#' y <- runif(100, 0, 25)
-#' z <- runif(100, -1, 1)
-#' cols <- rainbow(100)
-#'
-#' # Setup new plot
-#' data3js <- plot3js.new()
-#' data3js <- plot3js.window(data3js,
-#'                           xlim = c(0, 50),
-#'                           ylim = c(0, 25),
-#'                           zlim = c(0,1),
-#'                           aspect = c(2,1,0.4))
-#'
-#' # Add basegrid
-#' for(n in 0:50){
-#'   data3js <- lines3js(data3js,
-#'                       x = rep(n, 2),
-#'                       y = c(0,25),
-#'                       z = c(0,0),
-#'                       col = "grey80")
-#' }
-#' for(n in 0:25){
-#'   data3js <- lines3js(data3js,
-#'                       x = c(0,50),
-#'                       y = rep(n, 2),
-#'                       z = c(0,0),
-#'                       col = "grey80")
-#' }
-#'
-#' # Plot points and lines as groups
-#' for(n in 1:length(x)){
-#'
-#'   # Begin new group
-#'   group <- group3js()
-#'
-#'   # Add main point to group
-#'   group <- points3js(group,
-#'                      x = x[n],
-#'                      y = y[n],
-#'                      z = z[n],
-#'                      col = cols[n],
-#'                      highlight = list(size = 1.5,
-#'                                       col  = "black"))
-#'
-#'   # Add line
-#'   group <- lines3js(group,
-#'                     x = rep(x[n],2),
-#'                     y = rep(y[n],2),
-#'                     z = c(0,z[n]),
-#'                     col = cols[n],
-#'                     highlight = list(col  = "black",
-#'                                      lwd = 2),
-#'                     interactive = FALSE)
-#'
-#'   # Add base point
-#'   group <- points3js(group,
-#'                      x = x[n],
-#'                      y = y[n],
-#'                      z = 0,
-#'                      col = cols[n],
-#'                      highlight = list(col  = "black",
-#'                                       size = 2.5),
-#'                      interactive = FALSE,
-#'                      dimensions = 2)
-#'
-#'   # Add group to main plot
-#'   data3js <- combine3js(data3js, group)
-#'
-#' }
-#'
-#' # Plot result
-#' print(r3js(data3js))
-#'
-group3js <- function(){
-  list(type = "group")
-}
-
-#' Combine group data with a data3js object
-#'
-#' @param data3js
-#' @param group
-#'
-#' @return
-#' @export
-#'
-#' @examples
-combine3js <- function(data3js, group){
-  data3js$plot[[length(data3js$plot)+1]] <- group
-  data3js
-}
 
 
 #' Set axis limits for a 3js plot
@@ -216,6 +103,7 @@ axis3js <- function(data3js,
                     at     = NULL,
                     labels = NULL,
                     cornerside = "f",
+                    mgp = c(3, 1, 0)*0.1,
                     ...){
 
   # Set locations of tick marks
@@ -236,21 +124,24 @@ axis3js <- function(data3js,
 
         if(side == "x"){
           x <- at[n]
-          y <- data3js$lims[[2]][a]+(a-1.5)*0.08
-          z <- data3js$lims[[3]][b]+(b-1.5)*0.08
+          y <- data3js$lims[[2]][a]
+          z <- data3js$lims[[3]][b]
           cornercode <- paste0("x",ap,bp,cornerside)
+          poffset <- c(0, (a-1.5)*mgp[2], (b-1.5)*mgp[2])
         }
         if(side == "y"){
-          x <- data3js$lims[[1]][a]+(a-1.5)*0.08
+          x <- data3js$lims[[1]][a]
           y <- at[n]
-          z <- data3js$lims[[3]][b]+(b-1.5)*0.08
+          z <- data3js$lims[[3]][b]
           cornercode <- paste0(ap,"y",bp,cornerside)
+          poffset <- c((a-1.5)*mgp[2], 0, (b-1.5)*mgp[2])
         }
         if(side == "z"){
-          x <- data3js$lims[[1]][b]+(b-1.5)*0.08
-          y <- data3js$lims[[2]][a]+(a-1.5)*0.08
+          x <- data3js$lims[[1]][b]
+          y <- data3js$lims[[2]][a]
           z <- at[n]
           cornercode <- paste0(ap,bp,"z",cornerside)
+          poffset <- c((b-1.5)*mgp[2], (a-1.5)*mgp[2], 0)
         }
 
         data3js <- text3js(data3js,
@@ -259,6 +150,7 @@ axis3js <- function(data3js,
                            z = z,
                            text = labels[n],
                            corners = cornercode,
+                           poffset = poffset,
                            col = "black",
                            type = "html",
                            ...)
@@ -354,7 +246,9 @@ mtext3js <- function(data3js,
 box3js <- function(data3js,
                    sides = c("x","y","z"),
                    dynamic = TRUE,
-                   col = "grey50",
+                   col = "grey80",
+                   geometry = FALSE,
+                   renderOrder = 1,
                    ...){
 
   # Expand vector of sides
@@ -386,6 +280,8 @@ box3js <- function(data3js,
                             z = rep(data3js$lims[[3]][j], 2),
                             faces = faces,
                             col = col,
+                            geometry = geometry,
+                            renderOrder = renderOrder,
                             ...)
       }
     }
@@ -408,6 +304,8 @@ box3js <- function(data3js,
                             z = rep(data3js$lims[[3]][j], 2),
                             faces = faces,
                             col = col,
+                            geometry = geometry,
+                            renderOrder = renderOrder,
                             ...)
       }
     }
@@ -430,6 +328,8 @@ box3js <- function(data3js,
                             z = data3js$lims[[3]],
                             faces = faces,
                             col = col,
+                            geometry = geometry,
+                            renderOrder = renderOrder,
                             ...)
       }
     }
@@ -459,7 +359,8 @@ grid3js <- function(data3js,
                     sides = c("x","y","z"),
                     axes  = c("x","y","z"),
                     at = NULL, dynamic = TRUE,
-                    col = "grey80",
+                    col = "grey95",
+                    geometry = FALSE,
                     ...){
 
   # Expand vector of sides
@@ -479,11 +380,12 @@ grid3js <- function(data3js,
     ax_sides <- sides[!grepl(ax, sides)]
     for(side in ax_sides){
       data3js <- sidegrid3js(data3js,
-                             ax      = ax,
-                             side    = side,
-                             at      = at,
-                             dynamic = dynamic,
-                             col     = col,
+                             ax       = ax,
+                             side     = side,
+                             at       = at,
+                             dynamic  = dynamic,
+                             col      = col,
+                             geometry = geometry,
                              ...)
     }
   }
@@ -494,67 +396,92 @@ grid3js <- function(data3js,
 }
 
 
-#' Export an r3js plot
+#' Save an r3js plot to an HTML file
 #'
-#' Exports a r3js plot to an external html file.
+#' Converts r3js plot data to a widget and saves it to an HTML file (e.g. for sharing with others)
 #'
-#' @param data3js The
-#' @param ...
+#' @param data3js The r3js data object to be saved
+#' @param file File to save HTML into
+#' @param title Text to use as the title of the generated page
+#' @param selfcontained Whether to save the HTML as a single self-contained file (with external resources base64 encoded) or a file with external resources placed in an adjacent directory.
+#' @param libdir Directory to copy HTML dependencies into (defaults to filename_files)
+#' @param ... Further arguments to pass to \code{\link{r3js}}
 #'
-#' @return
 #' @export
 #'
-#' @examples
-export3js <- function(data3js,
-                      file,
-                      title = "r3js plot",
-                      ...) {
+save3js <- function(data3js,
+                    file,
+                    title = "r3js plot",
+                    selfcontained = TRUE,
+                    libdir = NULL,
+                    ...) {
 
   # Create the widget
   widget <- r3js(data3js = data3js,
                  ...)
 
   # Export the widget
-  export3jsWidget(widget = widget,
-                  file   = file,
-                  title  = title)
+  save3jsWidget(widget = widget,
+                file   = file,
+                title  = title,
+                selfcontained = selfcontained,
+                libdir = libdir)
 
 }
 
 
-#' Export an r3js html widget
+#' Save an r3js widget to an HTML file
 #'
-#' Export an r3js html widget to an external html file.
+#' Save a rendered r3js widget to an HTML file (e.g. for sharing with others). This is mostly a wrapper for \code{\link[htmlwidgets]{saveWidget}}.
 #'
-#' @param widget The
-#' @param ...
+#' @param widget Widget to save
+#' @param file File to save HTML into
+#' @param title Text to use as the title of the generated page
+#' @param selfcontained Whether to save the HTML as a single self-contained file (with external resources base64 encoded) or a file with external resources placed in an adjacent directory
+#' @param libdir Directory to copy HTML dependencies into (defaults to filename_files)
+#' @param ... Further arguments to pass to \code{\link[htmlwidgets]{saveWidget}}
 #'
 #' @return
 #' @export
 #'
 #' @examples
-export3jsWidget <- function(widget,
-                            file,
-                            title = "r3js plot") {
+save3jsWidget <- function(widget,
+                          file,
+                          title = "r3js plot",
+                          selfcontained = TRUE,
+                          libdir = NULL,
+                          ...) {
 
-  # Check file has .html extension
-  if(!grepl("\\.html$", file)){
-    file <- paste0(file, ".html")
+  # If self-contained write first to a temporary file
+  # else save as normal widget
+  if(selfcontained){
+
+    # Export the widget to a temporary file first
+    tmp_file <- tempfile(fileext = ".html")
+    htmlwidgets::saveWidget(widget = widget,
+                            file   = tmp_file,
+                            title  = title,
+                            ...)
+
+    # Move the file to the proper location
+    file.copy(from = tmp_file,
+              to   = file,
+              overwrite = TRUE)
+
+    # Remove the temporary file
+    unlink(tmp_file)
+
+  } else {
+
+    htmlwidgets::saveWidget(widget        = widget,
+                            file          = tmp_file,
+                            title         = title,
+                            selfcontained = selfcontained,
+                            libdir        = libdir,
+                            ...)
+
   }
 
-  # Export the widget to a temporary file first
-  tmp_file <- tempfile(fileext = ".html")
-  htmlwidgets::saveWidget(widget = widget,
-                          file   = tmp_file,
-                          title  = title)
-
-  # Move the file to the proper location
-  file.copy(from = tmp_file,
-            to   = file,
-            overwrite = TRUE)
-
-  # Remove the temporary file
-  unlink(tmp_file)
 
 }
 

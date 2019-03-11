@@ -6,9 +6,10 @@
 \usage{
 plot3js(x, y, z, xlim = extendrange(x), ylim = extendrange(y),
   zlim = extendrange(z), xlab = NULL, ylab = NULL, zlab = NULL,
-  axisline = 3, aspect = c(1, 1, 1), fixed_aspect = FALSE,
-  show_plot = TRUE, label_axes = TRUE, show_grid = TRUE,
-  grid_lwd = 1, axis_lwd = grid_lwd, box_lwd = grid_lwd, ...)
+  type = "p", axisline = 3, aspect = c(1, 1, 1),
+  fixed_aspect = FALSE, show_plot = TRUE, label_axes = "xyz",
+  show_grid = TRUE, grid_lwd = 1, axis_lwd = grid_lwd,
+  box_lwd = grid_lwd, ...)
 }
 \arguments{
 \item{...}{}

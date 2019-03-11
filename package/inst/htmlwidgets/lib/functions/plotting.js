@@ -22,110 +22,104 @@ function addPlotObject(plotobj,
                        parent,
                        scene){
 
-    // Check if object is part of a group
-    if(plotobj.type == "group"){
+    // Make the object
+    var object = make_object(plotobj, plotData, parent, scene);
+
+    // Add highlighted point
+    if(plotobj.highlight){
         
-        var group_objects = [];
-        for(var i=0; i<plotobj.plot.length; i++){
-            var object = addPlotObject(
-                plotobj.plot[i],
-                plotData,
-                parent,
-                scene
-            );
-            group_objects.push(object);
-            object.group = group_objects;
-        }
+        // Link plot and highlight objects
+        var hlobj = make_object(plotobj.highlight, plotData, parent, scene);
+        hlobj.visible = false;
+        object.highlight = hlobj;
+        parent.add(hlobj);
 
-    } else {
-        
-        // Make the object
-        var object = make_object(plotobj, plotData, parent, scene);
-
-        // Add highlighted point
-        if(plotobj.highlight){
-            
-            // Link plot and highlight objects
-            var hlobj = make_object(plotobj.highlight, plotData, parent, scene);
-            hlobj.visible = false;
-            object.highlight = hlobj;
-            parent.add(hlobj);
-
-        }
-
-        // Add interactivity
-        if(plotobj.properties.interactive || plotobj.properties.label){
-            scene.selectable_objects.push(object);
-        }
-
-        // Work out toggle behaviour
-        if(plotobj.properties.toggle){
-            var toggle = plotobj.properties.toggle;
-            var tog_index = scene.toggles.names.indexOf(toggle);
-            if(tog_index == -1){
-                scene.toggles.names.push(toggle);
-                scene.toggles.objects.push([object]);
-            } else {
-                scene.toggles.objects[tog_index].push(object);
-            }
-        }
-        
-        // Add label info
-        if(plotobj.properties.label){
-            object.label = plotobj.properties.label;
-        }
-
-        // Work out if object is dynamically associated with a face
-        if(plotobj.properties.faces){
-            scene.dynamic_objects.push(object);
-            if(plotobj.properties.faces.indexOf("x+") != -1){ scene.dynamicDeco.faces[0].push(object) }
-            if(plotobj.properties.faces.indexOf("y+") != -1){ scene.dynamicDeco.faces[1].push(object) }
-            if(plotobj.properties.faces.indexOf("z+") != -1){ scene.dynamicDeco.faces[2].push(object) }
-            if(plotobj.properties.faces.indexOf("x-") != -1){ scene.dynamicDeco.faces[3].push(object) }
-            if(plotobj.properties.faces.indexOf("y-") != -1){ scene.dynamicDeco.faces[4].push(object) }
-            if(plotobj.properties.faces.indexOf("z-") != -1){ scene.dynamicDeco.faces[5].push(object) }
-        }
-        if(plotobj.properties.corners){
-            
-            scene.dynamic_objects.push(object);
-            
-            var corners  = plotobj.properties.corners[0];
-            var edgecode = corners.substring(0,3);
-            var poscode  = corners.substring(3,4);
-            var a;
-            var b;
-
-            if(edgecode == "x--"){ a = 0  }
-            if(edgecode == "x-+"){ a = 1  }
-            if(edgecode == "x++"){ a = 2  }
-            if(edgecode == "x+-"){ a = 3  }
-            if(edgecode == "-y-"){ a = 4  }
-            if(edgecode == "-y+"){ a = 5  }
-            if(edgecode == "+y+"){ a = 6  }
-            if(edgecode == "+y-"){ a = 7  }
-            if(edgecode == "--z"){ a = 8  }
-            if(edgecode == "-+z"){ a = 9  }
-            if(edgecode == "++z"){ a = 10 }
-            if(edgecode == "+-z"){ a = 11 }
-
-            if(poscode == "r"){ b = 0 } // Up
-            if(poscode == "u"){ b = 1 } // Down
-            if(poscode == "f"){ b = 2 } // Front
-            if(poscode == "l"){ b = 3 } // Left
-            if(poscode == "d"){ b = 4 } // Right
-            if(poscode == "b"){ b = 5 } // Back
-
-            scene.dynamicDeco.edges[a][b].push(object);
-
-        }
-
-        // Add the object to the plot
-        object.scene = scene;
-        parent.add(object);
-
-        // Return the object
-        return(object);
     }
+
+    // Add interactivity
+    if(plotobj.properties.interactive || plotobj.properties.label){
+        scene.selectable_objects.push(object);
+    }
+
+    // Work out toggle behaviour
+    if(plotobj.properties.toggle){
+        var toggle = plotobj.properties.toggle;
+        var tog_index = scene.toggles.names.indexOf(toggle);
+        if(tog_index == -1){
+            scene.toggles.names.push(toggle);
+            scene.toggles.objects.push([object]);
+        } else {
+            scene.toggles.objects[tog_index].push(object);
+        }
+    }
+    
+    // Add label info
+    if(plotobj.properties.label){
+        object.label = plotobj.properties.label;
+    }
+
+    // Work out if object is dynamically associated with a face
+    if(plotobj.properties.faces){
+        scene.dynamic_objects.push(object);
+        if(plotobj.properties.faces.indexOf("x+") != -1){ scene.dynamicDeco.faces[0].push(object) }
+        if(plotobj.properties.faces.indexOf("y+") != -1){ scene.dynamicDeco.faces[1].push(object) }
+        if(plotobj.properties.faces.indexOf("z+") != -1){ scene.dynamicDeco.faces[2].push(object) }
+        if(plotobj.properties.faces.indexOf("x-") != -1){ scene.dynamicDeco.faces[3].push(object) }
+        if(plotobj.properties.faces.indexOf("y-") != -1){ scene.dynamicDeco.faces[4].push(object) }
+        if(plotobj.properties.faces.indexOf("z-") != -1){ scene.dynamicDeco.faces[5].push(object) }
+    }
+    if(plotobj.properties.corners){
+        
+        scene.dynamic_objects.push(object);
+        
+        var corners  = plotobj.properties.corners[0];
+        var edgecode = corners.substring(0,3);
+        var poscode  = corners.substring(3,4);
+        var a;
+        var b;
+
+        if(edgecode == "x--"){ a = 0  }
+        if(edgecode == "x-+"){ a = 1  }
+        if(edgecode == "x++"){ a = 2  }
+        if(edgecode == "x+-"){ a = 3  }
+        if(edgecode == "-y-"){ a = 4  }
+        if(edgecode == "-y+"){ a = 5  }
+        if(edgecode == "+y+"){ a = 6  }
+        if(edgecode == "+y-"){ a = 7  }
+        if(edgecode == "--z"){ a = 8  }
+        if(edgecode == "-+z"){ a = 9  }
+        if(edgecode == "++z"){ a = 10 }
+        if(edgecode == "+-z"){ a = 11 }
+
+        if(poscode == "r"){ b = 0 } // Up
+        if(poscode == "u"){ b = 1 } // Down
+        if(poscode == "f"){ b = 2 } // Front
+        if(poscode == "l"){ b = 3 } // Left
+        if(poscode == "d"){ b = 4 } // Right
+        if(poscode == "b"){ b = 5 } // Back
+
+        scene.dynamicDeco.edges[a][b].push(object);
+
+    }
+
+    // Add the object to the plot
+    object.scene = scene;
+    parent.add(object);
+
+    // Add reference of object to primary object list
+    scene.primary_objects.push(object);
+    
+    // Sort out groupings
+    if(plotobj.group){
+        object.group = [];
+        for(var i=0; i<plotobj.group.length; i++){
+            object.group.push(plotobj.group[i]-1);
+        }
+    }
+
+    // Return the object
+    return(object);
+
 }
 
 
@@ -151,6 +145,9 @@ function normalise_coords(coords,
 
 function get_object_material(object){
 
+    var scene = object.parent.parent.parent;
+    var plotPoints = object.parent;
+
     // Convert colors
     if(!object.properties.color.isColor){
         object.properties.color = new THREE.Color(object.properties.color[0][0],
@@ -162,15 +159,32 @@ function get_object_material(object){
     if(object.properties.mat == "basic")    { var mat = new THREE.MeshBasicMaterial();   }
     if(object.properties.mat == "lambert")  { var mat = new THREE.MeshLambertMaterial(); }
     if(object.properties.mat == "phong")    { var mat = new THREE.MeshPhongMaterial();   }
-    if(object.properties.mat == "line")     { var mat = new THREE.LineBasicMaterial();   }
+    if(object.properties.mat == "line")     { 
+        if(object.properties.gapSize){
+            var mat = new THREE.LineDashedMaterial({
+                scale: 200
+            });
+        } else {
+            var mat = new THREE.LineBasicMaterial();
+        }
+    }
 
     // Set object material properties
     Object.assign(mat, object.properties);
     mat.side = THREE.DoubleSide;
 
     // Set clipping
+    mat.clippingPlanes = [];
+    if(object.properties.clippingPlanes){
+        var clippingPlanes = scene.clippingPlanes.includeAndReferencePlaneData(object);
+        mat.clippingPlanes = mat.clippingPlanes.concat(
+            clippingPlanes
+        );
+    }
     if(!object.properties.xpd){
-        mat.clippingPlanes = object.parent.clippingPlanes;
+        mat.clippingPlanes = mat.clippingPlanes.concat(
+            plotPoints.clippingPlanes
+        );
     }
 
     return(mat);
@@ -187,15 +201,24 @@ function make_object(object, plotData, parent, scene){
     object.normalise = plotData.normalise;
     object.parent    = parent;
     object.scene     = scene;
-    if(!object.properties.dimensions){
-        object.properties.dimensions = 3;
+
+    // Check object type has been defined
+    if(typeof(object.type) === "undefined"){
+        throw("Object type undefined");
     }
 
+    // Create the plotting object
     if(object.type == "point"){
         var plotobject = make_point(object);
     }
+    if(object.type == "glpoint"){
+        var plotobject = make_glpoint(object);
+    }
     if(object.type == "line"){
         var plotobject = make_line(object);
+    }
+    if(object.type == "glline"){
+        var plotobject = make_glline(object);
     }
     if(object.type == "arrow"){
         var plotobject = make_arrow(object);
@@ -218,11 +241,17 @@ function make_object(object, plotData, parent, scene){
     if(object.type == "text"){
         var plotobject = make_textobject(object);
     }
-
+    
+    // Apply any rotations
     if(object.properties.rotation){
         plotobject.geometry.rotateX(object.properties.rotation[0]);
         plotobject.geometry.rotateY(object.properties.rotation[1]);
         plotobject.geometry.rotateZ(object.properties.rotation[2]);
+    }
+
+    // Apply renderOrder
+    if(object.properties.renderOrder){
+        plotobject.renderOrder = object.properties.renderOrder;
     }
 
     // Apply any special transformations
@@ -520,73 +549,6 @@ function line_geo3D(from,
 
 }
 
-
-function make_lineMesh(from, to, material, linewidth, dimensions){
-
-    // Get geo
-    var geo = make_lineMeshGeo(from, 
-                               to, 
-                               linewidth, 
-                               dimensions);
-
-    // Make line object
-    geo = new THREE.BufferGeometry().fromGeometry( geo );
-    var line = new THREE.Mesh(geo, material);
-
-    // Return line
-    return(line);
-
-}
-
-function make_line(object){
-
-    // Get line coordinates and material
-    if(object.normalise){
-        var from = normalise_coords(object.position.from, 
-                                    object.lims, 
-                                    object.aspect);
-        var to   = normalise_coords(object.position.to, 
-                                    object.lims, 
-                                    object.aspect);
-    } else {
-        var from = object.position.from;
-        var to   = object.position.to;
-    }
-
-    var material = get_object_material(object);
-
-    // Make the line
-    var line = make_lineMesh(from, to, material, object.properties.lwd, object.properties.dimensions);
-
-    // Return line
-    return(line);
-    
-}
-
-function make_lineShader(object){
-
-    var from = normalise_coords(object.position.from, 
-                                object.lims, 
-                                object.aspect);
-    var to   = normalise_coords(object.position.to, 
-                                object.lims, 
-                                object.aspect);
-    
-    object.properties.mat = "linemesh";
-    var material = get_object_material(object);
-
-    var geometry = new THREE.Geometry();
-    geometry.vertices.push( new THREE.Vector3().fromArray(from) );
-    geometry.vertices.push( new THREE.Vector3().fromArray(to)   );
-
-    var line = new MeshLine();
-    line.setGeometry( geometry );
-
-    var mesh = new THREE.Mesh( line.geometry, material );
-    return(mesh);
-
-}
-
 function make_arrow(object){
 
     // Set from and to
@@ -844,6 +806,11 @@ function make_textobject(object){
         object.position = normalise_coords(object.position,
                                            object.lims,
                                            object.aspect);
+    }
+    if(object.properties.poffset){
+        object.position[0] = object.position[0] + object.properties.poffset[0];
+        object.position[1] = object.position[1] + object.properties.poffset[1];
+        object.position[2] = object.position[2] + object.properties.poffset[2];
     }
     
     if(object.rendering == "geometry"){
