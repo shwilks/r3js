@@ -93,12 +93,7 @@ function r3js(container, plotData, settings){
 
     }
 
-    // Call the rotation event listener
-    viewport.plotHolder.rotation.onChangeCallback();
-
     // Start the animation
-    viewport.animate = animate;
-    viewport.render();
     animate();
 
 }
