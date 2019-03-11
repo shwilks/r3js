@@ -200,7 +200,7 @@ plot3js <- function(x,y,z,
 #' @examples
 material3js <- function(mat = "phong",
                         col = "black",
-                        opacity = 1.0,
+                        opacity = NULL,
                         xpd = TRUE,
                         lwd = 1,
                         lend = 0,
@@ -228,6 +228,9 @@ material3js <- function(mat = "phong",
                         renderSidesSeparately = NULL,
                         removeSelfTransparency = NULL,
                         breakupMesh = NULL){
+
+  # Get opacity from color if not otherwise specified
+  if(is.null(opacity)){ opacity <- col2rgb(col, alpha = TRUE)[4]/255 }
 
   props <- list(mat         = jsonlite::unbox(mat),
                 color       = convertCol3js(col),
@@ -429,7 +432,45 @@ sidegrid3js <- function(data3js,
 }
 
 
+#' Add a generic shape to an 3js plot
+#'
+#' @param data3js
+#' @param vertices
+#' @param faces
+#' @param col
+#' @param highlight
+#' @param label
+#' @param toggle
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+shape3js <- function(data3js,
+                     vertices,
+                     faces,
+                     col  = "black",
+                     highlight,
+                     label  = NULL,
+                     toggle = NULL,
+                     ...) {
 
+  object <- c()
+  object$type <- "shape"
+  object$vertices   <- vertices
+  object$faces      <- faces-1 # Need to convert to base 0
+  object$properties <- material3js(col = col,
+                                   label = label,
+                                   toggle = toggle,
+                                   ...)
+
+  data3js$plot[[length(data3js$plot)+1]] <- object
+
+  # Create the highlight object if requested
+  if(!missing(highlight)){
+    data3js <- highlight3js(data3js, highlight)
+  }
+}
 
 
 
