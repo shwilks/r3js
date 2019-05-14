@@ -43,7 +43,7 @@ function addButtons(viewport){
 		viewport.infoDiv.toggle();
 	}
 	var grid_btn = createButton("Show info",
-		                        "<div style='font-family:viewerglyphs'>d</div>",
+		                        icon_info(),
 		                        show_info);
 
 
@@ -54,7 +54,7 @@ function addButtons(viewport){
     	viewport.sceneChange = true;
     }
 	var centerScene_btn = createButton("Reset orientation",
-		                               "<div style='font-family:viewerglyphs'>c</div>",
+		                               icon_center(),
 		                               btn_centerScene);
 	viewport.btns.centerScene = centerScene_btn;
 
@@ -63,7 +63,7 @@ function addButtons(viewport){
       saveImg(viewport);
 	}
 	var saveImg_btn = createButton("Download image",
-		                           "<div style='font-family:viewerglyphs'>i</div>",
+		                           icon_snapshot(),
 		                           btn_saveImg);
 
 	// Pop out viewer
@@ -72,7 +72,7 @@ function addButtons(viewport){
 			window.open(window.location.href);
 		}
 		var popOut_btn   = createButton("Open viewer",
-			                             "<div style='font-family:viewerglyphs'>o</div>",
+			                             icon_open(),
 			                             popOutViewer);
     }
 

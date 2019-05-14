@@ -2,12 +2,15 @@
 function bind_api(container, viewport){
    
     // Function for snapshot
-    container.snapshot = function(filename){
+    viewport.getImgData = function(){
+        return(getImgData(this));
+    }
+    viewport.snapshot = function(filename){
         saveImg(viewport, filename);
     }
 
     // Functions to rotate the scene
-    container.rotateSceneEuclidean = function(rotation){
+    viewport.rotateSceneEuclidean = function(rotation){
         viewport.scene.rotateSceneEuclidean(rotation);
         viewport.scene.showhideDynamics( viewport.camera );
         if(viewport.mouse.over){
@@ -16,7 +19,7 @@ function bind_api(container, viewport){
         viewport.render();
     }
 
-    container.zoom = function(zoom){
+    viewport.zoom = function(zoom){
     	viewport.camera.rezoom(zoom);
     	if(viewport.mouse.over){
           viewport.raytrace();	
