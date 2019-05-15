@@ -106,6 +106,25 @@ R3JS.objects.sphere = class Sphere {
 }
 
 // General function to populate the plot
+R3JS.Scene.prototype.populatePlot = function(plotData){
+
+    if(plotData.plot){
+        for(var i=0; i<plotData.plot.length; i++){
+            this.addPlotObject(plotData.plot[i]);
+        }
+    }
+
+}
+
+// Add a plot object
+R3JS.Scene.prototype.addPlotObject = function(plotobj){
+
+    console.log(plotobj);
+
+}
+
+
+// General function to populate the plot
 function populatePlot(parent,
                       plotData,
                       scene){

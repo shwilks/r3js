@@ -10,19 +10,22 @@ R3JS.Viewer.prototype.load = function(plotData){
     // Position camera
     this.camera.setZoom(5);
 
-    console.log(plotData.plot[plotData.plot.length-1]);
-    
-    var sphere1 = new R3JS.objects.sphere({
-        radius : 0.1
-    });
-    sphere1.setPosition([0,-0.1,-0.1]);
-    this.scene.add(sphere1.object);
+    // Populate the plot
+    this.scene.populatePlot(plotData);
 
-    var sphere2 = new R3JS.objects.sphere({
-        radius : 0.1
-    });
-    sphere2.setPosition([0,0.3,0.3]);
-    this.scene.add(sphere2.object);
+    // console.log(plotData.plot[plotData.plot.length-1]);
+    
+    // var sphere1 = new R3JS.objects.sphere({
+    //     radius : 0.1
+    // });
+    // sphere1.setPosition([0,-0.1,-0.1]);
+    // this.scene.add(sphere1.object);
+
+    // var sphere2 = new R3JS.objects.sphere({
+    //     radius : 0.1
+    // });
+    // sphere2.setPosition([0,0.3,0.3]);
+    // this.scene.add(sphere2.object);
 
     
 
