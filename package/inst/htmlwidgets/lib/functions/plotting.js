@@ -46,7 +46,80 @@ R3JS.Material = function(properties){
 }
 
 
+R3JS.normalise_coords = function(
+    coords,
+    plotdims
+    ){
+
+    norm_coords = [];
+    for(var i=0; i<coords.length; i++){
+        norm_coords.push(
+            R3JS.normalise_coord(
+                coords[i],
+                plotdims
+            )
+        );
+    }
+    return(norm_coords);
+
+}
+
+R3JS.normalise_coord = function(
+    coord, 
+    plotdims
+    ){
+
+    var lims   = plotdims.lims;
+    var aspect = plotdims.aspect;
+
+    // Normalised coordinates
+    norm_coord = [];
+    for(var i=0; i<coord.length; i++){
+        norm_coord.push(
+            (coord[i] - lims[i][0]*aspect[i]) / (lims[i][1] - lims[i][0])
+        );
+    }
+    return(norm_coord);
+
+}
+
+
 R3JS.objects = {};
+R3JS.objects.constructors = {};
+
+R3JS.objects.make_element = function(
+    plotobj, 
+    plotdims
+    ){
+
+    // Point
+    if(plotobj.type == "point"){
+        var element = this.constructors.point(
+            plotobj,
+            plotdims
+        );
+    }
+
+    // GL line
+    if(plotobj.type == "glline"){
+        var element = this.constructors.glline(
+            plotobj,
+            plotdims
+        );
+    }
+
+    // Text
+    if(plotobj.type == "text"){
+        var element = this.constructors.text(
+            plotobj,
+            plotdims
+        );
+    }
+
+    // Return the object
+    return(element);
+
+};
 
 // Sphere object
 R3JS.objects.sphere = class Sphere {
@@ -110,18 +183,156 @@ R3JS.Scene.prototype.populatePlot = function(plotData){
 
     if(plotData.plot){
         for(var i=0; i<plotData.plot.length; i++){
-            this.addPlotObject(plotData.plot[i]);
+            this.addPlotElement(
+                plotData.plot[i],
+                {
+                    lims   : plotData.lims,
+                    aspect : plotData.aspect,
+                }
+            );
         }
     }
 
 }
 
 // Add a plot object
-R3JS.Scene.prototype.addPlotObject = function(plotobj){
+R3JS.Scene.prototype.addPlotElement = function(
+    plotobj,
+    plotdims
+    ){
+    
+    // Make the object
+    var element = R3JS.objects.make_element(
+        plotobj,
+        plotdims
+    );
 
-    console.log(plotobj);
+    // Add highlighted point
+    if(plotobj.highlight){
+        
+        // Link plot and highlight objects
+        var hlelement = R3JS.objects.make_element(
+            plotobj.highlight, 
+            plotdims
+        );
+        hlelement.hide() = false;
+        element.highlight = hlelement;
+        this.add(hlobj);
+
+    }
+
+    // Add interactivity
+    if(plotobj.properties.interactive || plotobj.properties.label){
+        this.selectable_objects.push(element);
+    }
+
+    // Work out toggle behaviour
+    if(plotobj.properties.toggle){
+        var toggle = plotobj.properties.toggle;
+        var tog_index = this.toggles.names.indexOf(toggle);
+        if(tog_index == -1){
+            this.toggles.names.push(toggle);
+            this.toggles.objects.push([element]);
+        } else {
+            this.toggles.objects[tog_index].push(element);
+        }
+    }
+    
+    // Add label info
+    if(plotobj.properties.label){
+        element.label = plotobj.properties.label;
+    }
+
+    // Work out if object is dynamically associated with a face
+    if(plotobj.properties.faces){
+        this.makeDynamic(plotdims);
+        this.dynamic_objects.push(element);
+        if(plotobj.properties.faces.indexOf("x+") != -1){ this.dynamicDeco.faces[0].push(element) }
+        if(plotobj.properties.faces.indexOf("y+") != -1){ this.dynamicDeco.faces[1].push(element) }
+        if(plotobj.properties.faces.indexOf("z+") != -1){ this.dynamicDeco.faces[2].push(element) }
+        if(plotobj.properties.faces.indexOf("x-") != -1){ this.dynamicDeco.faces[3].push(element) }
+        if(plotobj.properties.faces.indexOf("y-") != -1){ this.dynamicDeco.faces[4].push(element) }
+        if(plotobj.properties.faces.indexOf("z-") != -1){ this.dynamicDeco.faces[5].push(element) }
+    }
+
+    if(plotobj.properties.corners){
+        
+        this.dynamic_objects.push(element);
+        
+        var corners  = plotobj.properties.corners[0];
+        var edgecode = corners.substring(0,3);
+        var poscode  = corners.substring(3,4);
+        var a;
+        var b;
+
+        if(edgecode == "x--"){ a = 0  }
+        if(edgecode == "x-+"){ a = 1  }
+        if(edgecode == "x++"){ a = 2  }
+        if(edgecode == "x+-"){ a = 3  }
+        if(edgecode == "-y-"){ a = 4  }
+        if(edgecode == "-y+"){ a = 5  }
+        if(edgecode == "+y+"){ a = 6  }
+        if(edgecode == "+y-"){ a = 7  }
+        if(edgecode == "--z"){ a = 8  }
+        if(edgecode == "-+z"){ a = 9  }
+        if(edgecode == "++z"){ a = 10 }
+        if(edgecode == "+-z"){ a = 11 }
+
+        if(poscode == "r"){ b = 0 } // Up
+        if(poscode == "u"){ b = 1 } // Down
+        if(poscode == "f"){ b = 2 } // Front
+        if(poscode == "l"){ b = 3 } // Left
+        if(poscode == "d"){ b = 4 } // Right
+        if(poscode == "b"){ b = 5 } // Back
+
+        this.dynamicDeco.edges[a][b].push(element);
+
+    }
+
+    // // Add reference of object to primary object list
+    // scene.primary_objects.push(object);
+    
+    // // Sort out groupings
+    // if(plotobj.group){
+    //     object.group = [];
+    //     for(var i=0; i<plotobj.group.length; i++){
+    //         object.group.push(plotobj.group[i]-1);
+    //     }
+    // }
+
+    this.add(element.object);
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // General function to populate the plot
@@ -139,6 +350,16 @@ function populatePlot(parent,
     }
 
 }
+
+
+
+
+
+
+
+
+
+
 
 // Plot points
 function addPlotObject(plotobj, 
@@ -878,127 +1099,7 @@ function make_surface(object){
 
 
 
-function make_textobject(object){
 
-    if(object.normalise){
-        object.position = normalise_coords(object.position,
-                                           object.lims,
-                                           object.aspect);
-    }
-    if(object.properties.poffset){
-        object.position[0] = object.position[0] + object.properties.poffset[0];
-        object.position[1] = object.position[1] + object.properties.poffset[1];
-        object.position[2] = object.position[2] + object.properties.poffset[2];
-    }
-    
-    if(object.rendering == "geometry"){
-        object.alignment[0] = -object.alignment[0]/2 + 0.5;
-        object.alignment[1] = -object.alignment[1]/2 + 0.5;
-        
-        if(object.normalise){
-            object.offset[0] = object.offset[0]*0.025;
-            object.offset[1] = object.offset[1]*0.025;
-            object.size = object.size*0.025
-        }
-        var textobject = make_text(object.text,
-                                   object.position,
-                                   object.size,
-                                   object.alignment,
-                                   object.offset,
-                                   object.properties.color);
-        object.scene.labels.push(textobject);
-    }
-    if(object.rendering == "html"){
-        var textobject = make_htmltext(object);
-    }
-    return(textobject);
-
-}
-
-function make_htmltext(object){
-
-
-    // Create text div
-    var textdiv     = document.createElement( 'div' );
-    
-    // Define color as hex
-    if(object.properties.color.red){
-        var color = new THREE.Color(
-                object.properties.color.red, 
-                object.properties.color.green, 
-                object.properties.color.blue
-        );
-        textdiv.style.color = '#'+color.getHexString();
-    } else {
-        textdiv.style.color = 'inherit';
-    }
-    
-    // Set other styles and content
-    textdiv.style.fontSize = object.size*100+"%";
-    textdiv.textContent = object.text;
-    apply_style(textdiv, object.style);
-    
-    // Create CSS text object
-    var textobject = new THREE.CSS2DObject( textdiv );
-
-    // Set text object alignment
-    textobject.alignment = {
-        x: -50 + 50*object.alignment[0],
-        y: -50 - 50*object.alignment[1]
-    };
-
-    // Set text offset
-    textdiv.style.marginLeft = object.offset[0]+"px";
-    textdiv.style.marginTop  = object.offset[1]+"px";
-
-    // Set text object position
-    textobject.position.set(
-        object.position[0],
-        object.position[1],
-        object.position[2]
-    );
-
-    return(textobject);
-
-}
-
-function make_text(string, pos, size, alignment, offset, color){
-
-    var shapes    = font.generateShapes( string, size, 4 );
-    var geometry  = new THREE.ShapeGeometry( shapes );
-    var textShape = new THREE.BufferGeometry();
-    textShape.fromGeometry( geometry );
-
-    if(color && color.red){
-        color = new THREE.Color(
-            color.red, 
-            color.green, 
-            color.blue
-        );
-    } else {
-        color = new THREE.Color("#000000");
-    }
-    var matLite = new THREE.MeshBasicMaterial( {
-        color: color,
-        side: THREE.DoubleSide
-    } );
-
-    // Align text
-    textShape.computeBoundingBox();
-    xMid = - 0.5 * ( textShape.boundingBox.max.x - textShape.boundingBox.min.x );
-    yMid = - 0.5 * ( textShape.boundingBox.max.y - textShape.boundingBox.min.y );
-    textShape.translate( xMid*2*alignment[0], yMid*2*alignment[1], 0 );
-
-    // Offset text
-    if(offset){
-        textShape.translate( offset[0], offset[1], 0 );
-    }
-
-    var text = new THREE.Mesh( textShape, matLite )
-    text.position.set(pos[0], pos[1], pos[2])
-    return(text);
-
-}
 
 function lineMeshSegments(geo, mat, lwd){
     

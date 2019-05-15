@@ -1,6 +1,6 @@
 
 
-function apply_style(div, style){
+R3JS.apply_style = function(div, style){
     for(var i in style) {
         div.style[i] = style[i];
     }

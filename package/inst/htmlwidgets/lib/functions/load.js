@@ -1,5 +1,9 @@
 
 R3JS.Viewer.prototype.load = function(plotData){
+
+    // Set scene lims and aspect
+    this.scene.setLims(plotData.lims);
+    this.scene.setAspect(plotData.aspect);
 	
     // Add positional light
     var light       = new THREE.DirectionalLight(0xe0e0e0);
@@ -12,6 +16,9 @@ R3JS.Viewer.prototype.load = function(plotData){
 
     // Populate the plot
     this.scene.populatePlot(plotData);
+
+    // Show hide dynamics
+    this.scene.showhideDynamics(this.camera.camera);
 
     // console.log(plotData.plot[plotData.plot.length-1]);
     

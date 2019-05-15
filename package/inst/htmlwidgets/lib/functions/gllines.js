@@ -1,44 +1,82 @@
 
+// GL line constructor
+R3JS.objects.constructors.glline = function(
+    plotobj,
+    plotdims
+    ){
+
+    // Setup object
+    var object
+
+    // Normalise coords
+    if(plotdims){
+        plotobj.position = R3JS.normalise_coords(
+            plotobj.position,
+            plotdims
+        )
+    }
+
+    object = new R3JS.objects.gllines_thin({
+        coords : plotobj.position
+    });
+    // if(plotobj.properties.lwd > 1){
+    //     line = make_fatline(object);
+    // } else {
+    //     line = make_thinline(object);
+    // }
+    return(object);
+
+}
+
+
 // Make a thin line object
 R3JS.objects.gllines_thin = class GLLines_thin {
 
     constructor(args){
 
+        var ncoords = args.coords.length;
+
         // Set default properties
         if(!args.properties){
             args.properties = {
-                mat : "line"
+                mat : "line",
+                lwd : 1,
+                color : [
+                    Array(ncoords).fill(0),
+                    Array(ncoords).fill(0),
+                    Array(ncoords).fill(0)
+                ]
             };
         }
 
         // Set position and color
-        this.positions = new Float32Array( args.coords.length * 3 );
-        this.color     = new Float32Array( args.coords.length * 4 );
+        var positions = new Float32Array( ncoords * 3 );
+        var color     = new Float32Array( ncoords * 4 );
         
         // Fill in info
         for(var i=0; i<args.coords.length; i++){
 
-            this.positions[i*3]   = args.coords[i][0];
-            this.positions[i*3+1] = args.coords[i][1];
-            this.positions[i*3+2] = args.coords[i][2];
+            positions[i*3]   = args.coords[i][0];
+            positions[i*3+1] = args.coords[i][1];
+            positions[i*3+2] = args.coords[i][2];
 
-            this.color[i*4]   = args.color[0][i];
-            this.color[i*4+1] = args.color[1][i];
-            this.color[i*4+2] = args.color[2][i];
-            this.color[i*4+3] = 1;
+            color[i*4]   = args.properties.color[0][i];
+            color[i*4+1] = args.properties.color[1][i];
+            color[i*4+2] = args.properties.color[2][i];
+            color[i*4+3] = 1;
 
         }
 
         // Create buffer geometry
-        this.geometry = new THREE.BufferGeometry();
-        this.geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
-        this.geometry.addAttribute( 'color',    new THREE.BufferAttribute( color,     4 ) );
+        var geometry = new THREE.BufferGeometry();
+        geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
+        geometry.addAttribute( 'color',    new THREE.BufferAttribute( color,     4 ) );
 
         // Create the material
-        this.material = R3JS.Material(args.properties);
-        this.material.color = new THREE.Color();
-        this.material.vertexColors = THREE.VertexColors;
-        this.material.linewidth = object.properties.lwd;
+        var material = R3JS.Material(args.properties);
+        material.color = new THREE.Color();
+        material.vertexColors = THREE.VertexColors;
+        material.linewidth = args.properties.lwd;
 
         // Make the actual line object
         if(args.segments){
@@ -51,6 +89,9 @@ R3JS.objects.gllines_thin = class GLLines_thin {
         }
 
     }
+
+    show(){ this.object.visible = true  }
+    hide(){ this.object.visible = false }
 
 }
 

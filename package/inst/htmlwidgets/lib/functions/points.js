@@ -1,63 +1,92 @@
 
+// GL line constructor
+R3JS.objects.constructors.point = function(
+    plotobj,
+    plotdims
+    ){
 
-function make_point(object){
-    
-    // Set default dimensionality
-    if(!object.properties.dimensions){
-        object.properties.dimensions = 3;
-    }
-    
-    // Set object geometry
-    var geometries = get_pointGeos(object.properties.dimensions);
-    var geo = geometries[object.shape](object);
-    
-    // Set object material
-    var mat = get_object_material(object);
+    // Setup object
+    var object
 
-    // Make object
-    var point = new THREE.Mesh(geo, mat);
-
-    // Scale object
-    if(object.normalise){
-        point.scale.set(object.size/10, 
-                        object.size/10, 
-                        object.size/10);
+    // Normalise coords
+    if(plotdims){
+        plotobj.position = R3JS.normalise_coord(
+            plotobj.position,
+            plotdims
+        )
     }
 
-    // Normalise the coords
-    if(object.normalise){
-        object.position = normalise_coords(object.position,
-                                           object.lims,
-                                           object.aspect);
-    }
-
-    // Position object
-    point.position.set(object.position[0],
-                       object.position[1],
-                       object.position[2]);
-    if(!point.position.z){
-        point.position.z = 0;
-    }
-
-    // Return object
-    return(point);
+    object = new R3JS.objects.point({
+        coords : plotobj.position,
+        properties : plotobj.properties
+    });
+    // if(plotobj.properties.lwd > 1){
+    //     line = make_fatline(object);
+    // } else {
+    //     line = make_thinline(object);
+    // }
+    return(object);
 
 }
 
-function get_pointGeos(dimensions, lwd){
+
+// Make a thin line object
+R3JS.objects.point = class Point {
+
+    constructor(args){
+
+      // Set defaults
+      if(!args.shape)      args.shape = "circle";
+      if(!args.size)       args.size  = 0.2;
+      if(!args.dimensions) args.dimensions = 3;
+      if(!args.properties){
+        args.properties = {
+          mat : "phong",
+          color : [0,1,0],
+          lwd : 1
+        }
+      }
+
+      // Set object geometry
+      var geometries = R3JS.get_pointGeos(args.dimensions);
+      var geo = geometries[args.shape](args.properties.lwd);
+
+      // Set object material
+      var mat = R3JS.Material(args.properties);
+
+      // Make object
+      this.object = new THREE.Mesh(geo, mat);
+
+      // Scale the object
+      this.object.scale.set(args.size, 
+                            args.size, 
+                            args.size);
+
+      // Position object
+      this.object.position.set(args.coords[0],
+                               args.coords[1],
+                               args.coords[2]);
+
+    }
+
+}
+
+
+// Geometries for each point type
+R3JS.get_pointGeos = function(dimensions, lwd){
 
     if(dimensions == 2){
 
-        var square = function(object){
+        var square = function(lwd){
             return(new THREE.PlaneBufferGeometry(0.3, 0.3));
         };
-        var circle = function(object){
+        var circle = function(lwd){
             return(new THREE.CircleBufferGeometry(0.2, 32));
         }
-        var ocircle = function(object){
-            return(new THREE.RingGeometry( 0.2-object.properties.lwd/25, 0.2, 32 ));
+        var ocircle = function(lwd){
+            return(new THREE.RingGeometry( 0.2-lwd/25, 0.2, 32 ));
         }
-        var lcircle = function(object){
+        var lcircle = function(lwd){
             var geo = new THREE.BufferGeometry();
             var vertices = new Float32Array([
                 0.20000000298023224, 0, 0,
@@ -96,8 +125,8 @@ function get_pointGeos(dimensions, lwd){
             geo.addAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
             return(geo);
         };
-        var osquare = function(object){
-            var lwd  = object.properties.lwd/12;
+        var osquare = function(lwd){
+            lwd  = lwd/12;
             var size = 0.3;
             var inner = Math.sqrt((Math.pow(size,2))/2);
             var outer = Math.sqrt((Math.pow(size+lwd,2))/2);
@@ -105,7 +134,7 @@ function get_pointGeos(dimensions, lwd){
             geo.rotateZ( Math.PI/4 );
             return(geo);
         };
-        var lsquare = function(object){
+        var lsquare = function(lwd){
             var size = 0.3;
             var geo = new THREE.BufferGeometry();
             var vertices = new Float32Array([
@@ -122,15 +151,15 @@ function get_pointGeos(dimensions, lwd){
 
     if(dimensions == 3){
 
-        var circle = function(){
+        var circle = function(lwd){
             return(new THREE.SphereBufferGeometry(0.2, 25, 25));
         };
-        var square = function(){
+        var square = function(lwd){
             return(new THREE.BoxBufferGeometry( 0.3, 0.3, 0.3 ));
         };
-        var osquare = function(object){
+        var osquare = function(lwd){
             var size = 0.3;
-            var lwd  = object.properties.lwd/25;
+            lwd  = lwd/25;
             var geo = new THREE.Geometry();
             var lims = [-size/2-lwd/4, size/2+lwd/4];
 
@@ -187,7 +216,7 @@ function get_pointGeos(dimensions, lwd){
             geo = new THREE.BufferGeometry().fromGeometry(geo);
             return(geo);
         };
-        var lsquare = function(object){
+        var lsquare = function(lwd){
           var geo = new THREE.BoxBufferGeometry( 0.3, 0.3, 0.3 );
           var edges = new THREE.EdgesGeometry( geo );
           return( edges );

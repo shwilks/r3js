@@ -38,6 +38,7 @@ R3JS.Viewer.prototype.rotateScene = function(){
     this.sceneChange = true;
     this.scene.rotateOnAxis(new THREE.Vector3(1,0,0), -this.viewport.mouse.deltaY );
     this.scene.rotateOnAxis(new THREE.Vector3(0,1,0), this.viewport.mouse.deltaX  );
+    if(this.scene.dynamic) this.scene.showhideDynamics(this.camera.camera);
 
 }
 

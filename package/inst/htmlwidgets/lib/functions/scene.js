@@ -17,6 +17,10 @@ R3JS.Scene = class Scene {
 
     }
 
+    // Setting lims and aspect
+    setLims(lims)    { this.lims   = lims;   }
+    setAspect(aspect){ this.aspect = aspect; }
+
     // Add an object to the scene
     add(object){
 
