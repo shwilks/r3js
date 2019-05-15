@@ -1,207 +1,211 @@
 
-function bind_events(viewport){
 
-    // Set variables
-    viewport.mouse       = new THREE.Vector2();
-    viewport.mouse.down  = false;
-    viewport.mouse.over  = false;
-    viewport.touch       = {num:0};
-    viewport.onResize    = [];
+// Set mouse defaults
+R3JS.Viewport.prototype.mouse       = new THREE.Vector2();
+R3JS.Viewport.prototype.mouse.down  = false;
+R3JS.Viewport.prototype.mouse.over  = false;
+R3JS.Viewport.prototype.touch       = {num:0};
+R3JS.Viewport.prototype.onresize    = [];
 
-    // Add some general event listeners
-    window.addEventListener("resize", function(){ 
-        
-        // Resize camera
-        viewport.camera.resize();
-        
-        // Run any resize functions
-        for(var i=0; i<viewport.onResize.length; i++){
-            viewport.onResize[i]();
-        }
 
-        // Render the scene
-        viewport.render();
-
+// Function for getting mouse position
+R3JS.utils.getMousePos = function(event, container){
+    var offsets = container.getBoundingClientRect();
+    var top     = offsets.top;
+    var left    = offsets.left;
+    var mouseX  = ( (event.clientX-left) / container.offsetWidth ) * 2 - 1;
+    var mouseY  = -( (event.clientY-top) / container.offsetHeight ) * 2 + 1;
+    return({
+        x:mouseX,
+        y:mouseY
     });
+}
 
-    // Function to get mouse position
-    function getMousePos(event, container){
-        var offsets = container.getBoundingClientRect();
-        var top     = offsets.top;
-        var left    = offsets.left;
-        var mouseX  = ( (event.clientX-left) / container.offsetWidth ) * 2 - 1;
-        var mouseY  = -( (event.clientY-top) / container.offsetHeight ) * 2 + 1;
-        return({
-            x:mouseX,
-            y:mouseY
-        });
+
+
+// Window focus event listener
+R3JS.Viewport.prototype.onwindowblur = function(event){ 
+    this.onkeyup();
+    this.mouse.down = false;
+    this.div.style.cursor = "default";
+}
+
+
+// Add window resize events
+R3JS.Viewport.prototype.onwindowresize = function(event){ 
+    
+    // Resize camera
+    this.viewer.camera.resize();
+    
+    // Run any resize functions
+    for(var i=0; i<this.viewer.onresize.length; i++){
+        this.viewer.onresize[i]();
     }
 
-    // Add a mouse move event listener
-    function viewportMouseMove(event) {
-        var mouse = getMousePos(event, this);
-        this.mouse.deltaX = mouse.x - this.mouse.x;
-        this.mouse.deltaY = mouse.y - this.mouse.y;
-        this.mouse.x = mouse.x;
-        this.mouse.y = mouse.y;
-        this.raytraceNeeded = true;
-    }
-    viewport.addEventListener("mousemove", viewportMouseMove);
-
-    // Add a touch move event listener
-    function viewportTouchMove(event) {
-        event.preventDefault();
-
-        // // Make a fake additional touch for testing
-        // event = {touches:[
-        //     {clientX : event.touches[0].clientX,
-        //      clientY : event.touches[0].clientY},
-        //     {clientX : 530,
-        //      clientY : 630}
-        // ]};
-        
-        var mouse = getMousePos(event.touches[0], this);
-        this.mouse.deltaX = mouse.x - this.mouse.x;
-        this.mouse.deltaY = mouse.y - this.mouse.y;
-        this.mouse.x = mouse.x;
-        this.mouse.y = mouse.y;
-        
-        if(this.touch.num > 1){
-            
-            // this.mouse.scrollX = -20*this.mouse.deltaX;
-            // this.mouse.scrollY = -20*this.mouse.deltaY;
-            for(var i=0; i<event.touches.length; i++){
-                var touch = getMousePos(event.touches[i], this);
-                this.touch.touches[i].last_x = this.touch.touches[i].x;
-                this.touch.touches[i].last_y = this.touch.touches[i].y;
-                this.touch.touches[i].x = touch.x;
-                this.touch.touches[i].y = touch.y;
-                this.touch.touches[i].deltaX = this.touch.touches[i].last_x - this.touch.touches[i].x;
-                this.touch.touches[i].deltaY = this.touch.touches[i].last_y - this.touch.touches[i].y;
-            }
-            var dist1 = Math.sqrt(
-                Math.pow(this.touch.touches[0].last_x - this.touch.touches[1].last_x, 2) +
-                Math.pow(this.touch.touches[0].last_y - this.touch.touches[1].last_y, 2)
-            );
-            var dist2 = Math.sqrt(
-                Math.pow(this.touch.touches[0].x - this.touch.touches[1].x, 2) +
-                Math.pow(this.touch.touches[0].y - this.touch.touches[1].y, 2)
-            );
-            // this.mouse.scrollX = -20*this.mouse.deltaX;
-            this.mouse.scrollY = (dist2 - dist1)*20;
-        }
-    }
-    viewport.addEventListener("touchmove", viewportTouchMove);
-
-    // Add mouse down and up listeners
-    function viewportMouseDown(event) {
-        //event.preventDefault();
-        this.mouse.down  = true;
-        this.mouse.event = event;
-    }
-    function viewportMouseUp(event) {
-        document.activeElement.blur();
-        this.mouse.down  = false;
-        this.mouse.event = event;
-    }
-
-    function viewportTouchDown(event) {
-        event.preventDefault();
-        document.activeElement.blur();
-
-        // // Make a fake additional touch for testing
-        // event = {touches:[
-        //     {clientX : event.touches[0].clientX,
-        //      clientY : event.touches[0].clientY},
-        //     {clientX : 530,
-        //      clientY : 630}
-        // ]};
-
-        this.touch.num = event.touches.length;
-        if(event.touches.length == 1){
-            var mouse = getMousePos(event.touches[0], this);
-            this.mouse.x = mouse.x;
-            this.mouse.y = mouse.y;
-            this.mouse.down  = true;
-            this.mouse.event = event;
-            raytrace();
-        } else {
-            this.mouse.down  = false;
-            var touches = [];
-            for(var i=0; i<event.touches.length; i++){
-              var touch = getMousePos(event.touches[i], this);
-              touches.push(touch);
-            }
-            this.touch.touches = touches;
-        }
-    }
-    function viewportTouchUp(event) {
-        this.mouse.down  = false;
-        this.mouse.event = event;
-        this.touch.num = event.touches.length;
-        if(viewport.intersected){
-            dehover_intersects(viewport.intersected);
-            viewport.intersected = null;
-        }
-    }
-
-    function viewportContextMenu(event){
-        this.mouse.down = false;
-    }
-    viewport.addEventListener("mouseup",     viewportMouseUp);
-    viewport.addEventListener("mousedown",   viewportMouseDown);
-    viewport.addEventListener("touchend",    viewportTouchUp);
-    viewport.addEventListener("touchstart",  viewportTouchDown);
-    viewport.addEventListener('contextmenu', viewportContextMenu);
-
-  // Add mouse over mouse out listeners
-  function viewportMouseOver() {
-      this.mouse.over = true;
-  }
-  function viewportMouseOut() {
-      this.mouse.over = false;
-      this.mouse.down = false;
-      if(viewport.intersected){
-        viewport.dehover_point(viewport.intersected[0].object);
-        viewport.intersected = null;
-      }
-      viewport.render();
-  }
-
-    viewport.addEventListener("mouseover", viewportMouseOver);
-    viewport.addEventListener("mouseout", viewportMouseOut);
-
-    // Add a mouse scroll event listener
-    function viewportMouseScroll(event){
-        event.preventDefault();
-        this.mouse.scrollX = dampScroll(event.deltaX);
-        this.mouse.scrollY = dampScroll(event.deltaY);
-    }
-    viewport.addEventListener("wheel", viewportMouseScroll);
-
-    // Add key down event listeners
-    function windowKeyDown(event){
-        viewport.keydown = event;
-        if(viewport.keydown.key == "Meta"){
-            viewport.style.cursor = "all-scroll";
-            viewport.dragmode = true;
-        }
-    }
-    function windowKeyUp(event){
-        viewport.keydown = null;
-        viewport.style.cursor = "default";
-        viewport.dragmode = false;
-    }
-    document.addEventListener("keydown", windowKeyDown);
-    document.addEventListener("keyup",   windowKeyUp);
-
-    // Window focus event listener
-    function windowBlur(){
-        windowKeyUp();
-        viewport.mouse.down = false;
-        viewport.style.cursor = "default";
-    }
-    window.addEventListener("blur", windowBlur);
+    // Render the scene
+    this.viewer.render();
 
 }
+
+
+// Add document key up down event listeners
+R3JS.Viewport.prototype.onkeydown = function(event){ 
+    this.keydown = event;
+    if(this.keydown.key == "Meta"){
+        this.div.style.cursor = "all-scroll";
+        this.viewer.dragmode = true;
+    }
+}
+
+R3JS.Viewport.prototype.onkeyup = function(event){ 
+    this.keydown = null;
+    this.div.style.cursor = "default";
+    this.viewer.dragmode = false;
+}
+
+
+// Set mouse move event
+R3JS.Viewport.prototype.onmousemove = function(event){
+    var mouse = R3JS.utils.getMousePos(event, this.div);
+    this.mouse.deltaX = mouse.x - this.mouse.x;
+    this.mouse.deltaY = mouse.y - this.mouse.y;
+    this.mouse.x = mouse.x;
+    this.mouse.y = mouse.y;
+    this.viewer.raytraceNeeded = true;
+}
+
+
+// Add a touch move event listener
+R3JS.Viewport.prototype.ontouchmove = function(event){
+
+    event.preventDefault();
+    // // Make a fake additional touch for testing
+    // event = {touches:[
+    //     {clientX : event.touches[0].clientX,
+    //      clientY : event.touches[0].clientY},
+    //     {clientX : 530,
+    //      clientY : 630}
+    // ]};
+    
+    var mouse = getMousePos(event.touches[0], this);
+    this.mouse.deltaX = mouse.x - this.mouse.x;
+    this.mouse.deltaY = mouse.y - this.mouse.y;
+    this.mouse.x = mouse.x;
+    this.mouse.y = mouse.y;
+    
+    if(this.touch.num > 1){
+        
+        // this.mouse.scrollX = -20*this.mouse.deltaX;
+        // this.mouse.scrollY = -20*this.mouse.deltaY;
+        for(var i=0; i<event.touches.length; i++){
+            var touch = getMousePos(event.touches[i], this);
+            this.touch.touches[i].last_x = this.touch.touches[i].x;
+            this.touch.touches[i].last_y = this.touch.touches[i].y;
+            this.touch.touches[i].x = touch.x;
+            this.touch.touches[i].y = touch.y;
+            this.touch.touches[i].deltaX = this.touch.touches[i].last_x - this.touch.touches[i].x;
+            this.touch.touches[i].deltaY = this.touch.touches[i].last_y - this.touch.touches[i].y;
+        }
+        var dist1 = Math.sqrt(
+            Math.pow(this.touch.touches[0].last_x - this.touch.touches[1].last_x, 2) +
+            Math.pow(this.touch.touches[0].last_y - this.touch.touches[1].last_y, 2)
+        );
+        var dist2 = Math.sqrt(
+            Math.pow(this.touch.touches[0].x - this.touch.touches[1].x, 2) +
+            Math.pow(this.touch.touches[0].y - this.touch.touches[1].y, 2)
+        );
+        // this.mouse.scrollX = -20*this.mouse.deltaX;
+        this.mouse.scrollY = (dist2 - dist1)*20;
+    }
+}
+
+// Add mouse down and up listeners
+R3JS.Viewport.prototype.onmousedown = function(event){
+    //event.preventDefault();
+    this.mouse.down  = true;
+    this.mouse.event = event;
+}
+
+R3JS.Viewport.prototype.onmouseup = function(event){
+    document.activeElement.blur();
+    this.mouse.down  = false;
+    this.mouse.event = event;
+}
+
+R3JS.Viewport.prototype.ontouchdown = function(event){
+    event.preventDefault();
+    document.activeElement.blur();
+
+    // // Make a fake additional touch for testing
+    // event = {touches:[
+    //     {clientX : event.touches[0].clientX,
+    //      clientY : event.touches[0].clientY},
+    //     {clientX : 530,
+    //      clientY : 630}
+    // ]};
+
+    this.touch.num = event.touches.length;
+    if(event.touches.length == 1){
+        var mouse = getMousePos(event.touches[0], this);
+        this.mouse.x = mouse.x;
+        this.mouse.y = mouse.y;
+        this.mouse.down  = true;
+        this.mouse.event = event;
+        raytrace();
+    } else {
+        this.mouse.down  = false;
+        var touches = [];
+        for(var i=0; i<event.touches.length; i++){
+          var touch = getMousePos(event.touches[i], this);
+          touches.push(touch);
+        }
+        this.touch.touches = touches;
+    }
+}
+
+
+R3JS.Viewport.prototype.ontouchup = function(event){
+    this.mouse.down  = false;
+    this.mouse.event = event;
+    this.touch.num = event.touches.length;
+    if(this.viewer.intersected){
+        dehover_intersects(this.viewer.intersected);
+        this.viewer.intersected = null;
+    }
+}
+
+R3JS.Viewport.prototype.oncontextmenu = function(event){
+    this.mouse.down = false;
+}
+
+
+
+// Mouse over
+R3JS.Viewport.prototype.onmouseover = function(event) {
+    this.mouse.over = true;
+}
+
+
+// Mouse out
+R3JS.Viewport.prototype.onmouseout = function(event) {
+    this.mouse.over = false;
+    this.mouse.down = false;
+    if(this.viewer.intersected){
+        this.dehover_point(this.intersected[0].object);
+        this.viewer.intersected = null;
+    }
+    this.viewer.render();
+}
+
+
+// Mouse scroll
+R3JS.Viewport.prototype.onmousescroll = function(event) {
+    event.preventDefault();
+    this.mouse.scrollX = event.deltaX;
+    this.mouse.scrollY = event.deltaY;
+}
+
+
+
+
 

@@ -37,6 +37,8 @@ dependencies:
       - functions/gllines.js
       - functions/shaders.js
       - functions/sprites.js
+      - functions/icons.js
+      - functions/load.js
       - threejs/lines/LineSegmentsGeometry.js
       - threejs/lines/LineGeometry.js
       - threejs/lines/WireframeGeometry2.js

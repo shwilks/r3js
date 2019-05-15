@@ -1,4 +1,109 @@
 
+// Function for generating a material from properties
+R3JS.Material = function(properties){
+
+    // Convert colors
+    if(!properties.color.isColor){
+        properties.color = new THREE.Color(properties.color[0],
+                                           properties.color[1],
+                                           properties.color[2]);
+    }
+
+    // Set object material
+    if(properties.mat == "basic")    { var mat = new THREE.MeshBasicMaterial();   }
+    if(properties.mat == "lambert")  { var mat = new THREE.MeshLambertMaterial(); }
+    if(properties.mat == "phong")    { var mat = new THREE.MeshPhongMaterial();   }
+    if(properties.mat == "line")     { 
+        if(properties.gapSize){
+            var mat = new THREE.LineDashedMaterial({
+                scale: 200
+            });
+        } else {
+            var mat = new THREE.LineBasicMaterial();
+        }
+    }
+
+    // Set object material properties
+    Object.assign(mat, properties);
+    mat.side = THREE.DoubleSide;
+
+    // // Set clipping
+    // mat.clippingPlanes = [];
+    // if(properties.clippingPlanes){
+    //     // var clippingPlanes = scene.clippingPlanes.includeAndReferencePlaneData(object);
+    //     mat.clippingPlanes = mat.clippingPlanes.concat(
+    //         clippingPlanes
+    //     );
+    // }
+    // if(!object.properties.xpd){
+    //     mat.clippingPlanes = mat.clippingPlanes.concat(
+    //         this.plotPoints.clippingPlanes
+    //     );
+    // }
+
+    return(mat);
+
+}
+
+
+R3JS.objects = {};
+
+// Sphere object
+R3JS.objects.sphere = class Sphere {
+
+    // Object constructor
+    constructor(args){
+
+        // Check arguments
+        if(typeof(args.radius) === "undefined") {
+            throw("Radius must be specified");
+        }
+
+        // Set default properties
+        if(!args.properties){
+            args.properties = {
+                mat : "phong",
+                color : [0,1,0]
+            };
+        }
+
+        // Make geometry
+        var geometry = new THREE.SphereGeometry(args.radius, 32, 32);
+        if(args.aspect){
+
+            for(var i=0; i<geometry.vertices.length; i++){
+                geometry.vertices[i].x = geometry.vertices[i].x*args.aspect[0];
+                geometry.vertices[i].y = geometry.vertices[i].y*args.aspect[1];
+                geometry.vertices[i].z = geometry.vertices[i].z*args.aspect[2];
+            }
+            geometry.computeFaceNormals();
+            geometry.computeVertexNormals();
+
+        }
+        
+        // Set material
+        var material = R3JS.Material(args.properties);
+
+        // Make object
+        this.object  = new THREE.Mesh(geometry, material);
+
+    }
+
+    // Position object
+    setPosition(coords){
+
+        if(coords.length == 2){
+            coords.push(0);
+        }
+        this.object.position.set(
+            coords[0],
+            coords[1],
+            coords[2]
+        );
+
+    }
+
+}
 
 // General function to populate the plot
 function populatePlot(parent,
@@ -143,53 +248,7 @@ function normalise_coords(coords,
 
 }
 
-function get_object_material(object){
 
-    var scene = object.parent.parent.parent;
-    var plotPoints = object.parent;
-
-    // Convert colors
-    if(!object.properties.color.isColor){
-        object.properties.color = new THREE.Color(object.properties.color[0][0],
-                                                  object.properties.color[1][0],
-                                                  object.properties.color[2][0]);
-    }
-
-    // Set object material
-    if(object.properties.mat == "basic")    { var mat = new THREE.MeshBasicMaterial();   }
-    if(object.properties.mat == "lambert")  { var mat = new THREE.MeshLambertMaterial(); }
-    if(object.properties.mat == "phong")    { var mat = new THREE.MeshPhongMaterial();   }
-    if(object.properties.mat == "line")     { 
-        if(object.properties.gapSize){
-            var mat = new THREE.LineDashedMaterial({
-                scale: 200
-            });
-        } else {
-            var mat = new THREE.LineBasicMaterial();
-        }
-    }
-
-    // Set object material properties
-    Object.assign(mat, object.properties);
-    mat.side = THREE.DoubleSide;
-
-    // Set clipping
-    mat.clippingPlanes = [];
-    if(object.properties.clippingPlanes){
-        var clippingPlanes = scene.clippingPlanes.includeAndReferencePlaneData(object);
-        mat.clippingPlanes = mat.clippingPlanes.concat(
-            clippingPlanes
-        );
-    }
-    if(!object.properties.xpd){
-        mat.clippingPlanes = mat.clippingPlanes.concat(
-            plotPoints.clippingPlanes
-        );
-    }
-
-    return(mat);
-
-}
 
 
 // Function for plotting an object such as a line or a shape

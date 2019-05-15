@@ -1,4 +1,62 @@
 
+// Make a thin line object
+R3JS.objects.gllines_thin = class GLLines_thin {
+
+    constructor(args){
+
+        // Set default properties
+        if(!args.properties){
+            args.properties = {
+                mat : "line"
+            };
+        }
+
+        // Set position and color
+        this.positions = new Float32Array( args.coords.length * 3 );
+        this.color     = new Float32Array( args.coords.length * 4 );
+        
+        // Fill in info
+        for(var i=0; i<args.coords.length; i++){
+
+            this.positions[i*3]   = args.coords[i][0];
+            this.positions[i*3+1] = args.coords[i][1];
+            this.positions[i*3+2] = args.coords[i][2];
+
+            this.color[i*4]   = args.color[0][i];
+            this.color[i*4+1] = args.color[1][i];
+            this.color[i*4+2] = args.color[2][i];
+            this.color[i*4+3] = 1;
+
+        }
+
+        // Create buffer geometry
+        this.geometry = new THREE.BufferGeometry();
+        this.geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
+        this.geometry.addAttribute( 'color',    new THREE.BufferAttribute( color,     4 ) );
+
+        // Create the material
+        this.material = R3JS.Material(args.properties);
+        this.material.color = new THREE.Color();
+        this.material.vertexColors = THREE.VertexColors;
+        this.material.linewidth = object.properties.lwd;
+
+        // Make the actual line object
+        if(args.segments){
+            this.object = new THREE.LineSegments( geometry, material );
+        } else {
+            this.object = new THREE.Line( geometry, material );
+        }
+        if(args.gapSize){
+            this.object.computeLineDistances();
+        }
+
+    }
+
+}
+
+
+
+
 function make_glline(object){
 
     var line;

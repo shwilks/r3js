@@ -1,4 +1,60 @@
 
+R3JS.Viewer.prototype.navigation_bind = function(){
+
+    // Add viewport variables
+    this.navigable = true;
+    this.damper    = {};
+
+    // Set bindings
+    this.mouseMove        = this.rotateScene;
+    this.mouseScroll      = this.zoomScene;
+    // this.mouseMoveMeta    = this.viewer.panScene;
+    // this.mouseScroll      = this.viewer.zoomScene;
+    // this.mouseScrollShift = this.viewer.rockScene;
+    // this.mouseScrollMeta  = this.viewer.rotateScene;
+
+    // Bind mouse events
+    this.viewport.div.addEventListener("mousemove", function(){ 
+        if(this.viewport.mouse.down){
+            this.viewport.viewer.mouseMove();
+        }
+    });
+    this.viewport.div.addEventListener("wheel", function(){
+        this.viewport.viewer.mouseScroll();
+    });
+    // this.div.addEventListener("touchmove", function(){
+    //     if(this.touch.num == 1){
+    //         navMouseMove(this); 
+    //     } else {
+    //         navScroll(this);
+    //     }
+    // });
+
+}
+
+
+R3JS.Viewer.prototype.rotateScene = function(){
+
+    this.sceneChange = true;
+    this.scene.rotateOnAxis(new THREE.Vector3(1,0,0), -this.viewport.mouse.deltaY );
+    this.scene.rotateOnAxis(new THREE.Vector3(0,1,0), this.viewport.mouse.deltaX  );
+
+}
+
+R3JS.Viewer.prototype.zoomScene = function(){
+
+    this.sceneChange = true;
+    this.camera.zoom(this.viewport.mouse.scrollY);
+
+}
+
+
+
+
+
+
+
+
 
 function update_labels(viewport){
     viewport.plotHolder.updateMatrixWorld();
@@ -111,6 +167,7 @@ function bind_navigation(viewport){
 		if(this.damper.timeout){ window.clearTimeout(this.damper.timeout) }
 		this.damper.timeout = window.setTimeout(function(){rotationInertia(viewport)}, 20);
     }
+
     viewport.rockScene = function(rotY, rotZ){
         var plotHolder = this.plotHolder;
 		this.scene.rotateSceneOnAxis(new THREE.Vector3(0,0,1), rotZ*0.2);
@@ -120,6 +177,7 @@ function bind_navigation(viewport){
 	    this.sceneChange = true;
 	    this.infoDiv.update();
     }
+
     viewport.panScene = function(panX, panY){
     	var plotHolder = this.scene.plotHolder;
 		var plotPoints = this.plotPoints;

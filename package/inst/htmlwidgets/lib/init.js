@@ -1,100 +1,115 @@
 
-function r3js(container, plotData, settings){
+// Setup object
+R3JS = {};
+R3JS.utils = {};
+R3JS.Viewer = class R3JSviewer {
 
-    // Clear container and style it
-    container.innerHTML = null;
+    // Constructor function
+    constructor(container, plotData, settings){
 
-    // Create overall container
-    var viewer = document.createElement( 'div' );
-    viewer.id = "viewer";
-    viewer.container = container;
-    container.appendChild(viewer);
+        // Set the container
+        this.container = container;
 
-    // Create viewport
-    var viewport = generateViewport(plotData, viewer);
+        // Create viewport
+        this.viewport = new R3JS.Viewport(this);
+        this.navigation_bind();
 
-    // Bind event listeners
-    bind_events(viewport);
+        // Create scene
+        this.scene = new R3JS.Scene();
 
-    // Generate the scene from the plot data
-    addRenderer(viewport, plotData);
-    addScene(viewport,    plotData);
-    addCamera(viewport,   plotData);
+        // Create renderer and append to dom
+        this.renderer = new R3JS.Renderer();
+        this.renderer.attachToDOM(this.viewport.div);
+        this.renderer.setSize(
+            this.viewport.width,
+            this.viewport.height
+        );
 
-    // Set camera limits
-    if(plotData.camera){
-        if(plotData.camera.min_zoom){
-            viewport.camera.min_zoom = plotData.camera.min_zoom;
+        // Create camera
+        this.camera = new R3JS.PerspCamera();
+        this.camera.setSize(
+            this.viewport.width,
+            this.viewport.height
+        );
+
+        // Start animation loop
+        this.render();
+        var viewer = this;
+        function animate() {
+
+            // if(this.scene){
+            //     if(this.raytraceNeeded || this.sceneChange){
+            //         this.raytraceNeeded = false;
+            //         this.raytrace();
+            //     }
+            //     if(this.animate || this.sceneChange){
+            //         this.sceneChange = false;
+            //         this.render();
+            //     }
+            // }
+            viewer.render();
+            requestAnimationFrame(animate);
+
         }
-        if(plotData.camera.max_zoom){
-            viewport.camera.max_zoom = plotData.camera.max_zoom;
-        }
-    }
 
-    // Rotate scene
-    if(plotData.scene.rotation){
-      viewport.scene.setRotationDegrees(plotData.scene.rotation);
-    }
-    if(plotData.scene.translation){
-      viewport.scene.setTranslation(plotData.scene.translation);
-    }
-
-    // Zoom scene
-    if(plotData.scene.zoom){
-      viewport.camera.setZoom(plotData.scene.zoom[0]);
-    } else {
-      viewport.camera.setDistance();
-      plotData.scene.zoom = [viewport.camera.getZoom()];
-    }
-
-    // Update visibility of dynamic components
-    viewport.scene.showhideDynamics( viewport.camera );
-
-
-    // Bind navigation functions
-    bind_navigation(viewport);
-
-    // Bind api functions
-    bind_api(container, viewport);
-
-    // Bind highlight functions
-    bind_highlight_fns(viewport);
-
-    // Bind raytracing
-    bind_raytracing(viewport);
-
-    // Add buttons
-    addButtons(viewport);
-
-    // Add toggles
-    addToggles(viewport);
-
-    // Run any resize functions
-    for(var i=0; i<viewport.onResize.length; i++){
-        viewport.onResize[i]();
-    }
-
-    // Animate the scene
-    viewport.render();
-    viewport.scene.render = function(){
-        viewport.render();
-    };
-    function animate() {
-
-        if(viewport.raytraceNeeded || viewport.sceneChange){
-            viewport.raytraceNeeded = false;
-            viewport.raytrace();
-        }
-        if(viewport.animate || viewport.sceneChange){
-            viewport.sceneChange = false;
-            viewport.render();
-        }
-        requestAnimationFrame(animate);
+        // Start the animation
+        animate();
 
     }
 
-    // Start the animation
-    animate();
+    // Render function
+    render(){
+        this.renderer.render(
+            this.scene.scene, 
+            this.camera.camera
+        );
+    }
+    
+    // // Set render function
+    // this.render = function(){};
+
+    // // Bind event listeners
+    // bind_events(this.viewport);
+
+    // // Bind navigation functions
+    // bind_navigation(this.viewport);
+
+    // // Bind api functions
+    // bind_api(container, this.viewport);
+
+    // // Bind highlight functions
+    // bind_highlight_fns(this.viewport);
+
+    // // Bind raytracing
+    // bind_raytracing(this.viewport);
+
+    // // Add buttons
+    // addButtons(this.viewport);
+
+    // // Animate the scene
+    // this.render();
+    // function animate() {
+
+    //     if(this.scene){
+    //         if(this.raytraceNeeded || this.sceneChange){
+    //             this.raytraceNeeded = false;
+    //             this.raytrace();
+    //         }
+    //         if(this.animate || this.sceneChange){
+    //             this.sceneChange = false;
+    //             this.render();
+    //         }
+    //     }
+    //     requestAnimationFrame(animate);
+
+    // }
+
+    // // Start the animation
+    // animate();
+
+    // // Dispatch viewer loaded event
+    // var r3jsViewerLoaded_event = new CustomEvent('r3jsViewerLoaded', { detail : viewport });
+    // window.dispatchEvent(r3jsViewerLoaded_event);
 
 }
 

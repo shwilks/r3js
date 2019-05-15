@@ -2,17 +2,21 @@
 % Please edit documentation in R/3JSutils.R
 \name{snapshot3js}
 \alias{snapshot3js}
-\title{Create a snapshot of an r3js plot}
+\title{Take a map snapshot}
 \usage{
-snapshot3js(data3js, filename, ...)
+snapshot3js(data3js, filename, height = NULL, width = NULL, ...)
 }
 \arguments{
-\item{data3js}{The r3js data object}
+\item{filename}{The filename of the snapshot}
 
-\item{filename}{File to save the snapshot to}
+\item{height}{Optional height of the screenshot (in pixels), see details.}
 
-\item{...}{Further parameters to pass to r3js}
+\item{width}{Optional width of the screenshot (in pixels), see details.}
+
+\item{...}{Further parameters to pass to \code{RacViewer()}}
+
+\item{map}{The map data object}
 }
 \description{
-Create a snapshot of an r3js plot
+Takes a snapshot of a map and saves it as a png
 }
