@@ -3,6 +3,22 @@ R3JS.Scene = class Scene {
 
     constructor(){
 
+        // Set defaults
+        this.defaults = {
+            translation : [0,0,0],
+            rotation    : [0,0,0]
+        }
+        this.plotdims = {
+            aspect : [1,1,1]
+        };
+        this.clippingPlanes = [];
+        this.selectable_objects = [];
+        this.toggles = {
+            names : [],
+            objects : []
+        }
+        this.elements = [];
+
         // Create scene
         this.scene = new THREE.Scene();
 
@@ -13,13 +29,24 @@ R3JS.Scene = class Scene {
         // Create plotPoints for panning
         this.plotPoints = new THREE.Object3D();
         this.plotHolder.add(this.plotPoints);
-        this.plotPoints.clippingPlanes = [];
+
+        // Add clipping planes for the outer edges of plot
+        this.setOuterClippingPlanes();
 
     }
 
     // Setting lims and aspect
-    setLims(lims)    { this.lims   = lims;   }
-    setAspect(aspect){ this.aspect = aspect; }
+    setLims(lims){ 
+        this.plotdims.lims = lims;
+        this.plotdims.size = [
+            lims[0][1] - lims[0][0],
+            lims[1][1] - lims[1][0],
+            lims[2][1] - lims[2][0]
+        ];
+    }
+    setAspect(aspect){ 
+        this.plotdims.aspect = aspect;
+    }
 
     // Add an object to the scene
     add(object){
@@ -28,6 +55,7 @@ R3JS.Scene = class Scene {
 
     }
 
+    // Get and set rotation
     // Rotate the scene on an axis
     rotateOnAxis(axis, rotation){
 
@@ -35,24 +63,222 @@ R3JS.Scene = class Scene {
         var q = new THREE.Quaternion().setFromAxisAngle( axis, rotation );
         this.plotHolder.applyQuaternion( q );
 
-        // // Rotate the clipping planes
-        // var world_axis = axis.clone().applyQuaternion(q);
+        // Rotate the clipping planes
+        var world_axis = axis.clone().applyQuaternion(q);
 
-        // for(var i=0; i<this.plotPoints.clippingPlanes.length; i++){
-        //     var norm = this.plotPoints.clippingPlanes[i].normal;
-        //     norm.applyAxisAngle(world_axis, rotation);
-        //     this.plotPoints.clippingPlanes[i].set(norm, this.plotPoints.clippingPlanes[i].constant);
-        // }
+        for(var i=0; i<this.plotPoints.clippingPlanes.length; i++){
+            var norm = this.plotPoints.clippingPlanes[i].normal;
+            norm.applyAxisAngle(world_axis, rotation);
+            this.plotPoints.clippingPlanes[i].set(norm, this.plotPoints.clippingPlanes[i].constant);
+        }
 
-        //     for(var i=0; i<this.clippingPlanes.planes.length; i++){
-        //        var norm = this.clippingPlanes.planes[i].normal;
-        //        norm.applyAxisAngle(world_axis, rotation);
-        //        this.clippingPlanes.planes[i].set(norm, this.clippingPlanes.planes[i].constant);
-        //     }
+        for(var i=0; i<this.clippingPlanes.length; i++){
+           var norm = this.clippingPlanes[i].normal;
+           norm.applyAxisAngle(world_axis, rotation);
+           this.clippingPlanes[i].set(norm, this.clippingPlanes[i].constant);
+        }
 
     }
 
+    // Rotate by euclidean coordinates
+    rotateEuclidean(rotation){
+        
+        this.rotateOnAxis(new THREE.Vector3(0,0,1), rotation[2]);
+        this.rotateOnAxis(new THREE.Vector3(0,1,0), rotation[1]);
+        this.rotateOnAxis(new THREE.Vector3(1,0,0), rotation[0]);
+
+    }
+
+    setRotation(rotation){
+            
+        // Rotate back to origin
+        var rot = this.plotHolder.rotation.toVector3();
+        var r = rot.negate().toArray();
+        this.rotateOnAxis(new THREE.Vector3(1,0,0), r[0]);
+        this.rotateOnAxis(new THREE.Vector3(0,1,0), r[1]);
+        this.rotateOnAxis(new THREE.Vector3(0,0,1), r[2]);
+
+        // Perform the rotation
+        this.rotateEuclidean(rotation);
+
+    }
+
+    setRotationDegrees(rotation){
+        this.setRotation([
+            (rotation[0]/180)*Math.PI,
+            (rotation[1]/180)*Math.PI,
+            (rotation[2]/180)*Math.PI
+        ])
+    }
+
+    getRotation(){
+        var rot = this.plotHolder.rotation.toArray();
+        return([
+            (rot[0]/Math.PI)*180,
+            (rot[1]/Math.PI)*180,
+            (rot[2]/Math.PI)*180
+        ]);
+    }
+
+    // Get and set translation
+    panScene(translation){
+
+        translation = new THREE.Vector3().fromArray(translation);
+        this.plotPoints.position.add(translation);
+
+        // Pan outer plot clipping planes
+        var globalpos = translation.applyMatrix4(this.plotHolder.matrixWorld);
+        for(var i=0; i<this.plotPoints.clippingPlanes.length; i++){
+            var pos = globalpos.clone();
+            var norm = this.plotPoints.clippingPlanes[i].normal.clone();
+            var orignorm = norm.clone().applyMatrix4(this.plotHolder.matrixWorld);
+            pos.projectOnVector(norm);
+            var offset = pos.length()*pos.clone().normalize().dot(norm);
+            this.plotPoints.clippingPlanes[i].constant -= offset;
+        }
+
+        // Pan additional clipping planes
+        for(var i=0; i<this.clippingPlanes.length; i++){
+            var pos = globalpos.clone();
+            var norm = this.clippingPlanes[i].normal.clone();
+            var orignorm = norm.clone().applyMatrix4(this.plotHolder.matrixWorld);
+            pos.projectOnVector(norm);
+            var offset = pos.length()*pos.clone().normalize().dot(norm);
+            this.clippingPlanes[i].constant -= offset;
+        }
+
+     }
+
+    setTranslation(location){
+
+        // Convert to vector3
+        var translation = new THREE.Vector3().fromArray(location);
+        
+        // Correct for scene center
+        translation.sub(new THREE.Vector3().fromArray(this.plotdims.aspect).multiplyScalar(0.5));
+
+        // Get difference between current position and center position
+        translation.sub(this.plotPoints.position);
+
+        // Pan the scene by the difference
+        this.panScene(translation.toArray());
+
+    }
+
+    getTranslation(){
+        
+        // Get the position
+        var translation = this.plotPoints.position.clone();
+
+        // Correct for scene center
+        translation.add(new THREE.Vector3().fromArray(this.plotdims.aspect).multiplyScalar(0.5));
+
+        // Return the translation
+        return(translation.toArray());
+
+    }
+
+
+
+
+
+    // Function to set the default transformation specified by the plotting data
+    resetTransformation(){
+        this.setTranslation(this.defaults.translation);
+        this.setRotation(this.defaults.rotation);
+    }
+
+
+    // Set background color
+    setBackgroundColor(color){
+        this.scene.background = new THREE.Color(color.r,
+                                                color.g,
+                                                color.b);
+    }
+
+
+
+
+    // Clipping planes
+    setOuterClippingPlanes(){
+        this.plotPoints.clippingPlanes = [
+            new THREE.Plane( new THREE.Vector3( 1, 0, 0 ),  0 ),
+            new THREE.Plane( new THREE.Vector3( -1, 0, 0 ), this.plotdims.aspect[0] ),
+            new THREE.Plane( new THREE.Vector3( 0, 1, 0 ),  0 ),
+            new THREE.Plane( new THREE.Vector3( 0, -1, 0 ), this.plotdims.aspect[1] ),
+            new THREE.Plane( new THREE.Vector3( 0, 0, 1 ),  0 ),
+            new THREE.Plane( new THREE.Vector3( 0, 0, -1 ), this.plotdims.aspect[2] )
+        ];
+    }
+
+    // Add a new clipping plane
+    addClippingPlane(plane){
+
+        // See if plane is already referenced
+        for(var i=0; i<this.clippingPlanes.length; i++){
+            
+            var scene_plane = this.clippingPlanes[i];
+            if(scene_plane.constant == plane.constant &&
+                scene_plane.normal.x == plane.normal.x && 
+                scene_plane.normal.y == plane.normal.y && 
+                scene_plane.normal.z == plane.normal.z){
+                return(scene_plane);
+            }
+
+        }
+
+        // If not then add a reference
+        this.clippingPlanes.push(plane);
+        return(plane);
+
+
+    }        
+
+    
+    // Add a clipping plane reference to the scene, if a reference does not 
+    // already exist
+    fetchClippingPlaneReference(clippingPlaneData){
+
+        // Variable for returning clipping plane refs
+        var clippingPlanes = [];
+        
+        // Work through clipping plane data
+        for(var i=0; i<clippingPlaneData.length; i++){
+            
+            var planeData = clippingPlaneData[i];
+            
+            // Normalise and coordinates provided
+            if(this.plotdims.lims){
+                
+                if(planeData.coplanarPoints){
+                    planeData.coplanarPoints = R3JS.normalise_coords(planeData.coplanarPoints,
+                                                                     this.plotdims);
+                }
+                if(planeData.coplanarPoint){
+                    planeData.coplanarPoint = R3JS.normalise_coord(planeData.coplanarPoint,
+                                                                   this.plotdims);
+                }
+
+            }
+
+            var plane = R3JS.utils.generatePlane(planeData);
+            clippingPlanes.push(
+                this.addClippingPlane(plane)
+            );
+
+        }
+        return(clippingPlanes);
+
+    }
+
+
 }
+
+
+
+
+
+
 
 
 
@@ -140,46 +366,10 @@ R3JS.Scene = class Scene {
 //     }
 //     scene.clippingPlanes.includeAndReferencePlaneData = function(properties){
         
-//         var clippingPlaneData = properties.clippingPlanes;
-//         clippingPlanes = [];
-        
-//         for(var i=0; i<clippingPlaneData.length; i++){
-            
-//             var planeData = clippingPlaneData[i];
-            
-//             // Normalise coordinates
-//             if(object.normalise){
-//                 if(planeData.coplanarPoints){
-//                     for(var j=0; j<planeData.coplanarPoints.length; j++){
-//                         planeData.coplanarPoints[j] = normalise_coords(planeData.coplanarPoints[j],
-//                                                                        object.lims,
-//                                                                        object.aspect);
-//                     }
-//                 }
-//                 if(planeData.coplanarPoint){
-//                     planeData.coplanarPoint = normalise_coords(planeData.coplanarPoint,
-//                                                                object.lims,
-//                                                                object.aspect);
-//                 }
-//             }
 
-//             var plane = generatePlane(planeData);
-//             clippingPlanes.push(
-//                 scene.clippingPlanes.includeAndReferencePlane(plane)
-//             );
-
-//         }
-//         return(clippingPlanes);
 
 //     };
 
-
-//     // Add support for dynamic objects
-//     add_dynamicObjects(scene, plotData);
-
-//     // Populate the plot with plot objects
-//     plotData.normalise = true;
-//     populatePlot(plotPoints, plotData, scene);
 
     
 //     // // Setup helper objects
@@ -200,130 +390,13 @@ R3JS.Scene = class Scene {
 //     //     }
 //     // }
 
-// 	// Functions to rotate scene
-//     scene.rotateSceneOnAxis = function(axis, rotation){
 
-//         // Rotate the plot holder
-//         var q = new THREE.Quaternion().setFromAxisAngle( axis, rotation );
-// 		this.plotHolder.applyQuaternion( q );
 
-//         // Rotate the clipping planes
-// 		var world_axis = axis.clone().applyQuaternion(q);
 
-// 		for(var i=0; i<this.plotPoints.clippingPlanes.length; i++){
-// 			var norm = this.plotPoints.clippingPlanes[i].normal;
-// 			norm.applyAxisAngle(world_axis, rotation);
-// 			this.plotPoints.clippingPlanes[i].set(norm, this.plotPoints.clippingPlanes[i].constant);
-// 		}
 
-//         for(var i=0; i<this.clippingPlanes.planes.length; i++){
-//             var norm = this.clippingPlanes.planes[i].normal;
-//             norm.applyAxisAngle(world_axis, rotation);
-//             this.clippingPlanes.planes[i].set(norm, this.clippingPlanes.planes[i].constant);
-//         }
 
-//     }
 
-// 	scene.rotateSceneEuclidean = function(rotation){
-        
-//         this.rotateSceneOnAxis(new THREE.Vector3(0,0,1), rotation[2]);
-//         this.rotateSceneOnAxis(new THREE.Vector3(0,1,0), rotation[1]);
-//         this.rotateSceneOnAxis(new THREE.Vector3(1,0,0), rotation[0]);
 
-// 	}
-
-// 	scene.setRotation = function(rotation){
-        
-//         // Rotate back to origin
-//         var rot = this.plotHolder.rotation.toVector3();
-//         var r = rot.negate().toArray();
-//         this.rotateSceneOnAxis(new THREE.Vector3(1,0,0), r[0]);
-//         this.rotateSceneOnAxis(new THREE.Vector3(0,1,0), r[1]);
-//         this.rotateSceneOnAxis(new THREE.Vector3(0,0,1), r[2]);
-
-//         // Perform the rotation
-//         scene.rotateSceneEuclidean(rotation);
-
-// 	}
-
-//     scene.setRotationDegrees = function(rotation){
-//         this.setRotation([
-//             (rotation[0]/180)*Math.PI,
-//             (rotation[1]/180)*Math.PI,
-//             (rotation[2]/180)*Math.PI
-//         ])
-//     }
-
-// 	scene.getRotation = function(location){
-//         var rot = this.plotHolder.rotation.toArray();
-// 		return([
-//             (rot[0]/Math.PI)*180,
-//             (rot[1]/Math.PI)*180,
-//             (rot[2]/Math.PI)*180
-//         ]);
-// 	}
-
-// 	// Functions to pan the scene
-// 	scene.panScene = function(translation){
-
-//         translation = new THREE.Vector3().fromArray(translation);
-// 		this.plotPoints.position.add(translation);
-
-// 		globalpos = translation.applyMatrix4(this.plotHolder.matrixWorld);
-// 		for(var i=0; i<this.plotPoints.clippingPlanes.length; i++){
-// 			var pos = globalpos.clone();
-// 			var norm = this.plotPoints.clippingPlanes[i].normal.clone();
-// 			var orignorm = norm.clone().applyMatrix4(this.plotHolder.matrixWorld);
-// 			pos.projectOnVector(norm);
-// 		    var offset = pos.length()*pos.clone().normalize().dot(norm);
-// 			this.plotPoints.clippingPlanes[i].constant -= offset;
-// 		}
-
-//         for(var i=0; i<this.clippingPlanes.planes.length; i++){
-//             var pos = globalpos.clone();
-//             var norm = this.clippingPlanes.planes[i].normal.clone();
-//             var orignorm = norm.clone().applyMatrix4(this.plotHolder.matrixWorld);
-//             pos.projectOnVector(norm);
-//             var offset = pos.length()*pos.clone().normalize().dot(norm);
-//             this.clippingPlanes.planes[i].constant -= offset;
-//         }
-
-// 	}
-
-// 	scene.setTranslation = function(location){
-
-//             // Correct for scene center
-// 	        var translation = new THREE.Vector3().fromArray(location);
-// 	        translation.sub(new THREE.Vector3().fromArray(plotData.aspect).multiplyScalar(0.5));
-
-// 	        // Get difference between current position and center position
-// 	        var aspect = plotData.aspect;
-// 	        translation.sub(this.plotPoints.position);
-  
-// 	        // Pan the scene
-// 	        this.panScene(translation.toArray());
-
-// 	}
-
-// 	scene.getTranslation = function(){
-// 		var center = new THREE.Vector3().fromArray(plotData.aspect).multiplyScalar(0.5);
-// 		return(this.plotPoints.position.clone().add(center).toArray());
-// 	}
-
-// 	// Function to set the default transformation specified by the plotting data
-// 	scene.resetTransformation = function(){
-//     	if(plotData.scene && plotData.scene.translation){
-//     	    this.setTranslation(plotData.scene.translation);
-//     	} else {
-//     		this.setTranslation([0,0,0]);
-//     	}
-
-//     	if(plotData.scene && plotData.scene.rotation){
-//     	    this.setRotation(plotData.scene.rotation);
-//     	} else {
-//     		this.setRotation([0,0,0]);
-//     	}
-//     }
 
 // 	// Center and rotate the scene
 //     scene.resetTransformation();

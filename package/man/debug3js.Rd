@@ -4,7 +4,7 @@
 \alias{debug3js}
 \title{Write to the debug file}
 \usage{
-debug3js(data3js)
+debug3js(data3js, filename = "bug.js")
 }
 \arguments{
 \item{data3js}{}

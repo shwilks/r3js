@@ -4,6 +4,7 @@ R3JS.Viewer.prototype.load = function(plotData){
     // Set scene lims and aspect
     this.scene.setLims(plotData.lims);
     this.scene.setAspect(plotData.aspect);
+    this.scene.setOuterClippingPlanes();
 	
     // Add positional light
     var light       = new THREE.DirectionalLight(0xe0e0e0);
@@ -11,30 +12,13 @@ R3JS.Viewer.prototype.load = function(plotData){
     light.intensity = 1.0;
     this.scene.scene.add( light );
     
-    // Position camera
-    this.camera.setZoom(5);
-
     // Populate the plot
     this.scene.populatePlot(plotData);
+    // this.scene.setBackgroundColor({r:0,g:0,b:0});
 
-    // Show hide dynamics
-    this.scene.showhideDynamics(this.camera.camera);
+    // Reset transformation
+    this.resetTransformation();
 
-    // console.log(plotData.plot[plotData.plot.length-1]);
-    
-    // var sphere1 = new R3JS.objects.sphere({
-    //     radius : 0.1
-    // });
-    // sphere1.setPosition([0,-0.1,-0.1]);
-    // this.scene.add(sphere1.object);
-
-    // var sphere2 = new R3JS.objects.sphere({
-    //     radius : 0.1
-    // });
-    // sphere2.setPosition([0,0.3,0.3]);
-    // this.scene.add(sphere2.object);
-
-    
 
 
     // this.camera.camera.position.z = 5;

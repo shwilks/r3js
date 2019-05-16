@@ -1,11 +1,15 @@
 
 // Setup object
 R3JS = {};
-R3JS.utils = {};
 R3JS.Viewer = class R3JSviewer {
 
     // Constructor function
     constructor(container, plotData, settings){
+
+        // Set variables
+        this.sceneChange    = false;
+        this.raytraceNeeded = false;
+        this.name           = "r3js viewer";
 
         // Set the container
         this.container = container;
@@ -16,6 +20,11 @@ R3JS.Viewer = class R3JSviewer {
 
         // Create scene
         this.scene = new R3JS.Scene();
+        this.scene.setBackgroundColor({
+            r : 1,
+            g : 1,
+            b : 1
+        })
 
         // Create renderer and append to dom
         this.renderer = new R3JS.Renderer();
@@ -32,27 +41,24 @@ R3JS.Viewer = class R3JSviewer {
             this.viewport.height
         );
 
+        // Add raytracer
+        this.raytracer = new R3JS.Raytracer();
+
         // Start animation loop
-        this.render();
         var viewer = this;
         function animate() {
 
-            // if(this.scene){
-            //     if(this.raytraceNeeded || this.sceneChange){
-            //         this.raytraceNeeded = false;
-            //         this.raytrace();
-            //     }
-            //     if(this.animate || this.sceneChange){
-            //         this.sceneChange = false;
-            //         this.render();
-            //     }
-            // }
-            viewer.render();
+            if(viewer.raytraceNeeded || viewer.sceneChange){
+                viewer.raytraceNeeded = false;
+                viewer.raytrace();
+            }
+            if(viewer.sceneChange){
+                viewer.sceneChange = false;
+                viewer.render();
+            }
             requestAnimationFrame(animate);
 
         }
-
-        // Start the animation
         animate();
 
     }
@@ -60,10 +66,30 @@ R3JS.Viewer = class R3JSviewer {
     // Render function
     render(){
         this.renderer.render(
-            this.scene.scene, 
-            this.camera.camera
+            this.scene, 
+            this.camera
         );
     }
+
+    // Raytrace function
+    raytrace(){
+        this.raytracer.raytrace(
+            this,
+            this.scene,
+            this.camera,
+            this.viewport.mouse
+        )
+    }
+
+    // Rest transformation
+    resetTransformation(){
+        this.sceneChange = true;
+        this.scene.resetTransformation();
+        this.camera.setZoom(3);
+        this.scene.showhideDynamics(this.camera.camera);
+    }
+
+    
     
     // // Set render function
     // this.render = function(){};

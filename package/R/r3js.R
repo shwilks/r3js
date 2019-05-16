@@ -85,10 +85,10 @@ renderR3js <- function(expr, env = parent.frame(), quoted = FALSE) {
 #' @export
 #'
 #' @examples
-debug3js <- function(data3js){
+debug3js <- function(data3js, filename = "bug.js"){
 
   write(x    = paste0("json_data = '", jsonlite::toJSON(data3js), "';\n\nvar plotData = JSON.parse(json_data);"),
-        file = "~/Dropbox/LabBook/r3js/package/inst/htmlwidgets/data/bug.js")
+        file = file.path("~/Dropbox/LabBook/r3js/package/inst/htmlwidgets/lib/tests/data", filename))
 
 }
 

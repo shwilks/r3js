@@ -1,30 +1,65 @@
 
-R3JS.Viewport = function(viewer){
+R3JS.Viewport = class Viewport{
 
-    // Bind the viewport to the viewer
-    viewer.viewport = this;
-    this.viewer = viewer;
+    constructor(viewer){
 
-    // Create div
-    this.div = document.createElement( 'div' );
-    this.div.id = "viewport";
-    this.div.viewport = this;
+        // Set mouse defaults
+        this.mouse       = new THREE.Vector2();
+        this.mouse.down  = false;
+        this.mouse.over  = false;
+        this.touch       = {num:0};
+        this.onresize    = [];
+        this.keydown     = null;
 
-    // Clear container and style it
-    viewer.container.innerHTML = null;
-    viewer.container.appendChild(this.div);
+        // Bind the viewport to the viewer
+        viewer.viewport = this;
+        this.viewer = viewer;
 
-    // Set width and height
-    this.width  = this.div.offsetWidth;
-    this.height = this.div.offsetHeight;
+        // Create div
+        this.div = document.createElement( 'div' );
+        this.div.id = "viewport";
+        this.div.viewport = this;
 
-    // Bind events
-    this.div.addEventListener("mousemove", function(event){ this.viewport.onmousemove(event)   });
-    this.div.addEventListener("mousedown", function(event){ this.viewport.onmousedown(event)   });
-    this.div.addEventListener("mouseup",   function(event){ this.viewport.onmouseup(event)     });
-    this.div.addEventListener("wheel",     function(event){ this.viewport.onmousescroll(event) });
-    this.div.addEventListener("mouseover", function(event){ this.viewport.onmouseover(event)   });
-    this.div.addEventListener("mouseout",  function(event){ this.viewport.onmouseout(event)    });
+        // Clear container and style it
+        viewer.container.innerHTML = null;
+        viewer.container.appendChild(this.div);
+
+        // Set width and height
+        this.width  = this.div.offsetWidth;
+        this.height = this.div.offsetHeight;
+
+        // Bind events
+        this.div.addEventListener("mousemove", function(event){ this.viewport.onmousemove(event)   });
+        this.div.addEventListener("mousedown", function(event){ this.viewport.onmousedown(event)   });
+        this.div.addEventListener("mouseup",   function(event){ this.viewport.onmouseup(event)     });
+        this.div.addEventListener("wheel",     function(event){ this.viewport.onmousescroll(event) });
+        this.div.addEventListener("mouseover", function(event){ this.viewport.onmouseover(event)   });
+        this.div.addEventListener("mouseout",  function(event){ this.viewport.onmouseout(event)    });
+
+        var viewport = this;
+        document.addEventListener("keydown", function(event){ 
+          viewport.onkeydown(event)
+        });
+        document.addEventListener("keyup", function(event){ 
+          viewport.onkeyup(event)
+        });
+
+        window.addEventListener("resize",    function(event){ viewport.onwindowresize(event) });
+
+        // Add buttons
+        this.addButtons();
+
+    }
+
+
+    // Get width and height
+    getWidth(){
+        return(this.div.offsetWidth);
+    }
+
+    getHeight(){
+        return(this.div.offsetHeight);
+    }
 
     // // Create selection info div
     // var selection_info_div = document.createElement( 'div' );

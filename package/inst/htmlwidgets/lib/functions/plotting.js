@@ -3,11 +3,9 @@
 R3JS.Material = function(properties){
 
     // Convert colors
-    if(!properties.color.isColor){
-        properties.color = new THREE.Color(properties.color[0],
-                                           properties.color[1],
-                                           properties.color[2]);
-    }
+    properties.color = new THREE.Color(properties.color.r,
+                                       properties.color.g,
+                                       properties.color.b);
 
     // Set object material
     if(properties.mat == "basic")    { var mat = new THREE.MeshBasicMaterial();   }
@@ -27,93 +25,57 @@ R3JS.Material = function(properties){
     Object.assign(mat, properties);
     mat.side = THREE.DoubleSide;
 
-    // // Set clipping
-    // mat.clippingPlanes = [];
-    // if(properties.clippingPlanes){
-    //     // var clippingPlanes = scene.clippingPlanes.includeAndReferencePlaneData(object);
-    //     mat.clippingPlanes = mat.clippingPlanes.concat(
-    //         clippingPlanes
-    //     );
-    // }
-    // if(!object.properties.xpd){
-    //     mat.clippingPlanes = mat.clippingPlanes.concat(
-    //         this.plotPoints.clippingPlanes
-    //     );
-    // }
+    // Set clipping
+    mat.clippingPlanes = [];
 
     return(mat);
 
 }
 
 
-R3JS.normalise_coords = function(
-    coords,
-    plotdims
-    ){
-
-    norm_coords = [];
-    for(var i=0; i<coords.length; i++){
-        norm_coords.push(
-            R3JS.normalise_coord(
-                coords[i],
-                plotdims
-            )
-        );
-    }
-    return(norm_coords);
-
-}
-
-R3JS.normalise_coord = function(
-    coord, 
-    plotdims
-    ){
-
-    var lims   = plotdims.lims;
-    var aspect = plotdims.aspect;
-
-    // Normalised coordinates
-    norm_coord = [];
-    for(var i=0; i<coord.length; i++){
-        norm_coord.push(
-            (coord[i] - lims[i][0]*aspect[i]) / (lims[i][1] - lims[i][0])
-        );
-    }
-    return(norm_coord);
-
-}
-
-
-R3JS.objects = {};
-R3JS.objects.constructors = {};
-
-R3JS.objects.make_element = function(
+R3JS.element.make = function(
     plotobj, 
     plotdims
     ){
 
-    // Point
     if(plotobj.type == "point"){
+        // Point
         var element = this.constructors.point(
             plotobj,
             plotdims
         );
-    }
-
-    // GL line
-    if(plotobj.type == "glline"){
+    } else if(plotobj.type == "glline"){
+        // GL line
         var element = this.constructors.glline(
             plotobj,
             plotdims
         );
-    }
-
-    // Text
-    if(plotobj.type == "text"){
+    } else if(plotobj.type == "text"){
+        // Text
         var element = this.constructors.text(
             plotobj,
             plotdims
         );
+    } else if(plotobj.type == "sphere"){
+        // Sphere
+        var element = this.constructors.sphere(
+            plotobj,
+            plotdims
+        );
+    } else if(plotobj.type == "surface"){
+        // Surface
+        var element = this.constructors.surface(
+            plotobj,
+            plotdims
+        );
+    } else if(plotobj.type == "grid"){
+        // Grid
+        var element = this.constructors.grid(
+            plotobj,
+            plotdims
+        );
+    } else {
+        throw("Plot object type '"+plotobj.type+"' not recognised.");
     }
 
     // Return the object
@@ -121,76 +83,48 @@ R3JS.objects.make_element = function(
 
 };
 
-// Sphere object
-R3JS.objects.sphere = class Sphere {
 
-    // Object constructor
-    constructor(args){
-
-        // Check arguments
-        if(typeof(args.radius) === "undefined") {
-            throw("Radius must be specified");
-        }
-
-        // Set default properties
-        if(!args.properties){
-            args.properties = {
-                mat : "phong",
-                color : [0,1,0]
-            };
-        }
-
-        // Make geometry
-        var geometry = new THREE.SphereGeometry(args.radius, 32, 32);
-        if(args.aspect){
-
-            for(var i=0; i<geometry.vertices.length; i++){
-                geometry.vertices[i].x = geometry.vertices[i].x*args.aspect[0];
-                geometry.vertices[i].y = geometry.vertices[i].y*args.aspect[1];
-                geometry.vertices[i].z = geometry.vertices[i].z*args.aspect[2];
-            }
-            geometry.computeFaceNormals();
-            geometry.computeVertexNormals();
-
-        }
-        
-        // Set material
-        var material = R3JS.Material(args.properties);
-
-        // Make object
-        this.object  = new THREE.Mesh(geometry, material);
-
-    }
-
-    // Position object
-    setPosition(coords){
-
-        if(coords.length == 2){
-            coords.push(0);
-        }
-        this.object.position.set(
-            coords[0],
-            coords[1],
-            coords[2]
-        );
-
-    }
-
-}
 
 // General function to populate the plot
 R3JS.Scene.prototype.populatePlot = function(plotData){
 
     if(plotData.plot){
+
+        // Add all the elements
         for(var i=0; i<plotData.plot.length; i++){
             this.addPlotElement(
                 plotData.plot[i],
                 {
                     lims   : plotData.lims,
                     aspect : plotData.aspect,
+                    size   : [
+                        plotData.lims[0][1] - plotData.lims[0][0],
+                        plotData.lims[1][1] - plotData.lims[1][0],
+                        plotData.lims[2][1] - plotData.lims[2][0]
+                    ]
                 }
             );
         }
+
+        // Group the elements with each other
+        for(var i=0; i<this.elements.length; i++){
+
+            var element = this.elements[i];
+            if(element.groupindices){
+
+                element.group = [];
+                for(var j=0; j<element.groupindices.length; j++){
+
+                    element.group.push(
+                        this.elements[element.groupindices[j]]
+                    );
+
+                }
+
+            }
+
+        }
+
     }
 
 }
@@ -200,9 +134,9 @@ R3JS.Scene.prototype.addPlotElement = function(
     plotobj,
     plotdims
     ){
-    
+
     // Make the object
-    var element = R3JS.objects.make_element(
+    var element = R3JS.element.make(
         plotobj,
         plotdims
     );
@@ -211,19 +145,19 @@ R3JS.Scene.prototype.addPlotElement = function(
     if(plotobj.highlight){
         
         // Link plot and highlight objects
-        var hlelement = R3JS.objects.make_element(
+        var hlelement = R3JS.element.make(
             plotobj.highlight, 
             plotdims
         );
-        hlelement.hide() = false;
+        hlelement.hide();
         element.highlight = hlelement;
-        this.add(hlobj);
+        this.add(hlelement.object);
 
     }
 
     // Add interactivity
     if(plotobj.properties.interactive || plotobj.properties.label){
-        this.selectable_objects.push(element);
+        this.selectable_objects.push(element.object);
     }
 
     // Work out toggle behaviour
@@ -256,7 +190,7 @@ R3JS.Scene.prototype.addPlotElement = function(
     }
 
     if(plotobj.properties.corners){
-        
+        this.makeDynamic(plotdims);
         this.dynamic_objects.push(element);
         
         var corners  = plotobj.properties.corners[0];
@@ -289,17 +223,37 @@ R3JS.Scene.prototype.addPlotElement = function(
 
     }
 
-    // // Add reference of object to primary object list
-    // scene.primary_objects.push(object);
+    // Add any clipping planes
+    var material = element.object.material;
     
-    // // Sort out groupings
-    // if(plotobj.group){
-    //     object.group = [];
-    //     for(var i=0; i<plotobj.group.length; i++){
-    //         object.group.push(plotobj.group[i]-1);
-    //     }
-    // }
+    // Add it's own clipping planes
+    if(plotobj.properties.clippingPlanes){
 
+        var clippingPlanes = this.fetchClippingPlaneReference(
+            plotobj.properties.clippingPlanes
+        );
+        material.clippingPlanes = material.clippingPlanes.concat(
+            clippingPlanes
+        );
+
+    }
+
+    // Add outer plot clipping planes
+    if(!plotobj.properties.xpd){
+
+        material.clippingPlanes = material.clippingPlanes.concat(
+            this.plotPoints.clippingPlanes
+        );
+
+    }
+
+    // Add group reference
+    if(plotobj.group){
+        element.groupindices = plotobj.group.map(x => x-1);
+    }
+
+    // Add reference of object to primary object list
+    this.elements.push(element);
     this.add(element.object);
 
 }
@@ -671,43 +625,7 @@ function make_shape(object){
 
 }
 
-function make_sphere(object){
 
-    // Make geo
-    var geo = new THREE.SphereGeometry(object.radius, 32, 32);
-    var mat = get_object_material(object);
-
-    // Normalise the coords
-    if(object.normalise){
-        var lims   = object.lims;
-        var aspect = object.aspect;
-        for(var i=0; i<geo.vertices.length; i++){
-            geo.vertices[i].x = geo.vertices[i].x*aspect[0]/(lims[0][1] - lims[0][0]);
-            geo.vertices[i].y = geo.vertices[i].y*aspect[1]/(lims[1][1] - lims[1][0]);
-            geo.vertices[i].z = geo.vertices[i].z*aspect[2]/(lims[2][1] - lims[2][0]);
-        }
-        object.position = normalise_coords(object.position,
-                                           object.lims,
-                                           object.aspect);
-    }
-    geo.computeFaceNormals();
-    geo.computeVertexNormals();
-
-    // Make object
-    var sphere = new THREE.Mesh(geo, mat);
-
-    // Position object
-    sphere.position.set(object.position[0],
-                        object.position[1],
-                        object.position[2]);
-    if(!sphere.position.z){
-        sphere.position.z = 0;
-    }
-
-    // Return point
-    return(sphere);
-
-}
 
 
 
@@ -888,211 +806,9 @@ function make_arrow(object){
     
 }
 
-function make_grid(object){
-
-    var colors  = Object.assign({}, object.properties.color);
-    var mat = get_object_material(object);
-    
-    var vertex_cols = colors[0].length > 1;
-    if(vertex_cols){
-        mat.color = new THREE.Color();
-        mat.vertexColors = THREE.VertexColors;
-    }
-
-    var geo = new THREE.Geometry();
-    for(var i=0; i<object.x.length; i++){
-        for(var j=0; j<object.x[0].length-1; j++){
-            if(!isNaN(object.z[i][j]) && 
-               !isNaN(object.z[i][j+1])){
-                var coords1 = normalise_coords(
-                    [object.x[i][j], object.y[i][j], object.z[i][j]],
-                    object.lims,
-                    object.aspect
-                );
-                var coords2 = normalise_coords(
-                    [object.x[i][j+1], object.y[i][j+1], object.z[i][j+1]],
-                    object.lims,
-                    object.aspect
-                );
-                geo.vertices.push(
-                    new THREE.Vector3(
-                        coords1[0],
-                        coords1[1],
-                        coords1[2]
-                    ),
-                    new THREE.Vector3(
-                        coords2[0],
-                        coords2[1],
-                        coords2[2]
-                    )
-                );
-                if(vertex_cols){
-                    var n1 = i*(object.x[0].length)+j;
-                    var n2 = i*(object.x[0].length)+(j+1);
-                    geo.colors.push(new THREE.Color(colors[0][n1],
-                                                    colors[1][n1],
-                                                    colors[2][n1]));
-                    geo.colors.push(new THREE.Color(colors[0][n2],
-                                                    colors[1][n2],
-                                                    colors[2][n2]));
-                }
-            }
-        }
-    }
-
-    for(var i=0; i<object.x[0].length; i++){
-        for(var j=0; j<object.x.length-1; j++){
-            if(!isNaN(object.z[j][i]) && 
-               !isNaN(object.z[j+1][i])){
-                var coords1 = normalise_coords(
-                    [object.x[j][i], object.y[j][i], object.z[j][i]],
-                    object.lims,
-                    object.aspect
-                );
-                var coords2 = normalise_coords(
-                    [object.x[j+1][i], object.y[j+1][i], object.z[j+1][i]],
-                    object.lims,
-                    object.aspect
-                );
-                geo.vertices.push(
-                    new THREE.Vector3(
-                        coords1[0],
-                        coords1[1],
-                        coords1[2]
-                    ),
-                    new THREE.Vector3(
-                        coords2[0],
-                        coords2[1],
-                        coords2[2]
-                    )
-                );
-                if(vertex_cols){
-                    var n1 = j*(object.x[0].length)+i;
-                    var n2 = (j+1)*(object.x[0].length)+i;
-                    geo.colors.push(new THREE.Color(colors[0][n1],
-                                                    colors[1][n1],
-                                                    colors[2][n1]));
-                    geo.colors.push(new THREE.Color(colors[0][n2],
-                                                    colors[1][n2],
-                                                    colors[2][n2]));
-                }
-            }
-        }
-    }
-
-    var surface = new THREE.LineSegments(geo, mat, object.properties.lwd);
-    return(surface);
-
-}
-
-function make_surface(object){
-
-    //console.log(object.properties.color);
-    // Get number of rows and columns
-    var nrow = object.x.length;
-    var ncol = object.x[0].length;
-
-    // Set object geometry
-    var geo = new THREE.PlaneGeometry(5, 5, ncol-1, nrow-1);
 
 
-    var surface_cols = Object.assign({}, object.properties.color);
-    var mat = get_object_material(object);
 
-    // Color surface by vertices if more than one color supplied
-    if(surface_cols[0].length > 1){
-        for(var i=0; i<geo.faces.length; i++){
-            geo.faces[i].vertexColors[0] = new THREE.Color(
-                surface_cols[0][geo.faces[i].a],
-                surface_cols[1][geo.faces[i].a],
-                surface_cols[2][geo.faces[i].a]
-            );
-            geo.faces[i].vertexColors[1] = new THREE.Color(
-                surface_cols[0][geo.faces[i].b],
-                surface_cols[1][geo.faces[i].b],
-                surface_cols[2][geo.faces[i].b]
-            );
-            geo.faces[i].vertexColors[2] = new THREE.Color(
-                surface_cols[0][geo.faces[i].c],
-                surface_cols[1][geo.faces[i].c],
-                surface_cols[2][geo.faces[i].c]
-            );
-        }
-        mat.vertexColors = THREE.VertexColors;
-        mat.color = new THREE.Color();
-    }
-    
-    
-    // // Find a safe vertex
-    // var safe_vertex = null;
-    // for(var i=0; i<object.z.length; i++){
-    //     if(safe_vertex){ break; }
-    //     for(var j=0; j<object.z[0].length; j++){
-    //         if(!isNaN(object.z[i][j])){
-    //             safe_vertex = new THREE.Vector3(
-    //                 object.x[i][j],
-    //                 object.y[i][j],
-    //                 object.z[i][j]
-    //             );
-    //             break;
-    //         }
-    //     }
-    // }
-
-    // Set vertices
-    var n = 0;
-    var nas = [];
-    for(var i=0; i<object.x.length; i++){
-        for(var j=0; j<object.x[0].length; j++){
-            if(!isNaN(object.z[i][j])){
-                if(object.normalise){
-                    var coords = normalise_coords(
-                        [object.x[i][j], object.y[i][j], object.z[i][j]],
-                        object.lims,
-                        object.aspect
-                    );
-                } else {
-                    var coords = [object.x[i][j], object.y[i][j], object.z[i][j]];  
-                }
-                geo.vertices[n].set(
-                    coords[0],
-                    coords[1],
-                    coords[2]
-                )
-            } else {
-                geo.vertices[n].set(
-                    null,
-                    null,
-                    null
-                );
-                nas.push(n);
-            };
-            n++;
-        }
-    }
-
-    // Remove faces with nas
-    var i=0
-    while(i<geo.faces.length){
-        var face = geo.faces[i];
-        if(nas.indexOf(face.a) != -1 || 
-           nas.indexOf(face.b) != -1 || 
-           nas.indexOf(face.c) != -1){
-            geo.faces.splice(i,1);
-        } else {
-            i++;
-        }
-    }
-
-    // Calculate normals
-    geo.computeVertexNormals();
-    geo = new THREE.BufferGeometry().fromGeometry( geo );
-
-    // Make object
-    var surface = new THREE.Mesh(geo, mat);
-    return(surface);
-
-}
 
 
 

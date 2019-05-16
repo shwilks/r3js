@@ -133,11 +133,7 @@ snapshot3js <- function(data3js,
 
 }
 
-data3js <- plot3js(1:10,
-                   1:10,
-                   1:10)
 
-snapshot3js(data3js, "~/Desktop/testsnapshot.png")
 
 
 

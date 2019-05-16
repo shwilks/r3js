@@ -65,5 +65,6 @@ data3js <- sphere3js(data3js,
                      clippingPlanes = clipping_planes)
 
 # Show the plot
-r3js(data3js)
+debug3js(data3js, "clipping_planes.js")
+# r3js(data3js)
 

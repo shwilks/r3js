@@ -1,23 +1,5 @@
 
 
-// Set holders for dynamic plot components
-R3JS.Scene.prototype.dynamic_objects = [];
-R3JS.Scene.prototype.dynamicDeco = {
-    faces : Array(6),
-    edges : Array(12)
-}
-
-for(var i=0; i<6; i++){
-    R3JS.Scene.prototype.dynamicDeco.faces[i] = [];
-}
-
-for(var i=0; i<12; i++){
-    R3JS.Scene.prototype.dynamicDeco.edges[i] = Array(6);
-    for(var j=0; j<6; j++){
-        R3JS.Scene.prototype.dynamicDeco.edges[i][j] = [];
-    }
-}
-
 // Initiate dynamic objects
 R3JS.Scene.prototype.makeDynamic = function(plotdims){
 
@@ -26,9 +8,26 @@ R3JS.Scene.prototype.makeDynamic = function(plotdims){
         // Mark scene as dynamic
         this.dynamic = true;
 
+        // Set holders for dynamic plot components
+        this.dynamic_objects = [];
+        this.dynamicDeco = {
+            faces : Array(6),
+            edges : Array(12)
+        }
+
+        for(var i=0; i<6; i++){
+            this.dynamicDeco.faces[i] = [];
+        }
+
+        for(var i=0; i<12; i++){
+            this.dynamicDeco.edges[i] = Array(6);
+            for(var j=0; j<6; j++){
+                this.dynamicDeco.edges[i][j] = [];
+            }
+        }
+
         // Set variables
-        var lims   = this.lims;
-        var aspect = this.aspect;
+        var aspect = this.plotdims.aspect;
 
         // Set box vertices
         var vertices = [];
@@ -112,106 +111,109 @@ R3JS.Scene.prototype.makeDynamic = function(plotdims){
 // Function to hide and show any dynamic objects
 R3JS.Scene.prototype.showhideDynamics = function(camera){
 
-    var aspect = this.aspect;
-    var lims   = this.lims;
-
-    // Set variables
-    var face_normals   = this.boundingBox.face_normals;
-    var edge_vertices  = this.boundingBox.edge_vertices;
-    var face_vertices  = this.boundingBox.face_vertices;
-    var edge_faces     = this.boundingBox.edge_faces;
-    var edge_midpoints = this.boundingBox.edge_midpoints;
-
-    // Work out which faces are visible
-    var face_visibility = [0,0,0,0,0,0];
-    for(var face=0; face<3; face++){
-        var face_norm = new THREE.Vector3().fromArray(face_normals[face]);
-        face_norm.applyQuaternion(this.plotHolder.quaternion);
+    if(this.dynamic){
         
-        var origin = this.plotPoints.position.clone();
-        origin.add( new THREE.Vector3(aspect[0]/2, aspect[1]/2, aspect[2]/2) );
-        origin.applyQuaternion(this.plotHolder.quaternion);
-        camera_to_origin = origin.clone().sub( camera.position );
-        var face_angle   = camera_to_origin.angleTo(face_norm);
-        var face_visible = face_angle < Math.PI/2;
+        var aspect = this.plotdims.aspect;
 
-        if(face_visible){
-            face_visibility[face] = 1;
-        } else {
-            face_visibility[face+3] = 1;
-        }
-    }
+        // Set variables
+        var face_normals   = this.boundingBox.face_normals;
+        var edge_vertices  = this.boundingBox.edge_vertices;
+        var face_vertices  = this.boundingBox.face_vertices;
+        var edge_faces     = this.boundingBox.edge_faces;
+        var edge_midpoints = this.boundingBox.edge_midpoints;
 
-    // Hide all objects associated with dynamic faces
-    var dynamic_objects = this.dynamic_objects;
-    for(var i=0; i<dynamic_objects.length; i++){
-        dynamic_objects[i].hide();
-    }
+        // Work out which faces are visible
+        var face_visibility = [0,0,0,0,0,0];
+        for(var face=0; face<3; face++){
+            var face_norm = new THREE.Vector3().fromArray(face_normals[face]);
+            face_norm.applyQuaternion(this.plotHolder.quaternion);
+            
+            var origin = this.plotPoints.position.clone();
+            origin.add( new THREE.Vector3(aspect[0]/2, aspect[1]/2, aspect[2]/2) );
+            origin.applyQuaternion(this.plotHolder.quaternion);
+            camera_to_origin = origin.clone().sub( camera.position );
+            var face_angle   = camera_to_origin.angleTo(face_norm);
+            var face_visible = face_angle < Math.PI/2;
 
-    // Show objects associated with shown box faces
-    var boxfaces = this.dynamicDeco.faces;
-    for(var i=0; i<6; i++){
-        if(face_visibility[i] == 1){
-            for(var j=0; j<boxfaces[i].length; j++){
-                boxfaces[i][j].show();
+            if(face_visible){
+                face_visibility[face] = 1;
+            } else {
+                face_visibility[face+3] = 1;
             }
         }
-    }
 
-    // Apply plot rotation to edge midpoints
-    var rotated_midpoints = [];
-    for(var i=0; i<12; i++){
-        rotated_midpoints.push( edge_midpoints[i].clone().applyQuaternion(this.plotHolder.quaternion) );
-    }
-
-    // Cycle through edges
-    var visible_edges = [];
-    for(var i=0; i<12; i++){
-        visible_edges.push([0,0,0,0]);
-    }
-    for(var i=0; i<12; i=i+4){
-        
-        if(face_visibility[edge_faces[i][0]] + 
-           face_visibility[edge_faces[i][1]] == 1){
-            var a = i;
-            var b = i+2;
-        } else {
-            var a = i+1;
-            var b = i+3;
+        // Hide all objects associated with dynamic faces
+        var dynamic_objects = this.dynamic_objects;
+        for(var i=0; i<dynamic_objects.length; i++){
+            dynamic_objects[i].hide();
         }
 
-        visible_edges[a][0] = 1;
-        visible_edges[b][0] = 1;
-
-        if(rotated_midpoints[a].x >= rotated_midpoints[b].x) { visible_edges[a][1] = 1 }
-        else                                                 { visible_edges[b][1] = 1 }
-        if(rotated_midpoints[a].y >= rotated_midpoints[b].y) { visible_edges[a][2] = 1 }
-        else                                                 { visible_edges[b][2] = 1 }
-        if(rotated_midpoints[a].z >= rotated_midpoints[b].z) { visible_edges[a][3] = 1 }
-        else                                                 { visible_edges[b][3] = 1 }
-
-    }
-
-    // Show objects associated with shown dynamic edges
-    var boxedges = this.dynamicDeco.edges;
-    for(var i=0; i<12; i++){
-        
-        if(visible_edges[i][0] == 1){
-            for(var j=0; j<3; j++){
-                if(visible_edges[i][j+1] == 1){
-                    
-                    for(var k=0; k<boxedges[i][j].length; k++){
-                        boxedges[i][j][k].show();
-                    }
-
-                } else {
-
-                    for(var k=0; k<boxedges[i][j+3].length; k++){
-                        boxedges[i][j+3][k].show();
-                    }
-
+        // Show objects associated with shown box faces
+        var boxfaces = this.dynamicDeco.faces;
+        for(var i=0; i<6; i++){
+            if(face_visibility[i] == 1){
+                for(var j=0; j<boxfaces[i].length; j++){
+                    boxfaces[i][j].show();
                 }
             }
+        }
+
+        // Apply plot rotation to edge midpoints
+        var rotated_midpoints = [];
+        for(var i=0; i<12; i++){
+            rotated_midpoints.push( edge_midpoints[i].clone().applyQuaternion(this.plotHolder.quaternion) );
+        }
+
+        // Cycle through edges
+        var visible_edges = [];
+        for(var i=0; i<12; i++){
+            visible_edges.push([0,0,0,0]);
+        }
+        for(var i=0; i<12; i=i+4){
+            
+            if(face_visibility[edge_faces[i][0]] + 
+               face_visibility[edge_faces[i][1]] == 1){
+                var a = i;
+                var b = i+2;
+            } else {
+                var a = i+1;
+                var b = i+3;
+            }
+
+            visible_edges[a][0] = 1;
+            visible_edges[b][0] = 1;
+
+            if(rotated_midpoints[a].x >= rotated_midpoints[b].x) { visible_edges[a][1] = 1 }
+            else                                                 { visible_edges[b][1] = 1 }
+            if(rotated_midpoints[a].y >= rotated_midpoints[b].y) { visible_edges[a][2] = 1 }
+            else                                                 { visible_edges[b][2] = 1 }
+            if(rotated_midpoints[a].z >= rotated_midpoints[b].z) { visible_edges[a][3] = 1 }
+            else                                                 { visible_edges[b][3] = 1 }
+
+        }
+
+        // Show objects associated with shown dynamic edges
+        var boxedges = this.dynamicDeco.edges;
+        for(var i=0; i<12; i++){
+            
+            if(visible_edges[i][0] == 1){
+                for(var j=0; j<3; j++){
+                    if(visible_edges[i][j+1] == 1){
+                        
+                        for(var k=0; k<boxedges[i][j].length; k++){
+                            boxedges[i][j][k].show();
+                        }
+
+                    } else {
+
+                        for(var k=0; k<boxedges[i][j+3].length; k++){
+                            boxedges[i][j+3][k].show();
+                        }
+
+                    }
+                }
+            }
+
         }
 
     }

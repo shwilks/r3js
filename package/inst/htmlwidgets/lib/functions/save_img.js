@@ -1,5 +1,38 @@
 
-function downloadURI(uri, name) {
+R3JS.Viewer.prototype.getImgData = function(){
+
+  if(!this.save_renderer){
+    this.save_renderer = new THREE.WebGLRenderer({
+      preserveDrawingBuffer: true,
+      physicallyCorrectLights: true,
+      antialias: true,
+      alpha: true
+    });
+  }
+
+  this.save_renderer.setSize(this.viewport.getWidth(),
+                             this.viewport.getHeight());
+
+  this.save_renderer.setPixelRatio( window.devicePixelRatio );
+  this.save_renderer.render( 
+    this.scene.scene, 
+    this.camera.camera
+  );
+
+  var img_data = this.save_renderer.domElement.toDataURL();
+  return(img_data);
+
+}
+
+R3JS.Viewer.prototype.downloadImage = function(filename){
+
+  var img_data = this.getImgData(viewport);
+  R3JS.utils.downloadURI(img_data, filename);
+
+}
+
+
+R3JS.utils.downloadURI = function(uri, name) {
   var link = document.createElement("a");
   link.download = name;
   link.href = uri;
@@ -9,27 +42,5 @@ function downloadURI(uri, name) {
   delete link;
 }
 
-function getImgData(viewport){
-  if(!viewport.save_renderer){
-    viewport.save_renderer = new THREE.WebGLRenderer({
-      preserveDrawingBuffer: true,
-      physicallyCorrectLights: true,
-      antialias: true,
-      alpha: true
-    });
-  }
-  viewport.save_renderer.setSize(viewport.offsetWidth,
-                                 viewport.offsetHeight);
-  viewport.save_renderer.setPixelRatio( window.devicePixelRatio );
-  viewport.save_renderer.render( viewport.scene, viewport.camera );
-  var img_data = viewport.save_renderer.domElement.toDataURL();
-  return(img_data);
-}
 
-function saveImg(viewport, filename = "map.png"){
-    
-    var img_data = getImgData(viewport);
-    downloadURI(img_data, filename);
-
-}
 

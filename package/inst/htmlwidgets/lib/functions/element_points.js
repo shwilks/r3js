@@ -1,6 +1,6 @@
 
 // GL line constructor
-R3JS.objects.constructors.point = function(
+R3JS.element.constructors.point = function(
     plotobj,
     plotdims
     ){
@@ -10,30 +10,32 @@ R3JS.objects.constructors.point = function(
 
     // Normalise coords
     if(plotdims){
-        plotobj.position = R3JS.normalise_coord(
+        plotobj.position = R3JS.utils.normalise_coord(
             plotobj.position,
             plotdims
         )
     }
 
-    object = new R3JS.objects.point({
+    // Generate the point object
+    element = new R3JS.element.point({
         coords : plotobj.position,
-        properties : plotobj.properties
+        size : plotobj.size*0.2,
+        shape : plotobj.shape,
+        properties : plotobj.properties,
+        dimensions : plotobj.properties.dimensions
     });
-    // if(plotobj.properties.lwd > 1){
-    //     line = make_fatline(object);
-    // } else {
-    //     line = make_thinline(object);
-    // }
-    return(object);
+
+    return(element);
 
 }
 
 
 // Make a thin line object
-R3JS.objects.point = class Point {
+R3JS.element.point = class Point extends R3JS.element.base {
 
     constructor(args){
+
+      super();
 
       // Set defaults
       if(!args.shape)      args.shape = "circle";
@@ -42,7 +44,11 @@ R3JS.objects.point = class Point {
       if(!args.properties){
         args.properties = {
           mat : "phong",
-          color : [0,1,0],
+          color : {
+            r : 0,
+            g : 0,
+            b : 0
+          },
           lwd : 1
         }
       }
@@ -56,6 +62,7 @@ R3JS.objects.point = class Point {
 
       // Make object
       this.object = new THREE.Mesh(geo, mat);
+      this.object.element = this;
 
       // Scale the object
       this.object.scale.set(args.size, 

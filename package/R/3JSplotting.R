@@ -279,7 +279,12 @@ material3js <- function(mat = "phong",
 #' @return Returns a list with red, green and blue values
 #'
 convertCol3js <- function(col){
-  col2rgb(col)/255
+  rgbcol <- col2rgb(col)/255
+  list(
+    r = rgbcol["red",],
+    g = rgbcol["green",],
+    b = rgbcol["blue",]
+  )
 }
 
 

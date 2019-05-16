@@ -1,7 +1,7 @@
 
 
 // GL line constructor
-R3JS.objects.constructors.text = function(
+R3JS.element.constructors.text = function(
     plotobj,
     plotdims
     ){
@@ -18,7 +18,15 @@ R3JS.objects.constructors.text = function(
         )
     }
 
-    object = new R3JS.objects.htmltext({
+    // Apply any additional offset
+    if(plotobj.properties.poffset){
+        plotobj.position[0] = plotobj.position[0] + plotobj.properties.poffset[0];
+        plotobj.position[1] = plotobj.position[1] + plotobj.properties.poffset[1];
+        plotobj.position[2] = plotobj.position[2] + plotobj.properties.poffset[2];
+    }
+
+    // Create the object
+    element = new R3JS.element.htmltext({
     	text   : plotobj.text,
         coords : plotobj.position,
         alignment : plotobj.alignment,
@@ -32,7 +40,7 @@ R3JS.objects.constructors.text = function(
 
 
 // Make a thin line object
-R3JS.objects.htmltext = class htmltext {
+R3JS.element.htmltext = class htmltext extends R3JS.element.base {
 
     constructor(args){
 

@@ -1,6 +1,6 @@
 
 // GL line constructor
-R3JS.objects.constructors.glline = function(
+R3JS.element.constructors.glline = function(
     plotobj,
     plotdims
     ){
@@ -10,30 +10,32 @@ R3JS.objects.constructors.glline = function(
 
     // Normalise coords
     if(plotdims){
-        plotobj.position = R3JS.normalise_coords(
+        plotobj.position = R3JS.utils.normalise_coords(
             plotobj.position,
             plotdims
         )
     }
 
-    object = new R3JS.objects.gllines_thin({
-        coords : plotobj.position
+    element = new R3JS.element.gllines_thin({
+        coords : plotobj.position,
+        properties : plotobj.properties
     });
     // if(plotobj.properties.lwd > 1){
     //     line = make_fatline(object);
     // } else {
     //     line = make_thinline(object);
     // }
-    return(object);
+    return(element);
 
 }
 
 
 // Make a thin line object
-R3JS.objects.gllines_thin = class GLLines_thin {
+R3JS.element.gllines_thin = class GLLines_thin extends R3JS.element.base {
 
     constructor(args){
 
+        super();
         var ncoords = args.coords.length;
 
         // Set default properties
@@ -41,11 +43,11 @@ R3JS.objects.gllines_thin = class GLLines_thin {
             args.properties = {
                 mat : "line",
                 lwd : 1,
-                color : [
-                    Array(ncoords).fill(0),
-                    Array(ncoords).fill(0),
-                    Array(ncoords).fill(0)
-                ]
+                color : {
+                    r : Array(ncoords).fill(0),
+                    g : Array(ncoords).fill(0),
+                    b : Array(ncoords).fill(0)
+                }
             };
         }
 
@@ -60,9 +62,9 @@ R3JS.objects.gllines_thin = class GLLines_thin {
             positions[i*3+1] = args.coords[i][1];
             positions[i*3+2] = args.coords[i][2];
 
-            color[i*4]   = args.properties.color[0][i];
-            color[i*4+1] = args.properties.color[1][i];
-            color[i*4+2] = args.properties.color[2][i];
+            color[i*4]   = args.properties.color.r[i];
+            color[i*4+1] = args.properties.color.g[i];
+            color[i*4+2] = args.properties.color.b[i];
             color[i*4+3] = 1;
 
         }
@@ -87,11 +89,9 @@ R3JS.objects.gllines_thin = class GLLines_thin {
         if(args.gapSize){
             this.object.computeLineDistances();
         }
+        this.object.element = this;
 
     }
-
-    show(){ this.object.visible = true  }
-    hide(){ this.object.visible = false }
 
 }
 

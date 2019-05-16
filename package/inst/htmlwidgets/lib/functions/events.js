@@ -1,12 +1,12 @@
 
 
-// Set mouse defaults
-R3JS.Viewport.prototype.mouse       = new THREE.Vector2();
-R3JS.Viewport.prototype.mouse.down  = false;
-R3JS.Viewport.prototype.mouse.over  = false;
-R3JS.Viewport.prototype.touch       = {num:0};
-R3JS.Viewport.prototype.onresize    = [];
+document.addEventListener("keydown", function(event){
+    this.keydown = event;
+});
 
+document.addEventListener("keyup", function(event){
+    this.keydown = null;
+});
 
 // Function for getting mouse position
 R3JS.utils.getMousePos = function(event, container){
@@ -35,12 +35,13 @@ R3JS.Viewport.prototype.onwindowblur = function(event){
 R3JS.Viewport.prototype.onwindowresize = function(event){ 
     
     // Resize camera
-    this.viewer.camera.resize();
+    this.viewer.camera.setSize(this.getWidth(), this.getHeight());
+    this.viewer.renderer.setSize(this.getWidth(), this.getHeight());
     
-    // Run any resize functions
-    for(var i=0; i<this.viewer.onresize.length; i++){
-        this.viewer.onresize[i]();
-    }
+    // // Run any resize functions
+    // for(var i=0; i<this.viewer.onresize.length; i++){
+    //     this.viewer.onresize[i]();
+    // }
 
     // Render the scene
     this.viewer.render();
