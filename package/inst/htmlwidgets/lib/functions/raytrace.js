@@ -15,6 +15,8 @@ R3JS.Raytracer = class Raytracer {
 		){
 
 		// Do raystracing and find intersections
+		this.raycaster.camera = camera.camera;
+		this.raycaster.aspect = viewer.getAspect();
 		this.raycaster.setFromCamera( 
 			mouse, 
 			camera.camera
@@ -22,7 +24,7 @@ R3JS.Raytracer = class Raytracer {
 	    
 	    // Find intersections with selectable objects
 	    var intersects  = this.raycaster.intersectObjects( 
-	    	scene.selectable_objects, 
+	    	scene.selectable_elements, 
 	    	false 
 	    );
 
@@ -42,27 +44,24 @@ R3JS.Raytracer = class Raytracer {
 
 		    // Restore emission to previously intersected point if not null
 		    if (this.intersected){
-		    	scene.dehoverElements(
-		    		this.intersectedElements()
+		    	viewer.dehoverElements(
+		    		this.intersectedElementIDs()
 		    	);
-		    	viewer.sceneChange = true;
 		    }
 
 		    // Update intersected
 		    this.intersected = intersected;
 
 		    // Color new point accordingly
-		    scene.hoverElements(
-		    	this.intersectedElements()
+		    viewer.hoverElements(
+		    	this.intersectedElementIDs()
 		    );
-		    viewer.sceneChange = true;
 		  }
 		} else {
 		  if (this.intersected) {
-		    scene.dehoverElements(
-		    	this.intersectedElements()
+		    viewer.dehoverElements(
+		    	this.intersectedElementIDs()
 		    );
-		    viewer.sceneChange = true;
 		  }
 		  this.intersected = null;
 		}
@@ -70,19 +69,19 @@ R3JS.Raytracer = class Raytracer {
 	}
 
 	// Fetch objects from intersected
-	intersectedElements(){
+	intersectedElementIDs(){
 		
-		var elements = [];
+		var element_ids = [];
 		var uuids    = [];
 		
 		for(var i=0; i<this.intersected.length; i++){
 			if(uuids.indexOf(this.intersected[i].object.uuid) == -1){
-				elements.push(this.intersected[i].object.element);
+				element_ids.push(this.intersected[i].object.element.id);
 	          	uuids.push(this.intersected[i].object.uuid);
 	        }
 		}
-
-		return(elements);
+		
+		return(element_ids);
 
 	}
 

@@ -152,13 +152,13 @@ glpoints3js <- function(data3js,
                         ...){
 
   object <- c()
-  object$type <- "glpoint"
+  object$type  <- "glpoints"
   object$shape <- pch2shape(rep_len(pch, length(x)))
   object$size  <- rep_len(size, length(x))
   object$properties <- material3js(col = col, ...)
   object$position   <- cbind(x,y,z)
 
-  data3js <- addObject3js(data3js, object)
+  data3js <- addObject3js(data3js, object, length(x))
   data3js
 
 }

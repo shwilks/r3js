@@ -1,12 +1,13 @@
 
 
 // Initiate dynamic objects
-R3JS.Scene.prototype.makeDynamic = function(plotdims){
+R3JS.Scene.prototype.makeDynamic = function(){
 
     if(!this.dynamic){
 
         // Mark scene as dynamic
         this.dynamic = true;
+        var plotdims = this.plotdims;
 
         // Set holders for dynamic plot components
         this.dynamic_objects = [];
@@ -35,9 +36,9 @@ R3JS.Scene.prototype.makeDynamic = function(plotdims){
             for(var j=0; j<2; j++){
                 for(var k=0; k<2; k++){
                     vertices.push([
-                        i*aspect[0],
-                        j*aspect[1],
-                        k*aspect[2]
+                        (i-0.5)*aspect[0],
+                        (j-0.5)*aspect[1],
+                        (k-0.5)*aspect[2]
                     ]);
                 }
             }
@@ -128,8 +129,9 @@ R3JS.Scene.prototype.showhideDynamics = function(camera){
             var face_norm = new THREE.Vector3().fromArray(face_normals[face]);
             face_norm.applyQuaternion(this.plotHolder.quaternion);
             
-            var origin = this.plotPoints.position.clone();
-            origin.add( new THREE.Vector3(aspect[0]/2, aspect[1]/2, aspect[2]/2) );
+            // Get plotpoint position
+            var origin = new THREE.Vector3().fromArray(this.getTranslation());
+
             origin.applyQuaternion(this.plotHolder.quaternion);
             camera_to_origin = origin.clone().sub( camera.position );
             var face_angle   = camera_to_origin.angleTo(face_norm);

@@ -2,39 +2,11 @@
 // Grid constructor
 R3JS.element.constructors.grid = function(
     plotobj,
-    plotdims
+    scene
     ){
 
-    // Setup object
-    var object
-
-    // Normalise coords
-    if(plotdims){
-
-        var lims   = plotdims.lims;
-        var size   = plotdims.size;
-        var aspect = plotdims.aspect;
-
-        for(var i=0; i<plotobj.x.length; i++){
-            for(var j=0; j<plotobj.x[0].length; j++){
-                plotobj.x[i][j] = ((plotobj.x[i][j] - lims[0][0]) / size[0]) * aspect[0];
-            }
-        }
-        for(var i=0; i<plotobj.y.length; i++){
-            for(var j=0; j<plotobj.y[0].length; j++){
-                plotobj.y[i][j] = ((plotobj.y[i][j] - lims[1][0]) / size[1]) * aspect[1];
-            }
-        }
-        for(var i=0; i<plotobj.z.length; i++){
-            for(var j=0; j<plotobj.z[0].length; j++){
-                plotobj.z[i][j] = ((plotobj.z[i][j] - lims[2][0]) / size[2]) * aspect[2];
-            }
-        }
-
-    }
-
     // Make the object
-    element = new R3JS.element.grid({
+    var element = new R3JS.element.grid({
     	x : plotobj.x,
         y : plotobj.y,
         z : plotobj.z,

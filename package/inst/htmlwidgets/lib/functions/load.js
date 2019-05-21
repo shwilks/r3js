@@ -1,27 +1,41 @@
 
 R3JS.Viewer.prototype.load = function(plotData){
 
-    // Set scene lims and aspect
-    this.scene.setLims(plotData.lims);
-    this.scene.setAspect(plotData.aspect);
-    this.scene.setOuterClippingPlanes();
+    // Set lims and aspect
+    this.setPlotDims({
+        lims   : plotData.lims,
+        aspect : plotData.aspect,
+        dimensions : 2
+    });
+
+
 	
     // Add positional light
     var light       = new THREE.DirectionalLight(0xe0e0e0);
     light.position.set(-1,1,1).normalize();
     light.intensity = 1.0;
     this.scene.scene.add( light );
-    
+
     // Populate the plot
     this.scene.populatePlot(plotData);
-    // this.scene.setBackgroundColor({r:0,g:0,b:0});
 
     // Reset transformation
     this.resetTransformation();
 
+    // Fire any resize event listeners
+    this.viewport.onwindowresize();
 
+    this.scene.elements[170].setColor("#ff0000");
 
-    // this.camera.camera.position.z = 5;
+    // this.renderer.setShaders(
+    //     R3JS.Shaders.VertexShader2D,
+    //     R3JS.Shaders.FragmentShader2D
+    // );
+
+    // Render the plot
+    this.render();
+
+    // console.log(this.camera);
 
 	// // Bind plot data
  //    this.plotData = plotData;

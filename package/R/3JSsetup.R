@@ -499,14 +499,10 @@ save3jsWidget <- function(widget,
 #' @export
 #'
 #' @examples
-clippingPlane3js <- function(normal         = NULL,
-                             coplanarPoint  = NULL,
-                             coplanarPoints = NULL){
+clippingPlane3js <- function(coplanarPoints = NULL){
 
   clippingPlane <- c()
-  if(!is.null(normal))        { clippingPlane$normal         = normal         }
-  if(!is.null(coplanarPoint)) { clippingPlane$coplanarPoint  = coplanarPoint  }
-  if(!is.null(coplanarPoints)){ clippingPlane$coplanarPoints = coplanarPoints }
+  clippingPlane$coplanarPoints = coplanarPoints
   clippingPlane
 
 }

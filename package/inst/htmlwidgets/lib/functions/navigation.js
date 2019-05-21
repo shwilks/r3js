@@ -6,10 +6,17 @@ R3JS.Viewer.prototype.navigation_bind = function(){
     this.damper    = {};
 
     // Set bindings
-    this.mouseMove        = this.rotateSceneWithInertia;
-    this.mouseMoveMeta    = this.panScene;
-    this.mouseScroll      = this.zoomScene;
-    this.mouseScrollShift = this.rockScene;
+    if(this.scene.plotdims.dimensions == 2){
+        this.mouseMove        = this.panScene;
+        this.mouseMoveMeta    = this.panScene;
+        this.mouseScroll      = this.zoomScene;
+        this.mouseScrollShift = this.rockScene;
+    } else {
+        this.mouseMove        = this.rotateSceneWithInertia;
+        this.mouseMoveMeta    = this.panScene;
+        this.mouseScroll      = this.zoomScene;
+        this.mouseScrollShift = this.rockScene;
+    }
 
     // Bind mouse events
     this.viewport.div.addEventListener("mousemove", function(event){ 

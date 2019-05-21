@@ -2,28 +2,24 @@
 // GL line constructor
 R3JS.element.constructors.point = function(
     plotobj,
-    plotdims
+    scene
     ){
 
-    // Setup object
-    var object
-
-    // Normalise coords
-    if(plotdims){
-        plotobj.position = R3JS.utils.normalise_coord(
-            plotobj.position,
-            plotdims
-        )
-    }
-
     // Generate the point object
-    element = new R3JS.element.point({
+    var element = new R3JS.element.point({
         coords : plotobj.position,
         size : plotobj.size*0.2,
         shape : plotobj.shape,
         properties : plotobj.properties,
         dimensions : plotobj.properties.dimensions
     });
+
+    // Scale geometry
+    element.scaleGeo([
+      scene.plotdims.size[0] / scene.plotdims.aspect[0],
+      scene.plotdims.size[1] / scene.plotdims.aspect[1],
+      scene.plotdims.size[2] / scene.plotdims.aspect[2]
+    ]);
 
     return(element);
 

@@ -15,6 +15,7 @@ R3JS.element.base = class Element {
     		this.highlight.show();
     	}
     }
+
 	hideHighlight(){
     	if(this.highlight){
     		this.showMat();
@@ -36,6 +37,30 @@ R3JS.element.base = class Element {
     			this.group[i].hideHighlight();
     		}
     	}
+    }
+
+    scaleGeo(scale){
+    	this.object.geometry.scale(
+    		scale[0],
+    		scale[1],
+    		scale[2]
+    	);
+    }
+
+    setRenderOrder(order){
+    	this.object.renderOrder = order;
+    }
+
+    elements(){
+        return([this]);
+    }
+
+    setColor(color){
+        this.object.material.color.set(color);
+    }
+
+    raycast(a,b){
+        this.object.raycast(a,b);
     }
 
 }

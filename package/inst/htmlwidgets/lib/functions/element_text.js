@@ -3,30 +3,20 @@
 // GL line constructor
 R3JS.element.constructors.text = function(
     plotobj,
-    plotdims
+    scene
     ){
 
 
-    // Setup object
-    var object
-
-    // Normalise coords
-    if(plotdims){
-        plotobj.position = R3JS.normalise_coord(
-            plotobj.position,
-            plotdims
-        )
-    }
-
     // Apply any additional offset
+    var plotdims = scene.plotdims;
     if(plotobj.properties.poffset){
-        plotobj.position[0] = plotobj.position[0] + plotobj.properties.poffset[0];
-        plotobj.position[1] = plotobj.position[1] + plotobj.properties.poffset[1];
-        plotobj.position[2] = plotobj.position[2] + plotobj.properties.poffset[2];
+        plotobj.position[0] = plotobj.position[0] + plotobj.properties.poffset[0]*plotdims.size[0]/plotdims.aspect[0];
+        plotobj.position[1] = plotobj.position[1] + plotobj.properties.poffset[1]*plotdims.size[1]/plotdims.aspect[1];
+        plotobj.position[2] = plotobj.position[2] + plotobj.properties.poffset[2]*plotdims.size[2]/plotdims.aspect[2];
     }
 
     // Create the object
-    element = new R3JS.element.htmltext({
+    var element = new R3JS.element.htmltext({
     	text   : plotobj.text,
         coords : plotobj.position,
         alignment : plotobj.alignment,
@@ -34,7 +24,7 @@ R3JS.element.constructors.text = function(
         properties : R3JS.Material(plotobj.properties)
     });
     
-    return(object);
+    return(element);
 
 }
 
@@ -43,6 +33,8 @@ R3JS.element.constructors.text = function(
 R3JS.element.htmltext = class htmltext extends R3JS.element.base {
 
     constructor(args){
+
+        super();
 
     	// Set defaults
     	if(!args.style)      args.style      = [];

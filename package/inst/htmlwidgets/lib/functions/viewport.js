@@ -49,6 +49,11 @@ R3JS.Viewport = class Viewport{
         // Add buttons
         this.addButtons();
 
+        // Create selection info div
+        this.selection_info = document.createElement( 'div' );
+        this.selection_info.id = "selection-info-div";
+        this.div.appendChild( this.selection_info );
+
     }
 
 
@@ -59,6 +64,10 @@ R3JS.Viewport = class Viewport{
 
     getHeight(){
         return(this.div.offsetHeight);
+    }
+
+    getAspect(){
+        return(this.getHeight() / this.getWidth());
     }
 
     // // Create selection info div

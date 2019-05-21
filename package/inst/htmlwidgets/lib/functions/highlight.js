@@ -1,23 +1,21 @@
 
-R3JS.Scene.prototype.hoverElements = function(elements){
+R3JS.Viewer.prototype.hoverElements = function(ids){
 
-  for(var i=0; i<elements.length; i++){
-    
-    // elements[i].showLabel();
-    elements[i].highlightGroup();
-
-  }
+	for(var i=0; i<ids.length; i++){
+		this.scene.elements[ids[i]].highlightGroup();
+		this.scene.elements[ids[i]].setColor("lightgreen");
+	}
+	this.sceneChange = true;
 
 }
 
-R3JS.Scene.prototype.dehoverElements = function(elements){
+R3JS.Viewer.prototype.dehoverElements = function(ids){
 
-  for(var i=0; i<elements.length; i++){
-    
-    // elements[i].hideLabel();
-    elements[i].dehighlightGroup();
-
-  }
+	for(var i=0; i<ids.length; i++){
+		this.scene.elements[ids[i]].dehighlightGroup();
+		this.scene.elements[ids[i]].setColor("lightblue");
+	}
+	this.sceneChange = true;
 
 }
 

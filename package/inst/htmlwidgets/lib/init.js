@@ -16,7 +16,6 @@ R3JS.Viewer = class R3JSviewer {
 
         // Create viewport
         this.viewport = new R3JS.Viewport(this);
-        this.navigation_bind();
 
         // Create scene
         this.scene = new R3JS.Scene();
@@ -25,6 +24,7 @@ R3JS.Viewer = class R3JSviewer {
             g : 1,
             b : 1
         })
+        this.scene.viewer = this;
 
         // Create renderer and append to dom
         this.renderer = new R3JS.Renderer();
@@ -35,11 +35,9 @@ R3JS.Viewer = class R3JSviewer {
         );
 
         // Create camera
-        this.camera = new R3JS.PerspCamera();
-        this.camera.setSize(
-            this.viewport.width,
-            this.viewport.height
-        );
+        this.perspcamera = new R3JS.PerspCamera();
+        this.orthocamera = new R3JS.OrthoCamera();
+        this.camera = this.perspcamera;
 
         // Add raytracer
         this.raytracer = new R3JS.Raytracer();
@@ -87,6 +85,36 @@ R3JS.Viewer = class R3JSviewer {
         this.scene.resetTransformation();
         this.camera.setZoom(3);
         this.scene.showhideDynamics(this.camera.camera);
+    }
+
+    // Set plot lims
+    setPlotDims(plotdims){
+
+        // Set scene lims
+        this.scene.setPlotDims(plotdims);
+
+        // Rebind navigation depending upon 2D or 3D plot
+        this.navigation_bind();
+
+        // Set camera
+        if(plotdims.dimensions == 2){
+            this.camera = this.orthocamera;
+            this.renderer.setShaders(
+                R3JS.Shaders.VertexShader2D,
+                R3JS.Shaders.FragmentShader2D
+            );
+        } else {
+            this.camera = this.perspcamera;
+            this.renderer.setShaders(
+                R3JS.Shaders.VertexShader3D,
+                R3JS.Shaders.FragmentShader2D
+            );
+        }
+
+    }
+
+    getAspect(){
+        return(this.viewport.getAspect());
     }
 
     

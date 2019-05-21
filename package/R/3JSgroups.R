@@ -8,11 +8,11 @@
 #'
 #' @return Returns the update r3js data object
 #' @export
-addObject3js <- function(data3js, object){
+addObject3js <- function(data3js, object, number_of_ids = 1){
 
   # Generate an object ID
   if(is.null(data3js$lastID)){ data3js$lastID <- 0 }
-  object$ID <- max(data3js$lastID) + 1
+  object$ID <- max(data3js$lastID) + seq_len(number_of_ids)
 
   # If object is interactive and highlighted add a reference to itself to
   # it's highlight group by default

@@ -5,6 +5,12 @@ library(r3js)
 rm(list= ls())
 
 # Generate some data
+# pdata <- data.frame(
+#   x = rnorm(100),
+#   y = rnorm(100, sd = 10, mean = 20),
+#   z = rnorm(100, sd = 0.1, mean = -20)
+# )
+
 pdata <- data.frame(
   x = rnorm(100),
   y = rnorm(100),

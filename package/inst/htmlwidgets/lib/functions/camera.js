@@ -1,5 +1,6 @@
 
 
+// Standard perspective camera for 3D
 R3JS.PerspCamera = class{
 
 	// Constructor function
@@ -11,6 +12,8 @@ R3JS.PerspCamera = class{
 		this.max_zoom    = 8;
 		this.zoom_damper = 0.05;
 
+		this.zoom_events = [];
+
 	}
 
 	// Set the camera size
@@ -18,6 +21,7 @@ R3JS.PerspCamera = class{
 
 		this.camera.aspect = width / height;
 		this.camera.updateProjectionMatrix();
+		this.onzoom();
 
 	}
 
@@ -37,6 +41,7 @@ R3JS.PerspCamera = class{
 			this.camera.position.z = max_zoom;
 		}
 		this.camera.updateProjectionMatrix();
+		this.onzoom();
 
 	}
 
@@ -44,6 +49,90 @@ R3JS.PerspCamera = class{
 	setZoom(zoom){
 
 		this.camera.position.z = zoom;
+		this.onzoom();
+
+	}
+
+	onzoom(){
+
+		for(var i=0; i<this.zoom_events.length; i++){
+			this.zoom_events[i]();
+		}
+
+	}
+
+}
+
+
+// Orthographic camera for 2D
+R3JS.OrthoCamera = class{
+
+	// Constructor function
+	constructor(){
+		
+		this.camera = new THREE.OrthographicCamera();
+        this.camera.near = -100;
+        this.camera.far  = 100;
+		
+		this.distance    = 1;
+		this.min_zoom    = 0.75;
+		this.max_zoom    = 8;
+		this.zoom_damper = 0.05;
+
+		this.zoom_events = [];
+
+	}
+
+	// Set the size
+	setSize(width, height){
+		this.aspect = width / height;
+		this.rezoom();
+		
+	}
+
+	// Zooming the camera
+	rezoom(){
+		this.camera.left   = -this.distance*this.aspect/2;
+		this.camera.right  = this.distance*this.aspect/2;
+		this.camera.top    = this.distance/2;
+		this.camera.bottom = -this.distance/2;
+		this.camera.updateProjectionMatrix();
+	}
+
+	zoom(zoom){
+
+		var min_zoom = this.min_zoom;
+		var max_zoom = this.max_zoom;
+		zoom = zoom*this.zoom_damper;
+		
+
+		if(this.distance + zoom <= max_zoom 
+			&& this.distance + zoom >= min_zoom){
+		  this.distance += zoom;
+		} else if(zoom < 0){
+			this.distance = min_zoom;
+		} else {
+			this.distance = max_zoom;
+		}
+
+		this.rezoom();
+		this.onzoom()
+
+	}
+
+	// Set the zoom
+	setZoom(zoom){
+
+		this.camera.distance = zoom;
+		this.rezoom();
+
+	}
+
+	onzoom(){
+
+		for(var i=0; i<this.zoom_events.length; i++){
+			this.zoom_events[i]();
+		}
 
 	}
 

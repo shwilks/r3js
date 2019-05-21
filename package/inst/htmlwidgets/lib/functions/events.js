@@ -38,10 +38,10 @@ R3JS.Viewport.prototype.onwindowresize = function(event){
     this.viewer.camera.setSize(this.getWidth(), this.getHeight());
     this.viewer.renderer.setSize(this.getWidth(), this.getHeight());
     
-    // // Run any resize functions
-    // for(var i=0; i<this.viewer.onresize.length; i++){
-    //     this.viewer.onresize[i]();
-    // }
+    // Run any resize functions
+    for(var i=0; i<this.onresize.length; i++){
+        this.onresize[i]();
+    }
 
     // Render the scene
     this.viewer.render();

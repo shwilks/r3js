@@ -8,14 +8,11 @@ R3JS.utils.normalise_coords = function(
 
     norm_coords = [];
     for(var i=0; i<coords.length; i++){
-        norm_coords.push(
-            R3JS.utils.normalise_coord(
-                coords[i],
-                plotdims
-            )
+        R3JS.utils.normalise_coord(
+            coords[i],
+            plotdims
         );
     }
-    return(norm_coords);
 
 }
 
@@ -29,13 +26,9 @@ R3JS.utils.normalise_coord = function(
     var size   = plotdims.size;
 
     // Normalised coordinates
-    norm_coord = [];
-    for(var i=0; i<coord.length; i++){
-        norm_coord.push(
-            ((coord[i] - lims[i][0]) / size[i]) * aspect[i]
-        );
+    for(var i=0; i<lims.length; i++){
+        coord[i] = ((coord[i] - lims[i][0]) / size[i]) * aspect[i] ;
     }
-    return(norm_coord);
 
 }
 

@@ -44,6 +44,12 @@ R3JS.element.make = function(
             plotobj,
             plotdims
         );
+    } else if(plotobj.type == "glpoints"){
+        // GL Points
+        var element = this.constructors.glpoints(
+            plotobj,
+            plotdims
+        );
     } else if(plotobj.type == "glline"){
         // GL line
         var element = this.constructors.glline(
@@ -78,6 +84,11 @@ R3JS.element.make = function(
         throw("Plot object type '"+plotobj.type+"' not recognised.");
     }
 
+    // Apply renderOrder
+    if(plotobj.properties.renderOrder){
+        element.setRenderOrder(plotobj.properties.renderOrder);
+    }
+
     // Return the object
     return(element);
 
@@ -93,16 +104,7 @@ R3JS.Scene.prototype.populatePlot = function(plotData){
         // Add all the elements
         for(var i=0; i<plotData.plot.length; i++){
             this.addPlotElement(
-                plotData.plot[i],
-                {
-                    lims   : plotData.lims,
-                    aspect : plotData.aspect,
-                    size   : [
-                        plotData.lims[0][1] - plotData.lims[0][0],
-                        plotData.lims[1][1] - plotData.lims[1][0],
-                        plotData.lims[2][1] - plotData.lims[2][0]
-                    ]
-                }
+                plotData.plot[i]
             );
         }
 
@@ -132,13 +134,13 @@ R3JS.Scene.prototype.populatePlot = function(plotData){
 // Add a plot object
 R3JS.Scene.prototype.addPlotElement = function(
     plotobj,
-    plotdims
+    scene
     ){
 
     // Make the object
     var element = R3JS.element.make(
         plotobj,
-        plotdims
+        this
     );
 
     // Add highlighted point
@@ -147,7 +149,7 @@ R3JS.Scene.prototype.addPlotElement = function(
         // Link plot and highlight objects
         var hlelement = R3JS.element.make(
             plotobj.highlight, 
-            plotdims
+            this
         );
         hlelement.hide();
         element.highlight = hlelement;
@@ -157,7 +159,7 @@ R3JS.Scene.prototype.addPlotElement = function(
 
     // Add interactivity
     if(plotobj.properties.interactive || plotobj.properties.label){
-        this.selectable_objects.push(element.object);
+        this.addSelectableElements(element.elements());
     }
 
     // Work out toggle behaviour
@@ -179,7 +181,7 @@ R3JS.Scene.prototype.addPlotElement = function(
 
     // Work out if object is dynamically associated with a face
     if(plotobj.properties.faces){
-        this.makeDynamic(plotdims);
+        this.makeDynamic();
         this.dynamic_objects.push(element);
         if(plotobj.properties.faces.indexOf("x+") != -1){ this.dynamicDeco.faces[0].push(element) }
         if(plotobj.properties.faces.indexOf("y+") != -1){ this.dynamicDeco.faces[1].push(element) }
@@ -190,7 +192,7 @@ R3JS.Scene.prototype.addPlotElement = function(
     }
 
     if(plotobj.properties.corners){
-        this.makeDynamic(plotdims);
+        this.makeDynamic();
         this.dynamic_objects.push(element);
         
         var corners  = plotobj.properties.corners[0];
@@ -252,8 +254,14 @@ R3JS.Scene.prototype.addPlotElement = function(
         element.groupindices = plotobj.group.map(x => x-1);
     }
 
+    // Assign the ID
+    var elements = element.elements();
+    for(var i=0; i<elements.length; i++){
+        elements[i].id = plotobj.ID[i]-1;
+    }
+
     // Add reference of object to primary object list
-    this.elements.push(element);
+    this.addElements(element.elements());
     this.add(element.object);
 
 }

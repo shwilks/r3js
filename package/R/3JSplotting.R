@@ -242,7 +242,7 @@ material3js <- function(mat = "phong",
                 transparent = jsonlite::unbox(opacity < 1.0))
 
   if(!is.null(dimensions))                            { props$dimensions             <- jsonlite::unbox(dimensions)             }
-  if(!is.null(label))                                 { props$label                  <- jsonlite::unbox(label)                  }
+  if(!is.null(label))                                 { props$label                  <- label                                   }
   if(!is.null(interactive) && interactive)            { props$interactive            <- jsonlite::unbox(interactive)            }
   if(!is.null(moveable) && moveable)                  { props$draggable              <- jsonlite::unbox(moveable)               }
   if(!is.null(toggle))                                { props$toggle                 <- jsonlite::unbox(toggle)                 }

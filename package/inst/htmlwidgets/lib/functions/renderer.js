@@ -17,6 +17,9 @@ R3JS.Renderer = class Renderer {
         this.labelrenderer.domElement.style.top = '0';
         this.labelrenderer.domElement.style.pointerEvents = 'none';
 
+        // Setup for shaders
+        this.shaders = {};
+
     }
 
     attachToDOM(parent){
@@ -32,6 +35,15 @@ R3JS.Renderer = class Renderer {
     render(scene, camera){
         this.webglrenderer.render( scene.scene, camera.camera );
         this.labelrenderer.render( scene.scene, camera.camera );
+    }
+
+    getPixelRatio(){
+        return(this.webglrenderer.getPixelRatio());
+    }
+
+    setShaders(vertexShader, fragmentShader){
+        this.shaders.vertexShader   = vertexShader;
+        this.shaders.fragmentShader = fragmentShader;
     }
 
 }

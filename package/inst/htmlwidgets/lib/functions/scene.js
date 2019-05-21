@@ -7,12 +7,10 @@ R3JS.Scene = class Scene {
         this.defaults = {
             translation : [0,0,0],
             rotation    : [0,0,0]
-        }
-        this.plotdims = {
-            aspect : [1,1,1]
         };
+        this.plotdims = {};
         this.clippingPlanes = [];
-        this.selectable_objects = [];
+        this.selectable_elements = [];
         this.toggles = {
             names : [],
             objects : []
@@ -28,24 +26,54 @@ R3JS.Scene = class Scene {
 
         // Create plotPoints for panning
         this.plotPoints = new THREE.Object3D();
+        this.plotPoints.clippingPlanes = [];
         this.plotHolder.add(this.plotPoints);
 
         // Add clipping planes for the outer edges of plot
-        this.setOuterClippingPlanes();
+        // this.setOuterClippingPlanes();
 
     }
 
     // Setting lims and aspect
-    setLims(lims){ 
-        this.plotdims.lims = lims;
-        this.plotdims.size = [
-            lims[0][1] - lims[0][0],
-            lims[1][1] - lims[1][0],
-            lims[2][1] - lims[2][0]
-        ];
-    }
-    setAspect(aspect){ 
-        this.plotdims.aspect = aspect;
+    setPlotDims(plotdims){
+
+        // Update properties
+        this.plotdims.dimensions = plotdims.dimensions;
+        this.plotdims.lims = plotdims.lims;
+        this.plotdims.aspect = plotdims.aspect;
+        this.plotdims.size = [];
+        for(var i=0; i<plotdims.lims.length; i++){
+            this.plotdims.size.push(
+                plotdims.lims[i][1] - plotdims.lims[i][0]
+            );
+        }
+        this.plotdims.midpoints = [];
+        for(var i=0; i<plotdims.lims.length; i++){
+            this.plotdims.midpoints.push(
+                (plotdims.lims[i][0] + plotdims.lims[i][1])/2
+            );
+        }
+
+        // Rescale plotPoints
+        this.plotPoints.scale.set(
+            this.plotdims.aspect[0] / this.plotdims.size[0],
+            this.plotdims.aspect[1] / this.plotdims.size[1],
+            this.plotdims.aspect[2] / this.plotdims.size[2]
+        );
+
+        // Reposition plotPoints
+        this.plotdims.baseposition = [
+            -this.plotdims.midpoints[0]*this.plotdims.aspect[0] / this.plotdims.size[0],
+            -this.plotdims.midpoints[1]*this.plotdims.aspect[1] / this.plotdims.size[1],
+            -this.plotdims.midpoints[2]*this.plotdims.aspect[2] / this.plotdims.size[2]
+        ]
+        this.plotPoints.position.fromArray(
+            this.plotdims.baseposition  
+        );
+
+        // Redefine outer clipping planes
+        this.setOuterClippingPlanes();
+
     }
 
     // Add an object to the scene
@@ -53,6 +81,22 @@ R3JS.Scene = class Scene {
 
         this.plotPoints.add(object);
 
+    }
+
+    // Add elements to the scene
+    addElements(elements){
+
+        for(var i=0; i<elements.length; i++){
+            this.elements.push(elements[i]);
+        }
+
+    }
+
+    // Add selectable elements
+    addSelectableElements(elements){
+        for(var i=0; i<elements.length; i++){
+            this.selectable_elements.push(elements[i]);
+        }
     }
 
     // Get and set rotation
@@ -149,19 +193,18 @@ R3JS.Scene = class Scene {
 
      }
 
-    setTranslation(location){
+    setTranslation(translation){
 
-        // Convert to vector3
-        var translation = new THREE.Vector3().fromArray(location);
-        
-        // Correct for scene center
-        translation.sub(new THREE.Vector3().fromArray(this.plotdims.aspect).multiplyScalar(0.5));
+        // Get current translation
+        var currenttranslation = this.getTranslation();
 
         // Get difference between current position and center position
-        translation.sub(this.plotPoints.position);
+        translation[0] = translation[0] - currenttranslation[0];
+        translation[1] = translation[1] - currenttranslation[1];
+        translation[2] = translation[2] - currenttranslation[2];
 
         // Pan the scene by the difference
-        this.panScene(translation.toArray());
+        this.panScene(translation);
 
     }
 
@@ -171,7 +214,9 @@ R3JS.Scene = class Scene {
         var translation = this.plotPoints.position.clone();
 
         // Correct for scene center
-        translation.add(new THREE.Vector3().fromArray(this.plotdims.aspect).multiplyScalar(0.5));
+        translation.sub(
+            new THREE.Vector3().fromArray(this.plotdims.baseposition)
+        );
 
         // Return the translation
         return(translation.toArray());
@@ -201,14 +246,28 @@ R3JS.Scene = class Scene {
 
     // Clipping planes
     setOuterClippingPlanes(){
+        var lower_lims = this.plotCoordToScene([
+            this.plotdims.lims[0][0],
+            this.plotdims.lims[1][0],
+            this.plotdims.lims[2][0]
+        ]);
+        var upper_lims = this.plotCoordToScene([
+            this.plotdims.lims[0][1],
+            this.plotdims.lims[1][1],
+            this.plotdims.lims[2][1]
+        ]);
         this.plotPoints.clippingPlanes = [
-            new THREE.Plane( new THREE.Vector3( 1, 0, 0 ),  0 ),
-            new THREE.Plane( new THREE.Vector3( -1, 0, 0 ), this.plotdims.aspect[0] ),
-            new THREE.Plane( new THREE.Vector3( 0, 1, 0 ),  0 ),
-            new THREE.Plane( new THREE.Vector3( 0, -1, 0 ), this.plotdims.aspect[1] ),
-            new THREE.Plane( new THREE.Vector3( 0, 0, 1 ),  0 ),
-            new THREE.Plane( new THREE.Vector3( 0, 0, -1 ), this.plotdims.aspect[2] )
+            new THREE.Plane( new THREE.Vector3( 1, 0, 0 ).applyQuaternion(this.plotHolder.quaternion),  -(this.plotdims.lims[0][0] * this.plotPoints.scale.x + this.plotPoints.position.x) ),
+            new THREE.Plane( new THREE.Vector3( -1, 0, 0 ).applyQuaternion(this.plotHolder.quaternion), this.plotdims.lims[0][1] * this.plotPoints.scale.x + this.plotPoints.position.x ),
+            new THREE.Plane( new THREE.Vector3( 0, 1, 0 ).applyQuaternion(this.plotHolder.quaternion),  -(this.plotdims.lims[1][0] * this.plotPoints.scale.y + this.plotPoints.position.y) ),
+            new THREE.Plane( new THREE.Vector3( 0, -1, 0 ).applyQuaternion(this.plotHolder.quaternion), this.plotdims.lims[1][1] * this.plotPoints.scale.y + this.plotPoints.position.y ),
+            new THREE.Plane( new THREE.Vector3( 0, 0, 1 ).applyQuaternion(this.plotHolder.quaternion),  -(this.plotdims.lims[2][0] * this.plotPoints.scale.z + this.plotPoints.position.z) ),
+            new THREE.Plane( new THREE.Vector3( 0, 0, -1 ).applyQuaternion(this.plotHolder.quaternion), this.plotdims.lims[2][1] * this.plotPoints.scale.z + this.plotPoints.position.z ),
         ];
+        // for(var i=0; i<this.plotPoints.clippingPlanes.length; i++){
+        //     var helper = new THREE.PlaneHelper( this.plotPoints.clippingPlanes[i], 1, 0xffff00 );
+        //     this.scene.add( helper );
+        // }
     }
 
     // Add a new clipping plane
@@ -229,6 +288,8 @@ R3JS.Scene = class Scene {
 
         // If not then add a reference
         this.clippingPlanes.push(plane);
+        // var helper = new THREE.PlaneHelper( plane, 1, 0xffff00 );
+        // this.scene.add( helper );
         return(plane);
 
 
@@ -248,19 +309,9 @@ R3JS.Scene = class Scene {
             var planeData = clippingPlaneData[i];
             
             // Normalise and coordinates provided
-            if(this.plotdims.lims){
-                
-                if(planeData.coplanarPoints){
-                    planeData.coplanarPoints = R3JS.normalise_coords(planeData.coplanarPoints,
-                                                                     this.plotdims);
-                }
-                if(planeData.coplanarPoint){
-                    planeData.coplanarPoint = R3JS.normalise_coord(planeData.coplanarPoint,
-                                                                   this.plotdims);
-                }
+            planeData.coplanarPoints = this.plotCoordsToScene(planeData.coplanarPoints);
 
-            }
-
+            // Make the plane
             var plane = R3JS.utils.generatePlane(planeData);
             clippingPlanes.push(
                 this.addClippingPlane(plane)
@@ -270,6 +321,43 @@ R3JS.Scene = class Scene {
         return(clippingPlanes);
 
     }
+
+    // Convert coordinates in the plotpoint system to the scene
+    plotCoordToScene(coord){
+        var converted_coord = new THREE.Vector3().fromArray(coord);
+        converted_coord.multiply(this.plotPoints.scale);
+        converted_coord.add(this.plotPoints.position);
+        converted_coord.applyQuaternion(this.plotHolder.quaternion);
+        return(converted_coord.toArray());
+    }
+
+    plotCoordsToScene(coords){
+        var converted_coords = [];
+        for(var i=0; i<coords.length; i++){
+            converted_coords.push(
+                this.plotCoordToScene(coords[i])
+            );
+        }
+        return(converted_coords);
+    }
+
+    // sceneCoordToPlot(coord){
+    //     var converted_coord = new THREE.Vector3().fromArray(coord);
+    //     converted_coord.multiply(this.plotPoints.scale);
+    //     converted_coord.add(this.plotPoints.position);
+    //     converted_coord.applyQuaternion(this.plotHolder.quaternion);
+    //     return(converted_coord.toArray());
+    // }
+
+    // sceneCoordsToPlot(coords){
+    //     var converted_coords = [];
+    //     for(var i=0; i<coords.length; i++){
+    //         converted_coords.push(
+    //             this.sceneCoordToPlot(coords[i])
+    //         );
+    //     }
+    //     return(converted_coords);
+    // }
 
 
 }
