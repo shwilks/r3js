@@ -4,6 +4,7 @@ R3JS.Raytracer = class Raytracer {
 	// Constructor function
 	constructor(){
 		this.raycaster = new THREE.Raycaster();
+		this.intersected = [];
 	}
 
 	// Raytrace function
@@ -45,7 +46,7 @@ R3JS.Raytracer = class Raytracer {
 		    // Restore emission to previously intersected point if not null
 		    if (this.intersected){
 		    	viewer.dehoverElements(
-		    		this.intersectedElementIDs()
+		    		this.intersectedElements()
 		    	);
 		    }
 
@@ -54,34 +55,34 @@ R3JS.Raytracer = class Raytracer {
 
 		    // Color new point accordingly
 		    viewer.hoverElements(
-		    	this.intersectedElementIDs()
+		    	this.intersectedElements()
 		    );
 		  }
 		} else {
 		  if (this.intersected) {
 		    viewer.dehoverElements(
-		    	this.intersectedElementIDs()
+		    	this.intersectedElements()
 		    );
 		  }
-		  this.intersected = null;
+		  this.intersected = [];
 		}
 
 	}
 
 	// Fetch objects from intersected
-	intersectedElementIDs(){
+	intersectedElements(){
 		
-		var element_ids = [];
+		var elements = [];
 		var uuids    = [];
 		
 		for(var i=0; i<this.intersected.length; i++){
 			if(uuids.indexOf(this.intersected[i].object.uuid) == -1){
-				element_ids.push(this.intersected[i].object.element.id);
+				elements.push(this.intersected[i].object.element);
 	          	uuids.push(this.intersected[i].object.uuid);
 	        }
 		}
 		
-		return(element_ids);
+		return(elements);
 
 	}
 

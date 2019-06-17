@@ -4,15 +4,14 @@
 \alias{clippingPlane3js}
 \title{Create a clipping plane object}
 \usage{
-clippingPlane3js(normal = NULL, coplanarPoint = NULL,
-  coplanarPoints = NULL)
+clippingPlane3js(coplanarPoints = NULL)
 }
 \arguments{
+\item{coplanarPoints}{A matrix of 3 points coplanar to the plane}
+
 \item{normal}{The normal of the plane}
 
 \item{coplanarPoint}{A point coplanar to the plane}
-
-\item{coplanarPoints}{A matrix of 3 points coplanar to the plane}
 }
 \value{
 Returns and r3js clipping plane object

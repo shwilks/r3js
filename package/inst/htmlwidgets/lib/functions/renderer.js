@@ -22,9 +22,9 @@ R3JS.Renderer = class Renderer {
 
     }
 
-    attachToDOM(parent){
-        parent.appendChild(this.webglrenderer.domElement);
-        parent.appendChild(this.labelrenderer.domElement);
+    attachToViewport(viewport){
+        viewport.canvas.appendChild(this.webglrenderer.domElement);
+        viewport.canvas.appendChild(this.labelrenderer.domElement);
     }
 
     setSize(width, height){

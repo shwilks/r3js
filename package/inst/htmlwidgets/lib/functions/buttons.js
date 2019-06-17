@@ -3,6 +3,7 @@
 R3JS.Viewport.prototype.addButtons = function(){
 
 	var viewer = this.viewer;
+	this.btns = {};
 
     // Create button viewport
     var btn_holder = document.createElement( 'div' );
@@ -12,79 +13,106 @@ R3JS.Viewport.prototype.addButtons = function(){
     btn_holder.style.display = "none";
     btn_holder.style.background = "white";
     this.div.appendChild(btn_holder);
-    this.btns = btn_holder;
+    this.btnHolder = btn_holder;
 
-    // Create function to make buttons
-    var createButton = function(title,
-    	                        symbol,
-    	                        event){
 
-	    var btn = document.createElement( 'div' );
-	    btn.classList.add("glyph-btn");
-	    btn.classList.add('not-selectable');
-	    btn.title = title;
-	    btn.innerHTML = symbol;
-	    btn.event = event;
-	    btn.addEventListener('mousedown', function(e){
-	    	e.stopPropagation();
-	    });
-	    btn.addEventListener('mouseup', function(e){
-	    	this.event();
-	    	e.stopPropagation();
-	    });
-	    btn_holder.appendChild(btn);
-	    btn.updateSymbol = function(symbol){
-	    	this.innerHTML = symbol;
-	    }
-	    return(btn);
+    // Add mouseover events to show and hide buttons
+    this.div.addEventListener("mouseover", function(){
+    	if(viewer.contentLoaded){
+    		btn_holder.style.display = "block";
+    	}
+    });
+    this.div.addEventListener("mouseout", function(){
+    	btn_holder.style.display = "none";
+    });
 
-	}
-	this.btns.createButton = createButton;
 
 	// Create button to show viewer info
 	function show_info(){
 		// this.infoDiv.toggle();
+		console.log("info");
 	}
-	var grid_btn = createButton("Show info",
-		                        icon_info(),
-		                        show_info);
+	this.addButton({
+		name  : "info",
+		title : "Show info",
+		icon  : icon_info(),
+		fn    : show_info
+	})
 
 
 	// Create button to re-center plot
     function btn_centerScene(){
     	viewer.resetTransformation();
     }
-	var centerScene_btn = createButton("Reset orientation",
-		                               icon_center(),
-		                               btn_centerScene);
-	this.btns.centerScene = centerScene_btn;
+	this.addButton({
+		name  : "resetTransformation",
+		title : "Reset orientation",
+		icon  : icon_center(),
+		fn    : btn_centerScene
+	})
 
 	// Create button to download image
 	function btn_saveImg(){
       	viewer.downloadImage(viewer.name);
 	}
-	var saveImg_btn = createButton("Download image",
-		                           icon_snapshot(),
-		                           btn_saveImg);
+	this.addButton({
+		name  : "snapshot",
+		title : "Download image",
+		icon  : icon_snapshot(),
+		fn    : btn_saveImg
+	})
 
 	// Pop out viewer
 	if (window!=window.top) {
 		function popOutViewer(){
 			window.open(window.location.href);
 		}
-		var popOut_btn   = createButton("Open viewer",
-			                             icon_open(),
-			                             popOutViewer);
+		this.addButton({
+			name  : "openInNewWindow",
+			title : "Open in new window",
+			icon  : icon_open(),
+			fn    : popOutViewer
+		})
     }
 
 
-    // Add mouseover events to show and hide buttons
-    this.div.addEventListener("mouseover", function(){
-    	btn_holder.style.display = "block";
+}
+
+R3JS.Viewport.prototype.addButton = function(args, position){
+
+	// Create and style button
+	var btn = document.createElement( 'div' );
+    btn.classList.add("glyph-btn");
+    btn.classList.add('not-selectable');
+    btn.title     = args.title;
+    btn.innerHTML = args.icon;
+    this.btns[args.name] = btn;
+
+    // Add button record
+    if(typeof(position) === "undefined"){
+    	this.btnHolder.appendChild(btn);
+	} else {
+		this.btnHolder.insertBefore(btn, this.btnHolder.children[position]);
+	}
+
+    // Add event listeners
+    btn.addEventListener('mousedown', function(e){
+    	e.stopPropagation();
     });
-    this.div.addEventListener("mouseout", function(){
-    	btn_holder.style.display = "none";
+    btn.addEventListener('mouseup', function(e){
+    	args.fn(e);
+    	e.stopPropagation();
     });
 
+    // Add method to update the button
+    btn.updateIcon = function(icon){
+    	this.innerHTML = icon;
+    }
+
+    return(btn);
+
 }
+
+
+
 

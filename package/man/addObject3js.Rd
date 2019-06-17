@@ -4,7 +4,7 @@
 \alias{addObject3js}
 \title{Generate a new object ID}
 \usage{
-addObject3js(data3js, object)
+addObject3js(data3js, object, number_of_ids = 1)
 }
 \arguments{
 \item{data3js}{The r3js data object}

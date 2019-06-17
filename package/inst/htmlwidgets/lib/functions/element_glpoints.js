@@ -12,9 +12,7 @@ R3JS.element.constructors.glpoints = function(
         shape : plotobj.shape,
         properties : plotobj.properties,
         dimensions : plotobj.properties.dimensions,
-        viewport : scene.viewer.viewport,
-        renderer : scene.viewer.renderer,
-        camera : scene.viewer.camera
+        viewer : scene.viewer
     });
 
     // var element = glpoints.elements;
@@ -30,60 +28,85 @@ R3JS.element.glpoints = class GLPoints {
     constructor(args){
 
         var coords = args.coords;
+        var viewport = args.viewer.viewport;
+        var renderer = args.viewer.renderer;
+
+        // Set default order
+        if(!args.order){ args.order = new Array(coords.length).fill(0).map((x,i) => i) }
 
         // Set variables
         var positions    = new Float32Array( coords.length * 3 );
         var fillColor    = new Float32Array( coords.length * 4 );
         var outlineColor = new Float32Array( coords.length * 4 );
         var outlineWidth = new Float32Array( coords.length );
-        var fillAlpha    = new Float32Array( coords.length );
         var sizes        = new Float32Array( coords.length );
         var aspect       = new Float32Array( coords.length );
         var shape        = new Float32Array( coords.length );
         var visible      = new Float32Array( coords.length );
 
         // Fill in info
+        var n;
+        var element_order = Array(args.order.length);
         for(var i=0; i<coords.length; i++){
 
-            positions[i*3]   = coords[i][0];
-            positions[i*3+1] = coords[i][1];
-            positions[i*3+2] = coords[i][2];
+            n = args.order[i];
+            element_order[n] = i;
+
+            positions[i*3]   = coords[n][0];
+            positions[i*3+1] = coords[n][1];
+            positions[i*3+2] = coords[n][2];
 
             // Set color
-            if(args.shape[i].charAt(0) == "o"){ 
+            if(args.shape[n].charAt(0) == "b"){ 
+
+                fillColor[i*4]   = args.properties.bgcolor.r[n];
+                fillColor[i*4+1] = args.properties.bgcolor.g[n];
+                fillColor[i*4+2] = args.properties.bgcolor.b[n];
+                fillColor[i*4+3] = args.properties.bgcolor.a[n];
+
+                outlineColor[i*4]   = args.properties.color.r[n];
+                outlineColor[i*4+1] = args.properties.color.g[n];
+                outlineColor[i*4+2] = args.properties.color.b[n];
+                outlineColor[i*4+3] = args.properties.color.a[n];
+
+                outlineWidth[i] = args.properties.outlinewidth[n];
+
+            } else if(args.shape[n].charAt(0) == "o"){ 
 
                 fillColor[i*4+3] = 0;
                 
-                outlineColor[i*4]   = args.properties.color.r[i];
-                outlineColor[i*4+1] = args.properties.color.g[i];
-                outlineColor[i*4+2] = args.properties.color.b[i];
+                outlineColor[i*4]   = args.properties.color.r[n];
+                outlineColor[i*4+1] = args.properties.color.g[n];
+                outlineColor[i*4+2] = args.properties.color.b[n];
                 outlineColor[i*4+3] = 1;
 
-                outlineWidth[i] = 4;
+                outlineWidth[i] = args.properties.outlinewidth[n];
 
             } else {
 
-                fillColor[i*4]   = args.properties.color.r[i];
-                fillColor[i*4+1] = args.properties.color.g[i];
-                fillColor[i*4+2] = args.properties.color.b[i];
+                fillColor[i*4]   = args.properties.color.r[n];
+                fillColor[i*4+1] = args.properties.color.g[n];
+                fillColor[i*4+2] = args.properties.color.b[n];
                 fillColor[i*4+3] = 1;
-                fillAlpha[i]     = args.properties.opacity;
 
                 outlineWidth[i] = 0;
 
             }
             
             // Set shape
-            if(args.shape[i] == "circle")   { shape[i] = 0 }
-            if(args.shape[i] == "ocircle")  { shape[i] = 0 }
-            if(args.shape[i] == "square")   { shape[i] = 1 }
-            if(args.shape[i] == "osquare")  { shape[i] = 1 }
-            if(args.shape[i] == "triangle") { shape[i] = 2 }
-            if(args.shape[i] == "otriangle"){ shape[i] = 2 }
+            if(args.shape[n] == "circle")   { shape[i] = 0 }
+            if(args.shape[n] == "ocircle")  { shape[i] = 0 }
+            if(args.shape[n] == "bcircle")  { shape[i] = 0 }
+            if(args.shape[n] == "square")   { shape[i] = 1 }
+            if(args.shape[n] == "osquare")  { shape[i] = 1 }
+            if(args.shape[n] == "bsquare")  { shape[i] = 1 }
+            if(args.shape[n] == "triangle") { shape[i] = 2 }
+            if(args.shape[n] == "otriangle"){ shape[i] = 2 }
+            if(args.shape[n] == "btriangle"){ shape[i] = 2 }
 
-            sizes[i]   = args.size[i];
-            aspect[i]  = 1;
-            visible[i] = 1;
+            sizes[i]   = args.size[n];
+            visible[i] = args.properties.visible[n];
+            aspect[i]  = args.properties.aspect[n];
 
         }
 
@@ -91,7 +114,6 @@ R3JS.element.glpoints = class GLPoints {
         var geometry = new THREE.BufferGeometry();
         geometry.addAttribute( 'position',     new THREE.BufferAttribute( positions,    3 ) );
         geometry.addAttribute( 'fillColor',    new THREE.BufferAttribute( fillColor,    4 ) );
-        geometry.addAttribute( 'fillAlpha',    new THREE.BufferAttribute( fillAlpha,    1 ) );
         geometry.addAttribute( 'outlineColor', new THREE.BufferAttribute( outlineColor, 4 ) );
         geometry.addAttribute( 'outlineWidth', new THREE.BufferAttribute( outlineWidth, 1 ) );
         geometry.addAttribute( 'size',         new THREE.BufferAttribute( sizes,        1 ) );
@@ -101,9 +123,9 @@ R3JS.element.glpoints = class GLPoints {
 
         // var texture = get_sprite_texture("ball");
 
-        var vwidth  = args.viewport.getWidth();
-        var vheight = args.viewport.getWidth();
-        var pixelratio = args.renderer.getPixelRatio();
+        var vwidth  = viewport.getWidth();
+        var vheight = viewport.getWidth();
+        var pixelratio = renderer.getPixelRatio();
 
         // if(args.properties.dimensions == 3){
         //     var material = new THREE.ShaderMaterial( { 
@@ -130,8 +152,8 @@ R3JS.element.glpoints = class GLPoints {
                     viewportHeight: { value: vheight },
                     viewportPixelRatio: { value: pixelratio }
                 }, 
-                vertexShader:   args.renderer.shaders.vertexShader,
-                fragmentShader: args.renderer.shaders.fragmentShader,
+                vertexShader:   renderer.shaders.vertexShader,
+                fragmentShader: renderer.shaders.fragmentShader,
                 alphaTest: 0.9,
                 transparent: true,
                 blending: THREE.NormalBlending
@@ -143,11 +165,11 @@ R3JS.element.glpoints = class GLPoints {
         this.object = points;
 
         // Add a resize event listener to the viewport
-        args.viewport.onresize.push(
+        viewport.onresize.push(
             function(){
-                points.material.uniforms.viewportWidth.value = args.viewport.getWidth();
-                points.material.uniforms.viewportHeight.value  = args.viewport.getHeight();
-                points.material.uniforms.viewportPixelRatio.value = args.renderer.getPixelRatio();
+                points.material.uniforms.viewportWidth.value = viewport.getWidth();
+                points.material.uniforms.viewportHeight.value  = viewport.getHeight();
+                points.material.uniforms.viewportPixelRatio.value = renderer.getPixelRatio();
             }
         );
 
@@ -163,11 +185,7 @@ R3JS.element.glpoints = class GLPoints {
             this.ielements.push(
                 new R3JS.element.glpoint(
                     this.object,
-                    i,
-                    {
-                        size  : args.size[i],
-                        shape : args.shape[i]
-                    }
+                    element_order[i]
                 )
             );
         }
@@ -179,6 +197,15 @@ R3JS.element.glpoints = class GLPoints {
         return(this.ielements);
     }
 
+    // Scale size of all points
+    getSize(){
+        return(this.object.material.uniforms.scale.value);
+    }
+
+    setSize(value){
+        this.object.material.uniforms.scale.value = value;
+    }
+
 }
 
 
@@ -186,40 +213,114 @@ R3JS.element.glpoints = class GLPoints {
 R3JS.element.glpoint = class GLPoint extends R3JS.element.base {
 
     constructor(
-            pointobj,
-            index,
-            args
+            object,
+            index
         ){
 
         super();
-        this.pointobj = pointobj;
+        this.object = object;
         this.index = index;
-        this.uuid = pointobj.uuid+"-"+index;
-        this.object = this;
+        this.uuid = object.uuid+"-"+index;
         this.element = this;
-        this.size  = args.size;
-        this.shape = args.shape;
 
-        var pointobjcoords = this.pointobj.geometry.attributes.position.array;
+        var pointobjcoords = this.object.geometry.attributes.position.array;
         this.coords = [
             pointobjcoords[this.index*3],
             pointobjcoords[this.index*3+1],
             pointobjcoords[this.index*3+2]
         ];
+        this.size   = this.object.geometry.attributes.size.array[this.index];
+        this.shape  = this.object.geometry.attributes.shape.array[this.index];
+        this.aspect = this.object.geometry.attributes.aspect.array[this.index];
+
+    }
+
+    // Method to set coordinates
+    setCoords(x, y, z){
+
+        this.coords[0] = x;
+        this.coords[1] = y;
+        this.coords[2] = z;
+        var position = this.object.geometry.attributes.position.array;
+        this.object.geometry.attributes.position.needsUpdate = true;
+        position[this.index*3]   = x;
+        position[this.index*3+1] = y;
+        position[this.index*3+2] = z;
 
     }
 
     // Method to set color
     setColor(color){
 
-        color = new THREE.Color(color);        
-        var fillCols = this.pointobj.geometry.attributes.fillColor.array;
-        this.pointobj.geometry.attributes.fillColor.needsUpdate = true;
+        color = new THREE.Color(color);    
+        var fillCols = this.object.geometry.attributes.fillColor.array;
+        this.object.geometry.attributes.fillColor.needsUpdate = true;
         fillCols[this.index*4]   = color.r;
         fillCols[this.index*4+1] = color.g;
         fillCols[this.index*4+2] = color.b;
 
     }
+
+    // Method to set fill color
+    setFillColor(color){
+
+        this.setColor(color);
+
+    }
+
+    // Method to set outline color
+    setOutlineColor(color){
+
+        color = new THREE.Color(color);
+        var outlineCols = this.object.geometry.attributes.outlineColor.array;
+        this.object.geometry.attributes.outlineColor.needsUpdate = true;
+        outlineCols[this.index*4]   = color.r;
+        outlineCols[this.index*4+1] = color.g;
+        outlineCols[this.index*4+2] = color.b;
+
+    }
+
+    // Set opacity
+    setOpacity(opacity){
+
+        this.setFillOpacity(opacity);
+        this.setOutlineOpacity(opacity);
+
+    }
+
+    setFillOpacity(opacity){
+        
+        var fillCols = this.object.geometry.attributes.fillColor.array;
+        this.object.geometry.attributes.fillColor.needsUpdate = true;
+        fillCols[this.index*4+3] = opacity;
+        
+    }
+
+    setOutlineOpacity(opacity){
+
+        var outlineCols = this.object.geometry.attributes.outlineColor.array;
+        this.object.geometry.attributes.outlineColor.needsUpdate = true;
+        outlineCols[this.index*4+3] = opacity;
+
+    }
+
+    hide(){
+        
+        var visible = this.object.geometry.attributes.visible.array;
+        this.object.geometry.attributes.visible.needsUpdate = true;
+        visible[this.index] = 0;
+
+    }
+
+    show(){
+        
+        var visible = this.object.geometry.attributes.visible.array;
+        this.object.geometry.attributes.visible.needsUpdate = true;
+        visible[this.index] = 1;
+
+    }
+        
+
 
     // Method for raycasting to this point
     raycast(raycaster, intersects){
@@ -231,14 +332,14 @@ R3JS.element.glpoint = class GLPoint extends R3JS.element.base {
         // Project coords into camera space [-1, 1] for x and y
         var coords = new THREE.Vector3()
                               .fromArray(this.coords)
-                              .applyMatrix4(this.pointobj.matrixWorld)
+                              .applyMatrix4(this.object.matrixWorld)
                               .project(raycaster.camera);
 
 
         // // Project coords into camera space [-1, 1] for x and y
         // var coords = new THREE.Vector3()
         //                       .fromArray(this.coords)
-        //                       .applyMatrix4(this.pointobj.matrixWorld)
+        //                       .applyMatrix4(this.object.matrixWorld)
         //                       .project(raycaster.camera);
 
         // // 3D
@@ -251,20 +352,21 @@ R3JS.element.glpoint = class GLPoint extends R3JS.element.base {
 
         // Work out point radius
         var size       = this.size;
-        var uniscale   = this.pointobj.material.uniforms.scale.value;
-        var pixelratio = this.pointobj.material.uniforms.viewportPixelRatio.value;
-        var ptRadius   = 0.03*size*uniscale;
+        var aspect     = this.aspect;
+        var uniscale   = this.object.material.uniforms.scale.value;
+        var pixelratio = this.object.material.uniforms.viewportPixelRatio.value;
+        var ptRadius   = 0.025*size*uniscale;
 
         // Work out whether the point is intersected or not
         var ptIntersected;
-        if(this.shape == "square" || this.shape == "osquare"){
-            ptIntersected = ray.x < coords.x + ptRadius
-                            && ray.x > coords.x - ptRadius
+        if(this.shape == 1){
+            ptIntersected = ray.x < coords.x + ptRadius/aspect
+                            && ray.x > coords.x - ptRadius/aspect
                             && ray.y < coords.y + ptRadius
                             && ray.y > coords.y - ptRadius
         } else {
             var dist2point = Math.sqrt(
-                (coords.x - ray.x)*(coords.x - ray.x)
+                ((coords.x - ray.x)*(coords.x - ray.x))/(aspect*aspect)
                 + (coords.y - ray.y)*(coords.y - ray.y)
             );
             ptIntersected = dist2point < ptRadius;
@@ -272,9 +374,41 @@ R3JS.element.glpoint = class GLPoint extends R3JS.element.base {
 
         // If intersected then add to intersects
         if(ptIntersected){
-            intersects.push(this);
+            intersects.push({
+                object   : this,
+                distance : -this.index
+            });
         }
         
+    }
+
+    // Function to check whether point is within a selection rectangle
+    withinRectangle(
+        corner1,
+        corner2,
+        camera
+    ){
+
+        var projectedPosition = new THREE.Vector3()
+                                         .fromArray(this.coords)
+                                         .applyMatrix4(this.object.matrixWorld)
+                                         .project(camera.camera);
+
+        var aspect = camera.aspect;
+        
+        var size       = this.size;
+        var uniscale   = this.object.material.uniforms.scale.value;
+        var pixelratio = this.object.material.uniforms.viewportPixelRatio.value;
+        var ptRadius   = (0.05*size*uniscale)/pixelratio;
+
+        // var ptRadius = (this.object.material.uniforms.scale.value*0.0032*this.size)/
+        //                (3*this.object.material.uniforms.viewportPixelRatio.value);
+
+        return(projectedPosition.x + ptRadius/aspect > Math.min(corner1.x, corner2.x) &&
+               projectedPosition.x - ptRadius/aspect < Math.max(corner1.x, corner2.x) &&
+               projectedPosition.y + ptRadius > Math.min(corner1.y, corner2.y) &&
+               projectedPosition.y - ptRadius < Math.max(corner1.y, corner2.y));
+
     }
 
 }

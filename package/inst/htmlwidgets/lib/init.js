@@ -4,7 +4,12 @@ R3JS = {};
 R3JS.Viewer = class R3JSviewer {
 
     // Constructor function
-    constructor(container, plotData, settings){
+    constructor(container, settings = {
+        startAnimation : true
+    }){
+
+        // Set settings
+        this.settings = settings;
 
         // Set variables
         this.sceneChange    = false;
@@ -28,13 +33,13 @@ R3JS.Viewer = class R3JSviewer {
 
         // Create renderer and append to dom
         this.renderer = new R3JS.Renderer();
-        this.renderer.attachToDOM(this.viewport.div);
+        this.renderer.attachToViewport(this.viewport);
         this.renderer.setSize(
             this.viewport.width,
             this.viewport.height
         );
 
-        // Create camera
+        // Create cameras
         this.perspcamera = new R3JS.PerspCamera();
         this.orthocamera = new R3JS.OrthoCamera();
         this.camera = this.perspcamera;
@@ -42,22 +47,33 @@ R3JS.Viewer = class R3JSviewer {
         // Add raytracer
         this.raytracer = new R3JS.Raytracer();
 
-        // Start animation loop
-        var viewer = this;
-        function animate() {
+        // Bind navigation
+        this.bindNavigation();
 
-            if(viewer.raytraceNeeded || viewer.sceneChange){
-                viewer.raytraceNeeded = false;
-                viewer.raytrace();
-            }
-            if(viewer.sceneChange){
-                viewer.sceneChange = false;
-                viewer.render();
-            }
-            requestAnimationFrame(animate);
-
+        // Add rectangular selection
+        if(settings.rectangularSelection){
+            this.addRectangleSelection();
         }
-        animate();
+
+        // Start animation loop
+        if(settings.startAnimation){
+            var viewer = this;
+            function animate() {
+
+                if(viewer.raytraceNeeded || viewer.sceneChange || viewer.scene.sceneChange){
+                    viewer.raytraceNeeded = false;
+                    viewer.raytrace();
+                }
+                if(viewer.sceneChange || viewer.scene.sceneChange){
+                    viewer.sceneChange = false;
+                    viewer.scene.sceneChange = false;
+                    viewer.render();
+                }
+                requestAnimationFrame(animate);
+
+            }
+            animate();
+        }
 
     }
 
@@ -83,7 +99,7 @@ R3JS.Viewer = class R3JSviewer {
     resetTransformation(){
         this.sceneChange = true;
         this.scene.resetTransformation();
-        this.camera.setZoom(3);
+        this.camera.resetZoom();
         this.scene.showhideDynamics(this.camera.camera);
     }
 
@@ -94,7 +110,7 @@ R3JS.Viewer = class R3JSviewer {
         this.scene.setPlotDims(plotdims);
 
         // Rebind navigation depending upon 2D or 3D plot
-        this.navigation_bind();
+        // this.navigation_bind(plotdims.dimensions);
 
         // Set camera
         if(plotdims.dimensions == 2){

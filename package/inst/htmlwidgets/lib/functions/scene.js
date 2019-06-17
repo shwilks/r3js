@@ -4,6 +4,7 @@ R3JS.Scene = class Scene {
     constructor(){
 
         // Set defaults
+        this.sceneChange = false;
         this.defaults = {
             translation : [0,0,0],
             rotation    : [0,0,0]
@@ -16,6 +17,7 @@ R3JS.Scene = class Scene {
             objects : []
         }
         this.elements = [];
+        this.onrotate = [];
 
         // Create scene
         this.scene = new THREE.Scene();
@@ -39,9 +41,9 @@ R3JS.Scene = class Scene {
 
         // Update properties
         this.plotdims.dimensions = plotdims.dimensions;
-        this.plotdims.lims = plotdims.lims;
-        this.plotdims.aspect = plotdims.aspect;
-        this.plotdims.size = [];
+        this.plotdims.lims       = plotdims.lims;
+        this.plotdims.aspect     = plotdims.aspect;
+        this.plotdims.size       = [];
         for(var i=0; i<plotdims.lims.length; i++){
             this.plotdims.size.push(
                 plotdims.lims[i][1] - plotdims.lims[i][0]
@@ -57,15 +59,15 @@ R3JS.Scene = class Scene {
         // Rescale plotPoints
         this.plotPoints.scale.set(
             this.plotdims.aspect[0] / this.plotdims.size[0],
-            this.plotdims.aspect[1] / this.plotdims.size[1],
-            this.plotdims.aspect[2] / this.plotdims.size[2]
+            this.plotdims.aspect[1] / this.plotdims.size[0],
+            this.plotdims.aspect[2] / this.plotdims.size[0]
         );
 
         // Reposition plotPoints
         this.plotdims.baseposition = [
             -this.plotdims.midpoints[0]*this.plotdims.aspect[0] / this.plotdims.size[0],
-            -this.plotdims.midpoints[1]*this.plotdims.aspect[1] / this.plotdims.size[1],
-            -this.plotdims.midpoints[2]*this.plotdims.aspect[2] / this.plotdims.size[2]
+            -this.plotdims.midpoints[1]*this.plotdims.aspect[1] / this.plotdims.size[0],
+            -this.plotdims.midpoints[2]*this.plotdims.aspect[2] / this.plotdims.size[0]
         ]
         this.plotPoints.position.fromArray(
             this.plotdims.baseposition  
@@ -80,22 +82,48 @@ R3JS.Scene = class Scene {
     add(object){
 
         this.plotPoints.add(object);
+        this.sceneChange = true;
+
+    }
+
+    // Remove an object from the scene
+    remove(object){
+
+        this.plotPoints.remove(object);
+        this.sceneChange = true;
 
     }
 
     // Add elements to the scene
+    addElement(element){
+        element.id = this.elements.length;
+        this.elements.push(element);
+    }
     addElements(elements){
 
         for(var i=0; i<elements.length; i++){
-            this.elements.push(elements[i]);
+            this.addElement(elements[i]);
         }
 
     }
 
     // Add selectable elements
+    addSelectableElement(element){
+        if(this.selectable_elements.indexOf(element) === -1){
+            this.selectable_elements.push(element);
+        }
+    }
     addSelectableElements(elements){
         for(var i=0; i<elements.length; i++){
-            this.selectable_elements.push(elements[i]);
+            this.addSelectableElement(elements[i]);
+        }
+    }
+
+    // Remove a selectable element
+    removeSelectableElement(element){
+        var index = this.selectable_elements.indexOf(element);
+        if(index !== -1){
+            this.selectable_elements.splice(index, 1);
         }
     }
 
@@ -122,29 +150,44 @@ R3JS.Scene = class Scene {
            this.clippingPlanes[i].set(norm, this.clippingPlanes[i].constant);
         }
 
+        // Run any rotation events
+        for(var i=0; i<this.onrotate.length; i++){
+            this.onrotate[i]();
+        }
+
     }
 
     // Rotate by euclidean coordinates
     rotateEuclidean(rotation){
         
-        this.rotateOnAxis(new THREE.Vector3(0,0,1), rotation[2]);
-        this.rotateOnAxis(new THREE.Vector3(0,1,0), rotation[1]);
         this.rotateOnAxis(new THREE.Vector3(1,0,0), rotation[0]);
+        this.rotateOnAxis(new THREE.Vector3(0,1,0), rotation[1]);
+        this.rotateOnAxis(new THREE.Vector3(0,0,1), rotation[2]);
 
     }
 
     setRotation(rotation){
+        
+        // Get the rotation
+        var rot = this.plotHolder.rotation.toVector3();
             
         // Rotate back to origin
-        var rot = this.plotHolder.rotation.toVector3();
-        var r = rot.negate().toArray();
-        this.rotateOnAxis(new THREE.Vector3(1,0,0), r[0]);
-        this.rotateOnAxis(new THREE.Vector3(0,1,0), r[1]);
-        this.rotateOnAxis(new THREE.Vector3(0,0,1), r[2]);
+        this.rotateOnAxis(new THREE.Vector3(1,0,0), -rot.x);
+        this.rotateOnAxis(new THREE.Vector3(0,1,0), -rot.y);
+        this.rotateOnAxis(new THREE.Vector3(0,0,1), -rot.z);
 
         // Perform the rotation
         this.rotateEuclidean(rotation);
 
+    }
+
+    getRotation(){
+        var rot = this.plotHolder.rotation.toArray();
+        return([
+            rot[0],
+            rot[1],
+            rot[2]
+        ]);
     }
 
     setRotationDegrees(rotation){
@@ -155,7 +198,7 @@ R3JS.Scene = class Scene {
         ])
     }
 
-    getRotation(){
+    getRotationDegrees(){
         var rot = this.plotHolder.rotation.toArray();
         return([
             (rot[0]/Math.PI)*180,
@@ -197,14 +240,21 @@ R3JS.Scene = class Scene {
 
         // Get current translation
         var currenttranslation = this.getTranslation();
+        var newtranslation = [0,0,0];
 
         // Get difference between current position and center position
-        translation[0] = translation[0] - currenttranslation[0];
-        translation[1] = translation[1] - currenttranslation[1];
-        translation[2] = translation[2] - currenttranslation[2];
+        if(translation[0] !== null){ 
+            newtranslation[0] = translation[0] - currenttranslation[0];
+        }
+        if(translation[1] !== null){ 
+            newtranslation[1] = translation[1] - currenttranslation[1];
+        }
+        if(translation[2] !== null){ 
+            newtranslation[2] = translation[2] - currenttranslation[2];
+        }
 
         // Pan the scene by the difference
-        this.panScene(translation);
+        this.panScene(newtranslation);
 
     }
 
@@ -225,8 +275,6 @@ R3JS.Scene = class Scene {
 
 
 
-
-
     // Function to set the default transformation specified by the plotting data
     resetTransformation(){
         this.setTranslation(this.defaults.translation);
@@ -240,7 +288,6 @@ R3JS.Scene = class Scene {
                                                 color.g,
                                                 color.b);
     }
-
 
 
 
@@ -339,6 +386,28 @@ R3JS.Scene = class Scene {
             );
         }
         return(converted_coords);
+    }
+
+    // Empty
+    empty(){
+
+        // Remove clipping planes
+        this.clippingPlanes = [];
+
+        // Remove selectable elements
+        this.selectable_elements = [];
+
+        // Remove elements
+        for(var i=0; i<this.elements.length; i++){
+            this.remove(this.elements[i].object);
+        }
+        this.elements = [];
+
+        // Remove additional objects
+        while(this.plotPoints.children.length > 0){
+            this.plotPoints.remove(this.plotPoints.children[0]);
+        }
+
     }
 
     // sceneCoordToPlot(coord){

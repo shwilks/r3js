@@ -39,6 +39,17 @@ R3JS.element.base = class Element {
     	}
     }
 
+    // Setting coordinates
+    setCoords(x,y,z){
+        this.object.position.set(x, y, z);
+    }
+
+    // Geometry rotation
+    rotateGeoX(rotation){ this.object.geometry.rotateX(rotation) }
+    rotateGeoY(rotation){ this.object.geometry.rotateY(rotation) }
+    rotateGeoZ(rotation){ this.object.geometry.rotateZ(rotation) }
+
+    // Geometry scaling
     scaleGeo(scale){
     	this.object.geometry.scale(
     		scale[0],
@@ -61,6 +72,47 @@ R3JS.element.base = class Element {
 
     raycast(a,b){
         this.object.raycast(a,b);
+    }
+
+    hover(){
+        this.highlightGroup();
+    }
+
+    dehover(){
+    	this.dehighlightGroup();
+    }
+
+    click(){
+    }
+
+    // Check whether point falls within a selection rectangle
+    withinRectangle(
+        corner1, 
+        corner2, 
+        camera
+    ){
+
+        var projectedPosition = this.object.position.clone()
+                                                    .applyMatrix4(this.object.parent.matrixWorld)
+                                                    .project(camera.camera);
+
+        var aspect = camera.aspect;
+        
+        var size       = this.size;
+        var ptRadius   = 0;
+
+        // var ptRadius = (this.pointobj.material.uniforms.scale.value*0.0032*this.size)/
+        //                (3*this.pointobj.material.uniforms.viewportPixelRatio.value);
+
+        return(projectedPosition.x + ptRadius/aspect > Math.min(corner1.x, corner2.x) &&
+               projectedPosition.x - ptRadius/aspect < Math.max(corner1.x, corner2.x) &&
+               projectedPosition.y + ptRadius > Math.min(corner1.y, corner2.y) &&
+               projectedPosition.y - ptRadius < Math.max(corner1.y, corner2.y));
+ 
+    }
+
+    // Event for selection within a rectangle
+    rectangleSelect(){
     }
 
 }

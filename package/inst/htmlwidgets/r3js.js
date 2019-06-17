@@ -6,14 +6,14 @@ HTMLWidgets.widget({
 
   factory: function(el, width, height) {
 
-    // TODO: define shared variables for this instance
+    r3jsviewer = new R3JS.Viewer(el);
 
     return {
 
       renderValue: function(x) {
 
         // TODO: code to render the widget, e.g.
-        r3js(el, x.data3js, x.settings);
+        r3jsviewer.load(x.data3js);
 
       },
 

@@ -5,10 +5,12 @@ R3JS.Viewer.prototype.load = function(plotData){
     this.setPlotDims({
         lims   : plotData.lims,
         aspect : plotData.aspect,
-        dimensions : 2
+        dimensions : 3
     });
 
-
+    // Show the viewport
+    this.viewport.hidePlaceholder();
+    this.animated = true;
 	
     // Add positional light
     var light       = new THREE.DirectionalLight(0xe0e0e0);
@@ -25,7 +27,9 @@ R3JS.Viewer.prototype.load = function(plotData){
     // Fire any resize event listeners
     this.viewport.onwindowresize();
 
-    this.scene.elements[170].setColor("#ff0000");
+    //this.scene.setRotation([-1.23,0.03,-2.266]);
+
+    // this.scene.elements[170].setColor("#ff0000");
 
     // this.renderer.setShaders(
     //     R3JS.Shaders.VertexShader2D,

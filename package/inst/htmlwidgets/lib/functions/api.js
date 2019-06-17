@@ -1,8 +1,5 @@
 
 
-
-
-
 // function bind_api(container, viewport){
    
 //     // Function for snapshot

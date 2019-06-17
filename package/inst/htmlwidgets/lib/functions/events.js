@@ -1,11 +1,17 @@
 
 
+document.keydown = {
+    key : null
+};
+
 document.addEventListener("keydown", function(event){
     this.keydown = event;
 });
 
 document.addEventListener("keyup", function(event){
-    this.keydown = null;
+    this.keydown = {
+        key : null
+    };
 });
 
 // Function for getting mouse position
@@ -73,6 +79,14 @@ R3JS.Viewport.prototype.onmousemove = function(event){
     this.mouse.x = mouse.x;
     this.mouse.y = mouse.y;
     this.viewer.raytraceNeeded = true;
+
+    if(this.mouse.down){
+        var dist = (this.mouse.x - this.mouse.downX)*(this.mouse.x - this.mouse.downX)
+                   + (this.mouse.y - this.mouse.downY)*(this.mouse.y - this.mouse.downY)
+        if(dist > 0.001){
+            this.mouse.moved = true;
+        }
+    }
 }
 
 
@@ -125,12 +139,22 @@ R3JS.Viewport.prototype.onmousedown = function(event){
     //event.preventDefault();
     this.mouse.down  = true;
     this.mouse.event = event;
+    this.mouse.moved = false;
+    this.mouse.downX = this.mouse.x;
+    this.mouse.downY = this.mouse.y;
 }
 
 R3JS.Viewport.prototype.onmouseup = function(event){
     document.activeElement.blur();
     this.mouse.down  = false;
     this.mouse.event = event;
+
+    var intersectedElements = this.viewer.raytracer.intersectedElements();
+    if(intersectedElements.length === 0){
+        this.viewer.clickBackground();
+    } else {
+        this.viewer.clickElements(intersectedElements);
+    }
 }
 
 R3JS.Viewport.prototype.ontouchdown = function(event){
@@ -202,8 +226,9 @@ R3JS.Viewport.prototype.onmouseout = function(event) {
 // Mouse scroll
 R3JS.Viewport.prototype.onmousescroll = function(event) {
     event.preventDefault();
-    this.mouse.scrollX = event.deltaX;
-    this.mouse.scrollY = event.deltaY;
+    this.mouse.scrollX     = event.deltaX;
+    this.mouse.scrollY     = event.deltaY;
+    this.mouse.scrollShift = event.shiftKey;
 }
 
 

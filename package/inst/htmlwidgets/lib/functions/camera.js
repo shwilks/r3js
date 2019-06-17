@@ -1,63 +1,106 @@
 
 
-// Standard perspective camera for 3D
-R3JS.PerspCamera = class{
+// Standard camera class
+R3JS.Camera = class Camera {
 
-	// Constructor function
 	constructor(){
-		
-		this.camera = new THREE.PerspectiveCamera( 45, 1, 0.1, 10000 );
-		
-		this.min_zoom    = 0.75;
-		this.max_zoom    = 8;
-		this.zoom_damper = 0.05;
-
+		this.min_zoom     = 0.1;
+		this.max_zoom     = 4;
+		this.default_zoom = 2;
 		this.zoom_events = [];
+	}
+
+	// Set the zoom
+	setZoom(zoom){
+		var start_zoom = this.getZoom();
+		this.setCameraZoom(zoom);
+		var end_zoom = this.getZoom();
+		this.onzoom(start_zoom, end_zoom);
+	}
+	getZoom(){
+		return(this.getCameraZoom());
+	}
+
+	// Reset the zoom
+	resetZoom(){
+		this.setCameraZoom(this.default_zoom);
+	}
+
+	// Zooming the camera
+	zoom(zoom){
+
+		zoom = Math.pow(zoom, this.zoom_adjuster);
+		var start_zoom = this.getZoom();
+		var min_zoom = this.min_zoom;
+		var max_zoom = this.max_zoom;
+
+		if(start_zoom*zoom <= max_zoom 
+			&& start_zoom*zoom >= min_zoom){
+		    this.setZoom(start_zoom*zoom);
+		} else if(start_zoom*zoom < min_zoom){
+			this.setZoom(min_zoom);
+		} else {
+			this.setZoom(max_zoom);
+		}
+
+	}
+
+	// On zoom events
+	onzoom(start_zoom, end_zoom){
+
+		for(var i=0; i<this.zoom_events.length; i++){
+			this.zoom_events[i](start_zoom, end_zoom);
+		}
 
 	}
 
 	// Set the camera size
 	setSize(width, height){
 
+		this.aspect = width / height;
 		this.camera.aspect = width / height;
 		this.camera.updateProjectionMatrix();
-		this.onzoom();
+		this.setZoom(this.getZoom());
 
 	}
 
-	// Zooming the camera
-	zoom(zoom){
+	// Initiate the camera in a viewer
+	initiateInViewer(viewer){
 
-		var min_zoom = this.min_zoom;
-		var max_zoom = this.max_zoom;
-		zoom = zoom*this.zoom_damper;
+		this.setSize(
+			viewer.viewport.getWidth(), 
+			viewer.viewport.getHeight()
+		);
 
-		if(this.camera.position.z + zoom <= max_zoom 
-			&& this.camera.position.z + zoom >= min_zoom){
-		  this.camera.position.z += zoom;
-		} else if(zoom < 0){
-			this.camera.position.z = min_zoom;
-		} else {
-			this.camera.position.z = max_zoom;
-		}
-		this.camera.updateProjectionMatrix();
-		this.onzoom();
+	}
+
+}
+
+
+// Standard perspective camera for 3D
+R3JS.PerspCamera = class PerspCamera extends R3JS.Camera {
+
+	// Constructor function
+	constructor(){
+		
+		super();
+		this.camera = new THREE.PerspectiveCamera( 45, 1, 0.1, 10000 );
+		this.zoom_adjuster  = 1;
+
+	}
+
+	// Get the zoom
+	getCameraZoom(){
+
+		return(this.camera.position.z);
 
 	}
 
 	// Set the zoom
-	setZoom(zoom){
+	setCameraZoom(zoom){
 
 		this.camera.position.z = zoom;
-		this.onzoom();
-
-	}
-
-	onzoom(){
-
-		for(var i=0; i<this.zoom_events.length; i++){
-			this.zoom_events[i]();
-		}
+		this.camera.updateProjectionMatrix();
 
 	}
 
@@ -65,74 +108,36 @@ R3JS.PerspCamera = class{
 
 
 // Orthographic camera for 2D
-R3JS.OrthoCamera = class{
+R3JS.OrthoCamera = class OrthoCamera extends R3JS.Camera {
 
 	// Constructor function
 	constructor(){
+
+		super();
 		
 		this.camera = new THREE.OrthographicCamera();
         this.camera.near = -100;
         this.camera.far  = 100;
-		
-		this.distance    = 1;
-		this.min_zoom    = 0.75;
-		this.max_zoom    = 8;
-		this.zoom_damper = 0.05;
-
-		this.zoom_events = [];
+		this.zoom_adjuster  = 1;
 
 	}
 
-	// Set the size
-	setSize(width, height){
-		this.aspect = width / height;
-		this.rezoom();
-		
+	// Get the zoom
+	getCameraZoom(){
+
+		return(this.distance);
+
 	}
 
-	// Zooming the camera
-	rezoom(){
+	// Set the zoom
+	setCameraZoom(zoom){
+
+		this.distance      = zoom;
 		this.camera.left   = -this.distance*this.aspect/2;
 		this.camera.right  = this.distance*this.aspect/2;
 		this.camera.top    = this.distance/2;
 		this.camera.bottom = -this.distance/2;
 		this.camera.updateProjectionMatrix();
-	}
-
-	zoom(zoom){
-
-		var min_zoom = this.min_zoom;
-		var max_zoom = this.max_zoom;
-		zoom = zoom*this.zoom_damper;
-		
-
-		if(this.distance + zoom <= max_zoom 
-			&& this.distance + zoom >= min_zoom){
-		  this.distance += zoom;
-		} else if(zoom < 0){
-			this.distance = min_zoom;
-		} else {
-			this.distance = max_zoom;
-		}
-
-		this.rezoom();
-		this.onzoom()
-
-	}
-
-	// Set the zoom
-	setZoom(zoom){
-
-		this.camera.distance = zoom;
-		this.rezoom();
-
-	}
-
-	onzoom(){
-
-		for(var i=0; i<this.zoom_events.length; i++){
-			this.zoom_events[i]();
-		}
 
 	}
 

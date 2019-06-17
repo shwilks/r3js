@@ -1,25 +1,18 @@
 
-R3JS.Viewer.prototype.navigation_bind = function(){
+R3JS.Viewer.prototype.bindNavigation = function(){
 
     // Add viewport variables
     this.navigable = true;
     this.damper    = {};
 
     // Set bindings
-    if(this.scene.plotdims.dimensions == 2){
-        this.mouseMove        = this.panScene;
-        this.mouseMoveMeta    = this.panScene;
-        this.mouseScroll      = this.zoomScene;
-        this.mouseScrollShift = this.rockScene;
-    } else {
-        this.mouseMove        = this.rotateSceneWithInertia;
-        this.mouseMoveMeta    = this.panScene;
-        this.mouseScroll      = this.zoomScene;
-        this.mouseScrollShift = this.rockScene;
-    }
+    this.mouseMove        = this.rotateSceneWithInertia;
+    this.mouseMoveMeta    = this.panScene;
+    this.mouseScroll      = this.zoomScene;
+    this.mouseScrollShift = this.rockScene;
 
     // Bind mouse events
-    this.viewport.div.addEventListener("mousemove", function(event){ 
+    this.viewport.canvas.addEventListener("mousemove", function(event){ 
 
         var viewer   = this.viewport.viewer;
         var viewport = this.viewport;
@@ -28,7 +21,7 @@ R3JS.Viewer.prototype.navigation_bind = function(){
             if(viewport.mouse.down && !viewport.dragObject){
                 if(!viewport.mouse.event.metaKey && !viewport.mouse.event.shiftKey && viewport.touch.num <= 1){
                     viewer.mouseMove();
-                } else if(viewport.keydown.key == "Meta"){
+                } else if(viewport.mouse.event.metaKey){
                     viewer.mouseMoveMeta();
                 }
             }
@@ -39,15 +32,17 @@ R3JS.Viewer.prototype.navigation_bind = function(){
 
     });
 
-    this.viewport.div.addEventListener("wheel", function(event){
+    this.viewport.canvas.addEventListener("wheel", function(event){
 
         var viewer   = this.viewport.viewer;
         var viewport = this.viewport;
 
-        if(!viewport.keydown){
-            viewer.mouseScroll();
-        } else if(viewport.keydown.key == "Shift"){
-            viewer.mouseScrollShift();
+        if(viewer.navigable){
+            if(viewport.mouse.scrollShift){
+                viewer.mouseScrollShift();
+            } else {
+                viewer.mouseScroll();
+            }
         }
 
     });
@@ -106,7 +101,7 @@ R3JS.Viewer.prototype.rotationDamper = function(deltaX, deltaY){
 R3JS.Viewer.prototype.zoomScene = function(){
 
     this.sceneChange = true;
-    this.camera.zoom(this.viewport.mouse.scrollY*0.4);
+    this.camera.zoom(Math.pow(1.01, this.viewport.mouse.scrollY));
 
 }
 
@@ -129,7 +124,6 @@ R3JS.Viewer.prototype.panScene = function(){
 
     this.scene.panScene(position.toArray());
     this.scene.showhideDynamics(this.camera.camera);
-    // this.infoDiv.update();
 
 }
 
@@ -141,7 +135,23 @@ R3JS.Viewer.prototype.rockScene = function(){
     var plotHolder = this.scene.plotHolder;
     this.scene.rotateOnAxis(new THREE.Vector3(0,0,1), rotZ*0.01);
     this.scene.showhideDynamics(this.camera.camera);
-    // this.infoDiv.update();
+
+    if(this.settings.rotateAroundMouse){
+
+        // Rotate about mouse position
+        var mouse = this.viewport.mouse;
+        var scene_pos1 = new THREE.Vector3( mouse.x, mouse.y, 0 ).unproject( this.camera.camera );
+        this.scene.plotHolder.updateMatrixWorld();
+        this.scene.plotHolder.worldToLocal(scene_pos1);
+
+        // Rotate vector
+        var scene_pos2 = scene_pos1.clone().applyAxisAngle(new THREE.Vector3(0,0,1), rotZ*0.01);
+
+        // Get difference in position
+        var posdif = scene_pos1.sub(scene_pos2);
+        this.scene.panScene(posdif.toArray());
+
+    }
 
 }
 
