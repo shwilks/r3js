@@ -217,6 +217,7 @@ material3js <- function(mat = "phong",
                         polygonOffset = NULL,
                         polygonOffsetFactor = NULL,
                         polygonOffsetUnits = NULL,
+                        shininess = 30,
                         faces     = NULL,
                         corners   = NULL,
                         rotation  = NULL,
@@ -227,7 +228,8 @@ material3js <- function(mat = "phong",
                         renderOrder = NULL,
                         renderSidesSeparately = NULL,
                         removeSelfTransparency = NULL,
-                        breakupMesh = NULL){
+                        breakupMesh = NULL,
+                        ...){
 
   # Get opacity from color if not otherwise specified
   if(is.null(opacity)){ opacity <- col2rgb(col, alpha = TRUE)[4]/255 }
@@ -258,6 +260,7 @@ material3js <- function(mat = "phong",
   if(!is.null(rotation))                              { props$rotation               <- (rotation/180)*pi                       }
   if(!is.null(normalise))                             { props$normalise              <- jsonlite::unbox(normalise)              }
   if(!is.null(poffset))                               { props$poffset                <- poffset                                 }
+  if(!is.null(shininess))                             { props$shininess              <- jsonlite::unbox(shininess)              }
   if(!is.null(clippingPlanes))                        { props$clippingPlanes         <- clippingPlanes                          }
   if(!is.null(renderOrder))                           { props$renderOrder            <- renderOrder                             }
   if(!is.null(renderSidesSeparately) && opacity < 1)  { props$renderSidesSeparately  <- jsonlite::unbox(renderSidesSeparately)  }

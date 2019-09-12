@@ -1,72 +1,81 @@
 
-
 // GL line constructor
 R3JS.element.constructors.line = function(
     plotobj,
-    scene
+    viewer
     ){
 
-    // Generate the point object
-    var element = new R3JS.element.Line3d({
-        coords     : plotobj.position,
-        properties : plotobj.properties
+    // Take colors from plot object
+    plotobj.properties.color.r = plotobj.properties.color.r[0];
+    plotobj.properties.color.g = plotobj.properties.color.g[0];
+    plotobj.properties.color.b = plotobj.properties.color.b[0];
+
+    // Make the line
+    var element = new R3JS.element.Line({
+        from:    plotobj.position[0],
+        to:      plotobj.position[1],
+        lwd:     plotobj.properties.lwd / viewer.scene.plotdims.size[0],
+        properties : plotobj.properties,
+        dimensions : plotobj.properties.dimensions
     });
 
     // Scale geometry
-    element.scaleGeo([
-      scene.plotdims.size[0] / scene.plotdims.aspect[0],
-      scene.plotdims.size[1] / scene.plotdims.aspect[1],
-      scene.plotdims.size[2] / scene.plotdims.aspect[2]
-    ]);
+    // element.scaleGeo([
+    //   viewer.scene.plotdims.size[0] / viewer.scene.plotdims.aspect[0],
+    //   viewer.scene.plotdims.size[0] / viewer.scene.plotdims.aspect[1],
+    //   viewer.scene.plotdims.size[0] / viewer.scene.plotdims.aspect[2]
+    // ]);
 
     return(element);
 
 }
 
 
-// Make a thin line object
-R3JS.element.Line3d = class Point extends R3JS.element.base {
+R3JS.element.Line = class Line extends R3JS.element.base {
 
   constructor(args){
 
-    super();
+      super();
 
+      // Make line object
+      var mat = R3JS.Material(args.properties);
 
-    // Make line object
-    var mat = R3JS.Material(args.properties);
-    var geo = R3JS.Geometries.line3d({
-        from : args.coords[0],
-        to   : args.coords[1],
-        lwd  : args.properties.lwd
-    });
+      if(args.from[0] == args.to[0] && 
+         args.from[1] == args.to[1] && 
+         args.from[2] == args.to[2]){
+        
+        var geo = new THREE.BufferGeometry();
 
-    this.object = new THREE.Mesh(geo,mat);
-    this.object.element = this;
-    
-    // R3JS.Geometries.line3d = function(args){
+      } else {
+      
+        if(args.dimensions == 2){
+          var geo = R3JS.Geometries.line2d({
+            from: args.from,
+            to: args.to,
+            lwd: args.lwd
+          });
+        } else {
+          var geo = R3JS.Geometries.line3d({
+            from: args.from,
+            to: args.to,
+            lwd: args.lwd
+          });
+        }
 
-    // var from      = args.from;
-    // var to        = args.to;
-    // var lwd       = args.lwd;
-    // var cap       = args.cap;
-    // var shrinkage = args.shrinkage;
-    // var offset    = args.offset;
-    // var arrow     = args.arrow;
-    // var box       = args.box;
-    
+      }
 
-  }
+      this.object = new THREE.Mesh(geo, mat);
+      this.object.element = this;
+
+    }
 
 }
 
 
-
-
-
 R3JS.Geometries.line2d = function(args){
 
-	  var from      = args.from;
-	  var to        = args.to;
+  	var from      = args.from;
+  	var to        = args.to;
     var lwd       = args.lwd;
     var cap       = args.cap;
     var shrinkage = args.shrinkage;

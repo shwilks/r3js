@@ -30,6 +30,7 @@ dependencies:
       - functions/element_surface.js
       - functions/element_grid.js
       - functions/element_text.js
+      - functions/element_light.js
       - functions/viewport.js
       - functions/utils.js
       - functions/buttons.js

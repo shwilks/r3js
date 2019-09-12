@@ -2,7 +2,7 @@
 // GL line constructor
 R3JS.element.constructors.glline = function(
     plotobj,
-    scene
+    viewer
     ){
 
     // Setup object
@@ -10,7 +10,7 @@ R3JS.element.constructors.glline = function(
         var element = new R3JS.element.gllines_fat({
             coords : plotobj.position,
             properties : plotobj.properties,
-            viewer : scene.viewer
+            viewer : viewer
         });
     } else {
         var element = new R3JS.element.gllines_thin({
@@ -44,12 +44,6 @@ R3JS.element.gllines_thin = class GLLines_thin extends R3JS.element.base {
             };
         }
 
-        // Create the material
-        var material = R3JS.Material(args.properties);
-        material.color = new THREE.Color();
-        material.vertexColors = THREE.VertexColors;
-        material.linewidth = args.properties.lwd;
-
         // Set position and color
         var positions = new Float32Array( ncoords * 3 );
         var color     = new Float32Array( ncoords * 4 );
@@ -72,6 +66,12 @@ R3JS.element.gllines_thin = class GLLines_thin extends R3JS.element.base {
         var geometry = new THREE.BufferGeometry();
         geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
         geometry.addAttribute( 'color',    new THREE.BufferAttribute( color,     4 ) );
+
+        // Create the material
+        var material = R3JS.Material(args.properties);
+        material.color = new THREE.Color();
+        material.vertexColors = THREE.VertexColors;
+        material.linewidth = args.properties.lwd;
 
         // Make the actual line object
         if(args.properties.segments){

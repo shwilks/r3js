@@ -24,6 +24,7 @@ data3js <- plot3js(x = pdata$x,
                    col  = "blue",
                    mat  = "basic",
                    size = 0.5,
+                   aspect = c(1,1,1),
                    show_plot = FALSE)
 
 # Calculate the 3d convex hull

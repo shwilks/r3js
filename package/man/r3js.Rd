@@ -6,7 +6,7 @@
 \usage{
 r3js(data3js, width = NULL, height = NULL, elementId = NULL,
   rotation = NULL, zoom = NULL, translation = NULL,
-  show_rotation = FALSE)
+  placeholder = NULL)
 }
 \description{
 Creates an html widget from an r3js data object.

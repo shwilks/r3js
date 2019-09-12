@@ -500,3 +500,30 @@ string3js <- function(data3js,
 
 }
 
+
+#' Add a light source to a plot
+#'
+#' @param position Position of the light source
+#'
+#' @return Returns the updated r3js object
+#' @export
+#'
+light3js <- function(data3js,
+                     position = NULL){
+
+  object          <- c()
+  object$type     <- "light"
+  object$position <- position
+
+  # Update the plot object
+  if(is.null(data3js$light)) data3js$light <- list()
+  data3js$light <- c(data3js$light, list(object))
+
+  # Return the updated object
+  data3js
+
+}
+
+
+
+

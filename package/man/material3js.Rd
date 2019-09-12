@@ -10,10 +10,11 @@ material3js(mat = "phong", col = "black", opacity = NULL,
   label = NULL, toggle = NULL, dimensions = NULL,
   depthWrite = NULL, depthTest = NULL, polygonOffset = NULL,
   polygonOffsetFactor = NULL, polygonOffsetUnits = NULL,
-  faces = NULL, corners = NULL, rotation = NULL, normalise = NULL,
-  poffset = NULL, clippingPlanes = NULL, doubleSide = TRUE,
-  renderOrder = NULL, renderSidesSeparately = NULL,
-  removeSelfTransparency = NULL, breakupMesh = NULL)
+  shininess = 30, faces = NULL, corners = NULL, rotation = NULL,
+  normalise = NULL, poffset = NULL, clippingPlanes = NULL,
+  doubleSide = TRUE, renderOrder = NULL,
+  renderSidesSeparately = NULL, removeSelfTransparency = NULL,
+  breakupMesh = NULL, ...)
 }
 \arguments{
 \item{opacity}{}

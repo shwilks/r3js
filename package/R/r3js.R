@@ -13,16 +13,14 @@ r3js <- function(data3js,
                  rotation    = NULL,
                  zoom        = NULL,
                  translation = NULL,
-                 show_rotation = FALSE) {
+                 placeholder = NULL) {
 
   # Create a list that contains the settings
-  if(!is.null(rotation))    { data3js$scene$rotation    <- rotation    }
-  if(!is.null(zoom))        { data3js$scene$zoom        <- zoom        }
-  if(!is.null(translation)) { data3js$scene$translation <- translation }
+  if(!is.null(rotation))    { data3js$scene$rotation    <- rotation              }
+  if(!is.null(zoom))        { data3js$scene$zoom        <- jsonlite::unbox(zoom) }
+  if(!is.null(translation)) { data3js$scene$translation <- translation           }
 
-  settings <- list(
-    show_rotation = show_rotation
-  )
+  settings <- list()
 
   # Forward options using x
   x = list(
@@ -91,5 +89,4 @@ debug3js <- function(data3js, filename = "bug.js"){
         file = file.path("~/Dropbox/LabBook/r3js/package/inst/htmlwidgets/lib/tests/data", filename))
 
 }
-
 

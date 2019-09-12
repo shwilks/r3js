@@ -74,11 +74,11 @@ miniViewer <- function(data3js,
 #'
 #' @export
 #'
-snapshot3js <- function(data3js,
-                        filename,
-                        height = NULL,
-                        width = NULL,
-                        ...){
+snap3js <- function(data3js,
+                    filename,
+                    height = NULL,
+                    width = NULL,
+                    ...){
 
   # Javascript to run when the map viewer opens
   jsinit <- '
@@ -118,7 +118,6 @@ snapshot3js <- function(data3js,
       stopApp()
 
     })
-
   }
 
   # Run the miniviewer to take a snapshot
@@ -135,5 +134,55 @@ snapshot3js <- function(data3js,
 
 
 
+#' Take a map snapshot
+#'
+#' Takes a snapshot of a map and saves it as a png
+#'
+#' @param map The map data object
+#' @param filename The filename of the snapshot
+#' @param height Optional height of the screenshot (in pixels), see details.
+#' @param width Optional width of the screenshot (in pixels), see details.
+#' @param ... Further parameters to pass to \code{RacViewer()}
+#'
+#' @export
+#'
+snapshot3js <- function(data3js,
+                        filename,
+                        height = 600,
+                        width = 600,
+                        base64 = FALSE,
+                        ...){
+
+  # Save to a temporary webpage
+  tmpdir  <- tempdir()
+  tmppage <- file.path(tmpdir, "r3js_snapshot.html")
+  save3js(data3js,
+          file = tmppage,
+          ...)
+
+  chrome   <- "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome"
+  pagepath <- normalizePath(tmppage)
+
+  command <- paste0(
+    "cd ", tmpdir, "; ",
+    chrome, " --headless --disable-gpu --screenshot --window-size=", width,",", height," ", pagepath
+  )
+  system(command, ignore.stdout = TRUE, ignore.stderr = TRUE)
+  screenshot <- file.path(tmpdir, "screenshot.png")
+
+  if(base64){
+
+    system2("base64", screenshot, TRUE)
+
+  } else {
+
+    file.rename(
+      from = screenshot,
+      to   = filename
+    )
+
+  }
+
+}
 
 

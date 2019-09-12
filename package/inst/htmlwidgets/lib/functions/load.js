@@ -8,26 +8,37 @@ R3JS.Viewer.prototype.load = function(plotData){
         dimensions : 3
     });
 
-    // Show the viewport
-    this.viewport.hidePlaceholder();
-    this.animated = true;
-	
-    // Add positional light
-    var light       = new THREE.DirectionalLight(0xe0e0e0);
-    light.position.set(-1,1,1).normalize();
-    light.intensity = 1.0;
-    this.scene.scene.add( light );
-
     // Populate the plot
     this.scene.populatePlot(plotData);
+	
+    // Lights
+    this.scene.clearLights();
+
+    if(!plotData.light){
+
+        // Default lighting
+        this.scene.addLight({
+            position: [-1,1,1]
+        });
+
+    } else {
+
+        // Add specified lighting
+        for(var i=0; i<plotData.light.length; i++){
+
+            this.scene.addLight({
+                position: plotData.light[i].position
+            });
+
+        }
+
+    }
 
     // Reset transformation
     this.resetTransformation();
 
     // Fire any resize event listeners
     this.viewport.onwindowresize();
-
-    //this.scene.setRotation([-1.23,0.03,-2.266]);
 
     // this.scene.elements[170].setColor("#ff0000");
 
@@ -36,7 +47,14 @@ R3JS.Viewer.prototype.load = function(plotData){
     //     R3JS.Shaders.FragmentShader2D
     // );
 
+    // this.camera.setZoom(1.25);
+
     // Render the plot
+    if(plotData.scene){
+        if(plotData.scene.translation) this.scene.setTranslation(plotData.scene.translation)
+        if(plotData.scene.rotation)    this.scene.setRotation(plotData.scene.rotation)
+        if(plotData.scene.zoom)        this.camera.setZoom(plotData.scene.zoom)
+    }
     this.render();
 
     // console.log(this.camera);

@@ -12,14 +12,8 @@ HTMLWidgets.widget({
 
       renderValue: function(x) {
 
-        // TODO: code to render the widget, e.g.
+        // Code to render the widget
         r3jsviewer.load(x.data3js);
-
-      },
-
-      resize: function(width, height) {
-
-        // TODO: code to re-render the widget with a new size
 
       }
 
