@@ -31,6 +31,14 @@ R3JS.element.glpoints = class GLPoints {
         var viewport = args.viewer.viewport;
         var renderer = args.viewer.renderer;
 
+        // Set default properties
+        let colarray = Array(coords.length).fill(0);
+        if(args.shape === undefined)              args.shape = Array(coords.length).fill("circle");
+        if(args.properties === undefined)         args.properties = {};
+        if(args.properties.color === undefined)   args.properties.color = {r:colarray,g:colarray,b:colarray};
+        if(args.properties.visible === undefined) args.properties.visible = Array(coords.length).fill(1);
+        if(args.properties.aspect === undefined)  args.properties.aspect = Array(coords.length).fill(1);
+
         // Set default order
         if(!args.order){ args.order = new Array(coords.length).fill(0).map((x,i) => i) }
 
@@ -47,7 +55,7 @@ R3JS.element.glpoints = class GLPoints {
         // Fill in info
         var n;
         var element_order = Array(args.order.length);
-        for(var i=0; i<coords.length; i++){
+        for(var i=0; i<args.order.length; i++){
 
             n = args.order[i];
             element_order[n] = i;
@@ -87,22 +95,28 @@ R3JS.element.glpoints = class GLPoints {
                 fillColor[i*4]   = args.properties.color.r[n];
                 fillColor[i*4+1] = args.properties.color.g[n];
                 fillColor[i*4+2] = args.properties.color.b[n];
-                fillColor[i*4+3] = 1;
+                fillColor[i*4+3] = args.properties.color.a[n];
 
                 outlineWidth[i] = 0;
 
             }
             
             // Set shape
-            if(args.shape[n] == "circle")   { shape[i] = 0 }
-            if(args.shape[n] == "ocircle")  { shape[i] = 0 }
-            if(args.shape[n] == "bcircle")  { shape[i] = 0 }
-            if(args.shape[n] == "square")   { shape[i] = 1 }
-            if(args.shape[n] == "osquare")  { shape[i] = 1 }
-            if(args.shape[n] == "bsquare")  { shape[i] = 1 }
-            if(args.shape[n] == "triangle") { shape[i] = 2 }
-            if(args.shape[n] == "otriangle"){ shape[i] = 2 }
-            if(args.shape[n] == "btriangle"){ shape[i] = 2 }
+            if(args.shape[n] == "circle")    { shape[i] = 0 }
+            if(args.shape[n] == "ocircle")   { shape[i] = 0 }
+            if(args.shape[n] == "bcircle")   { shape[i] = 0 }
+            if(args.shape[n] == "square")    { shape[i] = 1 }
+            if(args.shape[n] == "osquare")   { shape[i] = 1 }
+            if(args.shape[n] == "bsquare")   { shape[i] = 1 }
+            if(args.shape[n] == "triangle")  { shape[i] = 2 }
+            if(args.shape[n] == "otriangle") { shape[i] = 2 }
+            if(args.shape[n] == "btriangle") { shape[i] = 2 }
+            if(args.shape[n] == "egg")       { shape[i] = 3 }
+            if(args.shape[n] == "oegg")      { shape[i] = 3 }
+            if(args.shape[n] == "begg")      { shape[i] = 3 }
+            if(args.shape[n] == "uglyegg")   { shape[i] = 4 }
+            if(args.shape[n] == "ouglyegg")  { shape[i] = 4 }
+            if(args.shape[n] == "buglyegg")  { shape[i] = 4 }
 
             sizes[i]   = args.size[n];
             visible[i] = args.properties.visible[n];
@@ -185,7 +199,8 @@ R3JS.element.glpoints = class GLPoints {
             this.ielements.push(
                 new R3JS.element.glpoint(
                     this.object,
-                    element_order[i]
+                    element_order[i],
+                    this
                 )
             );
         }
@@ -214,7 +229,8 @@ R3JS.element.glpoint = class GLPoint extends R3JS.element.base {
 
     constructor(
             object,
-            index
+            index,
+            parent
         ){
 
         super();
@@ -222,6 +238,7 @@ R3JS.element.glpoint = class GLPoint extends R3JS.element.base {
         this.index = index;
         this.uuid = object.uuid+"-"+index;
         this.element = this;
+        this.parent = parent;
 
         var pointobjcoords = this.object.geometry.attributes.position.array;
         this.coords = [
@@ -232,6 +249,22 @@ R3JS.element.glpoint = class GLPoint extends R3JS.element.base {
         this.size   = this.object.geometry.attributes.size.array[this.index];
         this.shape  = this.object.geometry.attributes.shape.array[this.index];
         this.aspect = this.object.geometry.attributes.aspect.array[this.index];
+
+    }
+
+    // Setting size
+    setSize(size){
+
+        var pointsizes = this.object.geometry.attributes.size.array;
+        this.object.geometry.attributes.size.needsUpdate = true;
+        pointsizes[this.index] = size;
+        this.size = size;
+
+    }
+
+    getSize(){
+
+        this.size;
 
     }
 
@@ -319,7 +352,49 @@ R3JS.element.glpoint = class GLPoint extends R3JS.element.base {
         visible[this.index] = 1;
 
     }
-        
+
+    // [1,2,3,x,4,5]
+    
+    setIndex(index){
+
+        // Set values
+        for(var name in this.object.geometry.attributes){
+            
+            var attribute = this.object.geometry.attributes[name];
+            var size = attribute.itemSize;
+            
+            // Get the original value
+            var orig = attribute.array.slice(this.index*size, this.index*size+size);
+
+            // Shift all values above it down
+            if(index < this.index){
+              attribute.array.copyWithin(index*size+size, index*size, this.index*size)
+            } else {
+              attribute.array.copyWithin(this.index*size, this.index*size+size, index*size+size)
+            }
+            
+            // Replace the original values at the top
+            attribute.array.set(orig, index*size);
+
+            // Set needs update
+            attribute.needsUpdate = true;
+
+        }
+
+        // Correct all parent element references
+        var parent_elements = this.parent.elements();
+        for(var i=0; i<parent_elements.length; i++){
+            if(parent_elements[i].index > this.index && parent_elements[i].index <= index){
+                parent_elements[i].index--;
+            } else if (parent_elements[i].index < this.index && parent_elements[i].index >= index){
+                parent_elements[i].index++;
+            }
+        }
+
+        // Reset the index
+        this.index = index;
+
+    }   
 
 
     // Method for raycasting to this point

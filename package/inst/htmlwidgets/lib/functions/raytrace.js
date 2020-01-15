@@ -75,7 +75,7 @@ R3JS.Raytracer = class Raytracer {
 		var elements = [];
 		var uuids    = [];
 		
-		for(var i=0; i<this.intersected.length; i++){
+		for(var i=this.intersected.length-1; i>=0; i--){
 			if(uuids.indexOf(this.intersected[i].object.uuid) == -1){
 				elements.push(this.intersected[i].object.element);
 	          	uuids.push(this.intersected[i].object.uuid);

@@ -178,6 +178,10 @@ R3JS.Shaders.FragmentShader2D = `
         	p[1] = (gl_PointCoord[1] - 0.25)*2.0;
         }
 
+        if(p.x < -0.5 || p.x > 0.5 || p.y < -0.5 || p.y > 0.5){
+        	discard;
+        }
+
         // Transform for aspect
         p.x = p.x/pAspect;
 
@@ -271,8 +275,8 @@ R3JS.Shaders.FragmentShader2D = `
 	    // Circle
 	    if(pShape == 0.0){
 
-	        float radius = 0.5;
-	        float dist = sqrt(p.x * p.x + p.y * p.y);
+	        float radius = 0.25;
+	        float dist = p.x * p.x + p.y * p.y;
 
 	        if(dist > radius){
 	            discard;
@@ -295,6 +299,83 @@ R3JS.Shaders.FragmentShader2D = `
 	        if(dist > radius - fade_range){
 	            gl_FragColor.a = gl_FragColor.a*(1.0-(dist - (radius - fade_range))/fade_range);
 	        }
+
+	    }
+
+	    // Egg
+	    if(pShape == 3.0){
+
+			float radius = 0.25;
+	        float dist = p.x*p.x*(1.7/(1.0-0.8*-p.y)) + p.y*p.y;
+
+	        //x^2*(2/(1-0.4*y)) + y^2
+
+	        if(dist > radius){
+	            discard;
+	        } else if(dist > radius - outline_width){
+	            if(pOutlineColor[3] == 0.0){
+	            	discard;
+	            } else {
+	                gl_FragColor = pOutlineColor;
+	            }
+	        } else if(dist > radius - outline_width - blend_range){
+	            gl_FragColor = mix(pFillColor, pOutlineColor, (dist-(radius-outline_width-blend_range))/blend_range);
+	        } else {
+	            if(pFillColor[3] == 0.0){
+	            	discard;
+	            } else {
+	                gl_FragColor = pFillColor;
+	            }
+	        }
+
+	        if(dist > radius - fade_range){
+	            gl_FragColor.a = gl_FragColor.a*(1.0-(dist - (radius - fade_range))/fade_range);
+	        }	    	
+
+	    }
+
+	    // Ugly egg
+	    if(pShape == 4.0){
+
+			float radius = -0.45;
+
+			float e1 = -p.y;
+			float e2 = p.x*0.4 - p.y;
+	        float e3 = p.x*-0.4 - p.y;
+	        float e4 = p.x + p.y*0.2;
+	        float e5 = -p.x + p.y*0.2;
+	        float e6 = p.x*0.4 + p.y*0.9;
+	        float e7 = p.x*-0.4 + p.y*0.9;
+
+	        float emin = e1;
+	        if(e2 < emin) emin = e2;
+	        if(e3 < emin) emin = e3;
+	        if(e4 < emin) emin = e4;
+	        if(e5 < emin) emin = e5;
+	        if(e6 < emin) emin = e6;
+	        if(e7 < emin) emin = e7;
+	        
+	        if(emin < radius){
+	            discard;
+	        } else if(emin < radius + outline_width){
+	            if(pOutlineColor[3] == 0.0){
+	            	discard;
+	            } else {
+	                gl_FragColor = pOutlineColor;
+	            }
+	        } else if(emin < radius + outline_width + blend_range){
+	            gl_FragColor = mix(pFillColor, pOutlineColor, ((radius-outline_width-blend_range) - emin)/blend_range);
+	        } else {
+	            if(pFillColor[3] == 0.0){
+	            	discard;
+	            } else {
+	                gl_FragColor = pFillColor;
+	            }
+	        }
+
+	        if(emin < radius + fade_range){
+	            gl_FragColor.a = gl_FragColor.a*(1.0-((radius - fade_range) - emin)/fade_range);
+	        }	    	
 
 	    }
 

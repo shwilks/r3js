@@ -91,7 +91,7 @@ R3JS.element.arrow3d = class arrow3d extends R3JS.element.base {
         var geometry = R3JS.Geometries.line3d({
             from : args.coords[0],
             to   : args.coords[1],
-            lwd  : args.properties.lwd,
+            lwd  : args.properties.lwd*0.05,
             arrow : {
                 headlength : 0.5,
                 headwidth  : 0.25

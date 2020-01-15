@@ -212,6 +212,10 @@ R3JS.Scene = class Scene {
         ]);
     }
 
+    // Reflect the scene
+    reflect(axis){
+    }
+
     // Get and set translation
     panScene(translation){
 

@@ -24,6 +24,20 @@ R3JS.element.Polygon2d = class Polygon2d extends R3JS.element.base {
 
     	super();
 
+        // Set defaults
+        if(args.properties === undefined)              args.properties              = {};
+        if(args.properties.fillcolor === undefined)    args.properties.fillcolor    = {r:0,g:0,b:0,a:0};
+        if(args.properties.outlinecolor === undefined) {
+            args.properties.outlinecolor = {
+                r:Array(args.coords.length).fill(0),
+                g:Array(args.coords.length).fill(0),
+                b:Array(args.coords.length).fill(0),
+                a:Array(args.coords.length).fill(1)
+            };
+        }
+        if(args.properties.mat === undefined)          args.properties.mat = "basic";
+        if(args.properties.transparent === undefined)  args.properties.transparent = true;
+
     	// Work out geometry for fill
         var shape = new THREE.Shape();
         shape.moveTo( args.coords[0][0], args.coords[0][1] );
@@ -44,6 +58,7 @@ R3JS.element.Polygon2d = class Polygon2d extends R3JS.element.base {
 
         // Make outline object
         args.properties.color    = args.properties.outlinecolor;
+        args.properties.opacity  = args.properties.outlinecolor.a[0];
         args.properties.mat      = "line";
         args.properties.lwd      = 1;
         args.properties.segments = true;
@@ -97,6 +112,9 @@ R3JS.element.Polygon2d = class Polygon2d extends R3JS.element.base {
       this.outline.geometry = THREE.BufferGeometryUtils.mergeBufferGeometries([this.outline.geometry, element.outline.geometry]);
     }
 
+    setSize(){
+    }
+
 }
 
 
@@ -139,31 +157,61 @@ R3JS.element.Polygon3d = class Polygon3d extends R3JS.element.base {
         geometry.computeFaceNormals();
 
         // Convert to buffer geometry
-        geometry = new THREE.BufferGeometry().fromGeometry( geometry );
+        var fillgeometry = new THREE.BufferGeometry().fromGeometry( geometry );
 
-        // Get material
-        var material = R3JS.Material(args.properties);
+        // Set fill material
+        args.properties.color   = args.properties.fillcolor;
+        args.properties.opacity = args.properties.fillcolor.a;
+        var fillmaterial = R3JS.Material(args.properties);
 
-        // Make mesh
-        this.object = new THREE.Mesh(geometry, material);
-        this.object.element = this;
+        // Make fill object
+        this.fill = new THREE.Mesh(fillgeometry, fillmaterial);
+
+        // Set outline material
+        args.properties.color    = args.properties.outlinecolor;
+        args.properties.mat      = "line";
+        args.properties.lwd      = 1;
+        // args.properties.segments = true;
+        var outlinematerial = R3JS.Material(args.properties);
+
+        // Make outline object
+        if(args.outline){
+            var outlinegeometry = new THREE.EdgesGeometry( fillgeometry );  
+            this.outline = new THREE.LineSegments(outlinegeometry, outlinematerial);
+        } else {
+            var outlinegeometry = new THREE.BufferGeometry();
+            this.outline = new THREE.Mesh(outlinegeometry);
+        }
+
+        // Assign object
+        this.object = new THREE.Object3D();
+        this.object.add(this.fill);
+        this.object.add(this.outline);
+        this.fill.element = this;
 
     }
 
     setFillColor(color){
-      this.object.material.color.set(color);
+        this.fill.material.color.set(color);
     }
 
     setFillOpacity(opacity){
-      this.object.material.opacity = opacity;
+        this.fill.material.opacity = opacity;
     }
 
     setOutlineColor(color){
-      
+        this.outline.material.color.set(color);
     }
 
     setOutlineOpacity(opacity){
-      
+        this.outline.material.opacity = opacity;
+    }
+
+    raycast(ray, intersected){
+      this.fill.raycast(ray,intersected);
+    }
+
+    setSize(){
     }
 
 }

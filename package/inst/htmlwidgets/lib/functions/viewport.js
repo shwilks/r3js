@@ -181,7 +181,9 @@ R3JS.Info = class Info{
 
     remove(element){
 
-        this.div.removeChild(element);
+        if(element !== null){
+            this.div.removeChild(element);
+        }
         if(this.div.children.length === 0){
             this.hide();
         }
