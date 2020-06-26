@@ -1,0 +1,56 @@
+
+dependencies:
+  - name: r3js
+    version: 1.0.0
+    src: htmlwidgets/lib
+    stylesheet:
+      - styles/r3js.css
+    script:
+      - init.js
+      - threejs/three.min.js
+      - threejs/plugins/Detector.js
+      - threejs/plugins/ColladaLoader.js
+      - threejs/plugins/PLYExporter.js
+      - threejs/renderers/CSS2DRenderer_r3js.js
+      - threejs/fonts/helvetiker_regular.typeface.js
+      - threejs/utils/SceneUtils.js
+      - threejs/utils/BufferGeometryUtils.js
+      - threejs/lines/LineSegmentsGeometry.js
+      - threejs/lines/LineGeometry.js
+      - threejs/lines/WireframeGeometry2.js
+      - threejs/lines/LineMaterial.js
+      - threejs/lines/LineSegments2.js
+      - threejs/lines/Line2.js
+      - threejs/lines/Wireframe.js
+      - functions/element.js
+      - functions/element_points.js
+      - functions/element_glpoints.js
+      - functions/element_gllines.js
+      - functions/element_lines.js
+      - functions/element_sphere.js
+      - functions/element_surface.js
+      - functions/element_grid.js
+      - functions/element_text.js
+      - functions/element_light.js
+      - functions/viewport.js
+      - functions/utils.js
+      - functions/buttons.js
+      - functions/navigation.js
+      - functions/save_img.js
+      - functions/camera.js
+      - functions/scene.js
+      - functions/plotting.js
+      - functions/legend.js
+      - functions/events.js
+      - functions/move.js
+      - functions/raytrace.js
+      - functions/renderer.js
+      - functions/lines.js
+      - functions/dynamic.js
+      - functions/toggle.js
+      - functions/api.js
+      - functions/shaders.js
+      - functions/sprites.js
+      - functions/highlight.js
+      - functions/icons.js
+      - functions/load.js

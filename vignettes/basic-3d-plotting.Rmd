@@ -1,0 +1,69 @@
+---
+title: "Basic 3D plotting"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(r3js)
+```
+
+## 3D scatterplots
+r3js provides some basic functions for doing 3d plots, the main one being `plot3js()`. This is used similarly to R's 
+base `plot()` function, for example:
+
+```{r basic_plotting}
+plot3js(
+  x = iris$Sepal.Length,
+  y = iris$Sepal.Width,
+  z = iris$Petal.Length,
+  col = rainbow(3)[iris$Species],
+  size = 4
+)
+```
+
+## 3D surface plots
+```{r surface_plotting}
+# Prepare data
+x <- seq_len(nrow(volcano))
+y <- seq_len(ncol(volcano))
+
+# Setup the plot
+data3js <- plot3js(
+  x = x,
+  y = y,
+  z = volcano,
+  aspect = c(1,1,0.4),
+  type = "n",
+  show_plot = FALSE
+)
+
+# Determine colors
+colfn <- colorRamp(topo.colors(10))
+rgbcols <- colfn(
+  (volcano - min(volcano)) / diff(range(volcano))
+)
+cols  <- matrix(
+  nrow = nrow(volcano),
+  ncol = ncol(volcano)
+)
+cols[] <- apply(
+  rgbcols, 1, function(x){ rgb(x[1], x[2], x[2], maxColorValue = 255) }
+)
+  
+# Add the surface
+data3js <- surface3js(
+  data3js,
+  x   = x,
+  y   = y,
+  z   = volcano,
+  col = cols
+)
+
+r3js(data3js)
+```
