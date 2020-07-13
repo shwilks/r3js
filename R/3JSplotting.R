@@ -65,6 +65,7 @@ plot3js <- function(
   xlab = NULL,
   ylab = NULL,
   zlab = NULL,
+  label = NULL,
   type = "p",
   axisline = 3,
   aspect = c(1, 1, 1),
@@ -165,6 +166,7 @@ plot3js <- function(
                            x = x,
                            y = y,
                            z = z,
+                           label = label,
                            ...)
     }
 

@@ -4,7 +4,7 @@
 \alias{plot3js.window}
 \title{Set axis limits for a 3js plot}
 \usage{
-plot3js.window(data3js, xlim, ylim, zlim, aspect = c(1, 1, 1))
+plot3js.window(data3js, xlim, ylim, zlim, aspect = NULL)
 }
 \arguments{
 \item{zlim}{}

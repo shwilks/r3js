@@ -9,13 +9,15 @@
 #' @param col
 #' @param ...
 #'
-point3js <- function(data3js,
-                     x, y, z,
-                     size,
-                     col,
-                     pch = 16,
-                     highlight,
-                     ...){
+point3js <- function(
+  data3js,
+  x, y, z,
+  size,
+  col,
+  pch = 16,
+  highlight,
+  ...
+  ){
 
   object <- c()
   object$type <- "point"
