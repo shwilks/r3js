@@ -25,6 +25,7 @@ Thumbs.db
 *.RData
 *.Rproj
 .Rproj.user
+.Renviron
 
 # Sublime text files #
 ######################
