@@ -1,6 +1,8 @@
 
 
-#' Add points to a 3js object
+#' Add points to a data3js object
+#'
+#'
 #'
 #' @param data3js
 #' @param x
@@ -22,7 +24,7 @@ points3js <- function(data3js,
                       highlight,
                       label  = NULL,
                       toggle = NULL,
-                      geometry = TRUE,
+                      geometry = FALSE,
                       ...){
 
   # Repeat arguments to match length of points
@@ -35,16 +37,18 @@ points3js <- function(data3js,
   # Create the points
   if(geometry){
     for(n in 1:length(x)){
-      data3js <- point3js(data3js = data3js,
-                          x = x[n],
-                          y = y[n],
-                          z = z[n],
-                          size = size[n],
-                          col = col[n],
-                          pch = pch[n],
-                          label = label[n],
-                          toggle = toggle[n],
-                          ...)
+      data3js <- geopoint3js(
+        data3js = data3js,
+        x = x[n],
+        y = y[n],
+        z = z[n],
+        size = size[n],
+        col = col[n],
+        pch = pch[n],
+        label = label[n],
+        toggle = toggle[n],
+        ...
+      )
     }
   } else {
     data3js <- glpoints3js(data3js,

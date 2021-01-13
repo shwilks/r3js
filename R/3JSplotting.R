@@ -168,14 +168,21 @@ plot3js <- function(
                            z = z,
                            label = label,
                            ...)
-    }
-
-    if(type == "l"){
+    } else if(type == "l"){
       data3js <- lines3js(data3js,
                           x = x,
                           y = y,
                           z = z,
                           ...)
+    } else if(type == "glpoints"){
+      data3js <- glpoints3js(
+        data3js,
+        x = x,
+        y = y,
+        z = z,
+        label = label,
+        ...
+      )
     }
 
   }
@@ -202,50 +209,54 @@ plot3js <- function(
 #' @export
 #'
 #' @examples
-material3js <- function(mat = "phong",
-                        col = "black",
-                        opacity = NULL,
-                        xpd = TRUE,
-                        lwd = 1,
-                        lend = 0,
-                        ljoin = 0,
-                        dashSize = NULL,
-                        gapSize = NULL,
-                        interactive = NULL,
-                        moveable = NULL,
-                        label = NULL,
-                        toggle = NULL,
-                        dimensions = NULL,
-                        depthWrite = NULL,
-                        depthTest = NULL,
-                        polygonOffset = NULL,
-                        polygonOffsetFactor = NULL,
-                        polygonOffsetUnits = NULL,
-                        shininess = 30,
-                        faces     = NULL,
-                        corners   = NULL,
-                        rotation  = NULL,
-                        normalise = NULL,
-                        poffset = NULL,
-                        clippingPlanes = NULL,
-                        doubleSide = TRUE,
-                        renderOrder = NULL,
-                        renderSidesSeparately = NULL,
-                        removeSelfTransparency = NULL,
-                        breakupMesh = NULL,
-                        ...){
+material3js <- function(
+  mat = "phong",
+  col = "black",
+  opacity = NULL,
+  xpd = TRUE,
+  lwd = 1,
+  lend = 0,
+  ljoin = 0,
+  dashSize = NULL,
+  gapSize = NULL,
+  interactive = NULL,
+  moveable = NULL,
+  label = NULL,
+  toggle = NULL,
+  dimensions = NULL,
+  depthWrite = NULL,
+  depthTest = NULL,
+  polygonOffset = NULL,
+  polygonOffsetFactor = NULL,
+  polygonOffsetUnits = NULL,
+  shininess = 30,
+  faces     = NULL,
+  corners   = NULL,
+  rotation  = NULL,
+  normalise = NULL,
+  poffset = NULL,
+  clippingPlanes = NULL,
+  doubleSide = TRUE,
+  renderOrder = NULL,
+  renderSidesSeparately = NULL,
+  removeSelfTransparency = NULL,
+  breakupMesh = NULL,
+  ...
+  ){
 
   # Get opacity from color if not otherwise specified
   if(is.null(opacity)){ opacity <- col2rgb(col, alpha = TRUE)[4]/255 }
 
-  props <- list(mat         = jsonlite::unbox(mat),
-                color       = convertCol3js(col),
-                opacity     = jsonlite::unbox(opacity),
-                xpd         = jsonlite::unbox(xpd),
-                lwd         = jsonlite::unbox(lwd),
-                lend        = jsonlite::unbox(lend),
-                ljoin       = jsonlite::unbox(ljoin),
-                transparent = jsonlite::unbox(opacity < 1.0))
+  props <- list(
+    mat         = jsonlite::unbox(mat),
+    color       = convertCol3js(col),
+    opacity     = jsonlite::unbox(opacity),
+    xpd         = jsonlite::unbox(xpd),
+    lwd         = jsonlite::unbox(lwd),
+    lend        = jsonlite::unbox(lend),
+    ljoin       = jsonlite::unbox(ljoin),
+    transparent = jsonlite::unbox(opacity < 1.0)
+  )
 
   if(!is.null(dimensions))                            { props$dimensions             <- jsonlite::unbox(dimensions)             }
   if(!is.null(label))                                 { props$label                  <- label                                   }
@@ -461,6 +472,7 @@ sidegrid3js <- function(data3js,
 shape3js <- function(data3js,
                      vertices,
                      faces,
+                     normals = NULL,
                      col  = "black",
                      highlight,
                      label  = NULL,
@@ -471,6 +483,7 @@ shape3js <- function(data3js,
   object$type <- "shape"
   object$vertices   <- vertices
   object$faces      <- faces
+  object$normals    <- normals
   object$properties <- material3js(col = col,
                                    label = label,
                                    toggle = toggle,
@@ -509,18 +522,19 @@ shape3js <- function(data3js,
 #' @export
 #'
 #' @examples
-text3js <- function(data3js,
-                    x, y, z,
-                    text,
-                    size = 1,
-                    col    = "inherit",
-                    label  = NULL,
-                    toggle = NULL,
-                    type   = "geometry",
-                    alignment = "center",
-                    offset    = c(0, 0),
-                    style     = list(),
-                    ...){
+text3js <- function(
+  data3js,
+  x, y, z,
+  text,
+  size = 1,
+  col    = "inherit",
+  label  = NULL,
+  toggle = NULL,
+  type   = "geometry",
+  alignment = "center",
+  offset    = c(0, 0),
+  style     = list(),
+  ...){
 
   # Repeat arguments to match length of points
   col  <- rep_len(col,  length(x))
@@ -532,18 +546,20 @@ text3js <- function(data3js,
 
   # Create the points
   for(n in 1:length(x)){
-    data3js <- string3js(data3js,
-                         x[n], y[n], z[n],
-                         text[n],
-                         size   = size[n],
-                         col    = col[n],
-                         label  = label[n],
-                         toggle = toggle[n],
-                         alignment = alignment,
-                         offset    = offset,
-                         type      = type[n],
-                         style     = style,
-                         ...)
+    data3js <- string3js(
+      data3js,
+      x[n], y[n], z[n],
+      text[n],
+      size      = size[n],
+      col       = col[n],
+      label     = label[n],
+      toggle    = toggle[n],
+      alignment = alignment,
+      offset    = offset,
+      type      = type[n],
+      style     = style,
+      ...
+    )
   }
 
   # Return the updated object

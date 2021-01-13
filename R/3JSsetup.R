@@ -35,8 +35,10 @@ plot3js.new <- function(background = "#ffffff"){
   data3js$ticks <- list(NULL,NULL,NULL)
 
   # Set background color
-  data3js <- background3js(data3js = data3js,
-                           col     = background)
+  data3js <- background3js(
+    data3js = data3js,
+    col     = background
+  )
 
   data3js
 
@@ -390,7 +392,7 @@ grid3js <- function(data3js,
       data3js <- sidegrid3js(data3js,
                              ax       = ax,
                              side     = side,
-                             at       = at,
+                             at       = at[[ax]],
                              dynamic  = dynamic,
                              col      = col,
                              geometry = geometry,

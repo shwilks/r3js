@@ -10,9 +10,18 @@ body {
     height   : 100%;
     position : relative;
 }
+
+.r3jsviewer table td {
+    padding : 1px;
+}
+
+.r3jsviewer input {
+    border: none;
+}
+
 #viewport {
     position : absolute;
-	top      : 0;
+    top      : 0;
     bottom   : 0;
     left     : 0;
     right    : 0;
@@ -94,14 +103,14 @@ body {
 
 #info-div {
 	position : absolute;
-    top : 4px;
-    left : 4px;
-    padding : 4px;
-    background : #ffffff;
-    font-family : sans-serif, "Arial";
-    font-size : 80%;
-    cursor: auto;
-    z-index: 100;
+  top : 4px;
+  left : 4px;
+  padding : 4px;
+  background : #ffffff;
+  font-family : sans-serif, "Arial";
+  font-size : 80%;
+  cursor: auto;
+  z-index: 100;
 }
 
 #info-div th{
@@ -140,9 +149,9 @@ body {
 /* General classes */
 .not-selectable {
 	-webkit-user-select: none; /* Safari 3.1+ */
-    -moz-user-select: none; /* Firefox 2+ */
-    -ms-user-select: none; /* IE 10+ */
-    user-select: none; /* Standard syntax */
+  -moz-user-select: none; /* Firefox 2+ */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none; /* Standard syntax */
 }
 
 

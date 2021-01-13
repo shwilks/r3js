@@ -128,6 +128,7 @@ R3JS.element.constructors.polygon3d = function(
     var element = new R3JS.element.Polygon3d({
         vertices   : plotobj.vertices,
         faces      : plotobj.faces,
+        normals    : plotobj.normals,
         properties : plotobj.properties
     });
     
@@ -176,10 +177,20 @@ R3JS.element.Polygon3d = class Polygon3d extends R3JS.element.base {
             );
         }
 
-        // Merge vertices and compute normals
-        geometry.mergeVertices();
-        geometry.computeVertexNormals();
-        geometry.computeFaceNormals();
+        // Add normals
+        if(args.normals !== undefined){
+            for(var i=0; i<geometry.faces.length; i++){
+                geometry.faces[i].vertexNormals = [
+                    new THREE.Vector3().fromArray( args.normals[geometry.faces[i].a] ),
+                    new THREE.Vector3().fromArray( args.normals[geometry.faces[i].b] ),
+                    new THREE.Vector3().fromArray( args.normals[geometry.faces[i].c] )
+                ];
+            }
+        } else {
+            // geometry.mergeVertices();
+            // geometry.computeVertexNormals();
+            geometry.computeFaceNormals();
+        }
 
         // Convert to buffer geometry
         var fillgeometry = new THREE.BufferGeometry().fromGeometry( geometry );

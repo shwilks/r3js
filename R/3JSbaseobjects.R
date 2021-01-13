@@ -1,15 +1,36 @@
 
-#' Add point to a 3js object
+# Helper function for converting pch specifications
+# to shapes understood by r3js
+pch2shape <- function(pch){
+  shape <- rep_len(NA, length(pch))
+  shape[pch == 0]  <- "osquare"
+  shape[pch == 1]  <- "ocircle"
+  shape[pch == 2]  <- "otriangle"
+  shape[pch == 15] <- "square"
+  shape[pch == 16] <- "circle"
+  shape[pch == 17] <- "triangle"
+  shape
+}
+
+#' Add a geometric point to a data3js object
 #'
-#' @param data3js
-#' @param x
-#' @param y
-#' @param z
-#' @param size
-#' @param col
-#' @param ...
+#' This function underlies the points3js function when the geometry argument is set to TRUE.
+#' The point generated is included a 'physical' geometry, for example a sphere if pch=16,
+#' it will overlap with other points and shade according to the light source more realistically
+#' but is _much_ less computationally efficient than glpoints, which uses a single point plus
+#' different shader instructions depending on the point type.
 #'
-point3js <- function(
+#' @param data3js The data3js object
+#' @param x x coordinate
+#' @param y y coordinate
+#' @param z z coordinate
+#' @param size point size
+#' @param col point color
+#' @param pch point type
+#' @param highlight point highlight appearance (see `highlight3js()`)
+#' @param ... other attributes to pass to `material3js()`
+#'
+geopoint3js <- function(
   data3js,
   x, y, z,
   size,
@@ -31,51 +52,43 @@ point3js <- function(
 
 }
 
-pch2shape <- function(pch){
-  shape <- rep_len(NA, length(pch))
-  shape[pch == 0]  <- "osquare"
-  shape[pch == 1]  <- "ocircle"
-  shape[pch == 2]  <- "otriangle"
-  shape[pch == 15] <- "square"
-  shape[pch == 16] <- "circle"
-  shape[pch == 17] <- "triangle"
-  shape
-}
-
-
-
-#' Add a line to a 3js object
+#' Add a line to a data3js object
 #'
-#' @param data3js
-#' @param x0
-#' @param y0
-#' @param z0
-#' @param x1
-#' @param y1
-#' @param z1
-#' @param lwd
-#' @param col
-#' @param mat
+#' This is equivalent to lines in the way you specify vectors of x, y and z
+#' coordinates to add a line that connects the points
+#'
+#' @param data3js The data3js object
+#' @param x x coords
+#' @param y y coords
+#' @param z z coords
+#' @param lwd line width
+#' @param col line color
+#' @param mat material (see `material3js()`)
+#' @param removeSelfTransparency
 #' @param ...
 #'
 #' @return
 #'
 #' @examples
-line3js <- function(data3js,
-                    x, y, z,
-                    lwd = 1,
-                    col = "black",
-                    mat = "basic",
-                    removeSelfTransparency = TRUE,
-                    ...){
+line3js <- function(
+  data3js,
+  x, y, z,
+  lwd = 1,
+  col = "black",
+  mat = "basic",
+  removeSelfTransparency = TRUE,
+  ...
+  ){
 
   object <- c()
   object$type <- "line"
-  object$properties <- material3js(mat = mat,
-                                   lwd = lwd,
-                                   col = rep_len(col, length(x)),
-                                   removeSelfTransparency = removeSelfTransparency,
-                                   ...)
+  object$properties <- material3js(
+    mat = mat,
+    lwd = lwd,
+    col = rep_len(col, length(x)),
+    removeSelfTransparency = removeSelfTransparency,
+    ...
+  )
   object$position <- cbind(x, y, z)
 
   data3js <- addObject3js(data3js, object)
@@ -147,9 +160,9 @@ gllines3js <- function(data3js,
 #' @examples
 glpoints3js <- function(data3js,
                         x, y, z,
-                        size,
-                        col,
-                        pch,
+                        size = 1,
+                        col  = "black",
+                        pch  = 16,
                         highlight,
                         ...){
 
@@ -449,18 +462,20 @@ triangle3js <- function(data3js,
 #' @param labels
 #' @param pos
 #'
-string3js <- function(data3js,
-                      x, y, z,
-                      text,
-                      size = 1,
-                      col = "inherit",
-                      type   = "geometry",
-                      label  = NULL,
-                      toggle = NULL,
-                      alignment = "center",
-                      offset = c(0, 0),
-                      style  = list(),
-                      ...){
+string3js <- function(
+  data3js,
+  x, y, z,
+  text,
+  size = 1,
+  col = "inherit",
+  type   = "geometry",
+  label  = NULL,
+  toggle = NULL,
+  alignment = "center",
+  offset = c(0, 0),
+  style  = list(),
+  ...
+  ){
 
   object <- c()
   object$type      <- "text"
@@ -490,10 +505,12 @@ string3js <- function(data3js,
   }
 
   # Set object properties
-  object$properties <- material3js(label = label,
-                                   toggle = toggle,
-                                   col = col,
-                                   ...)
+  object$properties <- material3js(
+    label = label,
+    toggle = toggle,
+    col = col,
+    ...
+  )
 
   data3js <- addObject3js(data3js, object)
 

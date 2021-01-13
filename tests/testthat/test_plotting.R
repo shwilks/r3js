@@ -14,11 +14,13 @@ setup_plot <- function(
   data3js <- plot3js.new()
 
   # Set plot dimensions and aspect ratios
-  data3js <- plot3js.window(data3js,
-                            xlim = xlim,
-                            ylim = ylim,
-                            zlim = zlim,
-                            aspect = c(1,1,diff(range(zlim))/diff(range(ylim))))
+  data3js <- plot3js.window(
+    data3js,
+    xlim = xlim,
+    ylim = ylim,
+    zlim = zlim,
+    aspect = c(1,1,diff(range(zlim))/diff(range(ylim)))
+  )
 
   # Add box
   data3js <- box3js(data3js, col = "grey50")

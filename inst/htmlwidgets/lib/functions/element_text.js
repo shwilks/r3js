@@ -74,6 +74,9 @@ R3JS.element.htmltext = class htmltext extends R3JS.element.base {
 	    textdiv.style.fontSize = args.size*100+"%";
 	    textdiv.textContent    = args.text;
 	    R3JS.apply_style(textdiv, args.style);
+
+        // Add a non-selectable class
+        textdiv.classList.add("not-selectable");
 	    
 	    // Create CSS text object
 	    this.object = new THREE.CSS2DObject( textdiv );
