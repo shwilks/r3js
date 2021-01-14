@@ -2,16 +2,26 @@
 % Please edit documentation in R/3JSsetup.R
 \name{mtext3js}
 \alias{mtext3js}
-\title{Add text to a margin}
+\title{Add text to the margin of an r3js plot}
 \usage{
 mtext3js(data3js, text, side, line = 0, at = 0.5, cornerside = "f", ...)
 }
 \arguments{
-\item{...}{}
-}
-\value{
+\item{data3js}{The data3js object}
 
+\item{text}{The margin text}
+
+\item{side}{The axis side, either "x", "y" or "z"}
+
+\item{line}{The number of lines away from the plot edge}
+
+\item{at}{Position along the plot edge, defaults to 0.5 (middle)}
+
+\item{cornerside}{See `material3js()`}
+
+\item{...}{Other arguments to pass to `material3js()`}
 }
 \description{
-Add text to a margin
+This is used for example to add axis labels but can also
+be used for other purposes.
 }

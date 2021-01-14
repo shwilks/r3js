@@ -14,7 +14,8 @@ data3js <- axis3js(data3js, "x")
 data3js <- axis3js(data3js, "y")
 data3js <- axis3js(data3js, "z")
 
-
-r3js(data3js, rotation = c(0.264, -0.951, 0.050))
-debug3js(data3js)
+export.viewer.test(
+  r3js(data3js, rotation = c(0.264, -0.951, 0.050)),
+  "simpleplot.html"
+)
 

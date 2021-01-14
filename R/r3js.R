@@ -1,21 +1,24 @@
 
-#' Plot r3js data
+#' Plot a data3js object
 #'
-#' Creates an html widget from an r3js data object.
+#' This function takes the assembled data3js object and plots it as an
+#' htmlwidget.
 #'
-#' @import htmlwidgets
+#' @param data3js The data3js object
+#' @param rotation Plot starting rotation
+#' @param zoom Plot starting zoom factor
+#' @param translation Plot starting translation
+#' @param ... Additional arguments to pass to `htmlwidgets::createWidget()`
 #'
+#' @return Returns an html widget of the plot
 #' @export
+#'
 r3js <- function(
   data3js,
-  width        = NULL,
-  height       = NULL,
-  elementId    = NULL,
   rotation     = NULL,
   zoom         = NULL,
   translation  = NULL,
-  placeholder  = NULL,
-  dependencies = NULL
+  ...
   ) {
 
   # Create a list that contains the settings
@@ -35,16 +38,13 @@ r3js <- function(
   widget <- htmlwidgets::createWidget(
     name = 'r3js',
     x,
-    width = width,
-    height = height,
     package = 'r3js',
-    elementId = elementId,
-    dependencies = dependencies,
     sizingPolicy = htmlwidgets::sizingPolicy(
       viewer.padding = 0,
       browser.fill = TRUE,
       browser.padding = 0
-    )
+    ),
+    ...
   )
 
   # Add any legends
@@ -65,6 +65,7 @@ r3js <- function(
   widget
 
 }
+
 
 #' Shiny bindings for r3js
 #'
@@ -94,20 +95,4 @@ renderR3js <- function(expr, env = parent.frame(), quoted = FALSE) {
   htmlwidgets::shinyRenderWidget(expr, r3jsOutput, env, quoted = TRUE)
 }
 
-
-
-#' Write to the debug file
-#'
-#' @param data3js
-#'
-#' @return
-#' @export
-#'
-#' @examples
-debug3js <- function(data3js, filename = "bug.js"){
-
-  write(x    = paste0("json_data = '", jsonlite::toJSON(data3js), "';\n\nvar plotData = JSON.parse(json_data);"),
-        file = file.path("~/Dropbox/LabBook/packages/r3js/package/inst/htmlwidgets/lib/tests/data", filename))
-
-}
 

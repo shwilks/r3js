@@ -2,18 +2,21 @@
 % Please edit documentation in R/3JSgroups.R
 \name{addObject3js}
 \alias{addObject3js}
-\title{Generate a new object ID}
+\title{Add a plot object to a data3js object}
 \usage{
 addObject3js(data3js, object, number_of_ids = 1)
 }
 \arguments{
 \item{data3js}{The r3js data object}
 
-\item{num}{The number of new IDs to generate}
+\item{object}{The plot object data to add}
+
+\item{number_of_ids}{The number of ids to assign to the object, e.g. 10 when adding 10 points.}
 }
 \value{
-Returns the update r3js data object
+Returns the updated data3js object
 }
 \description{
-Generate a new object ID for an r3js plot.
+This is used internally to add an object to a data3js object, it assigns the
+object an id and adds a record to the data3js object.
 }

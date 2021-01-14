@@ -7,16 +7,23 @@ data3js <- plot3js(x   = runif(10),
                    show_plot = FALSE)
 
 # Add a simple legend
-data3js <- legend3js(data3js,
-                     legend = c("Description 1",
-                                "Description 2",
-                                "Description 3"),
-                     fill = c("red",
-                              "green",
-                              "blue"),
-                     title = "Test legend")
+data3js <- legend3js(
+  data3js,
+  legend = c(
+    "Description 1",
+    "Description 2",
+    "Description 3"
+  ),
+  fill = c(
+    "red",
+    "green",
+    "blue"
+  )
+)
 
 # Show the plot
-r3js(data3js)
-debug3js(data3js)
+export.viewer.test(
+  r3js(data3js),
+  "plot_with_legend.html"
+)
 

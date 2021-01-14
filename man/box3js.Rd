@@ -15,10 +15,19 @@ box3js(
 )
 }
 \arguments{
-\item{type}{}
-}
-\value{
+\item{data3js}{The data3js object}
 
+\item{sides}{The axis side to show the box, any combination of "x", "y" or "z"}
+
+\item{dynamic}{Should edges of the box closest to the viewer hide themselves automatically}
+
+\item{col}{Box color}
+
+\item{geometry}{Should the box be rendered as a physical geometry in the scene (see `lines3js()`)}
+
+\item{renderOrder}{The render order for the box, defaults to 1}
+
+\item{...}{Other arguments to pass to `material3js()`}
 }
 \description{
 Add a box to an r3js plot

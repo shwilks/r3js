@@ -8,19 +8,18 @@ plot3js(
   x,
   y,
   z,
-  xlim = extendrange(x),
-  ylim = extendrange(y),
-  zlim = extendrange(z),
+  xlim = grDevices::extendrange(x),
+  ylim = grDevices::extendrange(y),
+  zlim = grDevices::extendrange(z),
   xlab = NULL,
   ylab = NULL,
   zlab = NULL,
+  label = NULL,
   type = "p",
-  axisline = 3,
-  aspect = c(1, 1, 1),
-  fixed_aspect = FALSE,
-  show_plot = TRUE,
-  label_axes = "xyz",
-  show_grid = TRUE,
+  axislabel_line = 3,
+  aspect = NULL,
+  label_axes = c("x", "y", "z"),
+  draw_grid = TRUE,
   grid_lwd = 1,
   axis_lwd = grid_lwd,
   box_lwd = grid_lwd,
@@ -28,10 +27,48 @@ plot3js(
 )
 }
 \arguments{
-\item{...}{}
+\item{x}{x coords for points / lines}
+
+\item{y}{y coords for points / lines}
+
+\item{z}{z coords for points / lines}
+
+\item{xlim}{plot x limits}
+
+\item{ylim}{plot y limits}
+
+\item{zlim}{plot z limits}
+
+\item{xlab}{x axis label}
+
+\item{ylab}{y axis label}
+
+\item{zlab}{z axis label}
+
+\item{label}{optional vector of interactive point labels}
+
+\item{type}{plot type "p" for points or "l" for lines}
+
+\item{axislabel_line}{Distance of axis label from plot}
+
+\item{aspect}{Plot axis aspect ratio, see `plot3js.window()`}
+
+\item{label_axes}{Vector of axes to label, any combination of "x", "y" and "z"}
+
+\item{draw_grid}{Should an axis grid be drawn in the background}
+
+\item{grid_lwd}{Grid line width}
+
+\item{axis_lwd}{Axis line width}
+
+\item{box_lwd}{Box line width}
+
+\item{...}{Further parameters to pass to `material3js()`}
 }
 \value{
-
+Returns a data3js object, that can be plotted as a widget using
+  `print()` or `r3js()` or further added to with the other plotting
+  functions.
 }
 \description{
 Generic r3js plotting function

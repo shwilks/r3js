@@ -2,20 +2,25 @@
 % Please edit documentation in R/r3js.R
 \name{r3js}
 \alias{r3js}
-\title{Plot r3js data}
+\title{Plot a data3js object}
 \usage{
-r3js(
-  data3js,
-  width = NULL,
-  height = NULL,
-  elementId = NULL,
-  rotation = NULL,
-  zoom = NULL,
-  translation = NULL,
-  placeholder = NULL,
-  dependencies = NULL
-)
+r3js(data3js, rotation = NULL, zoom = NULL, translation = NULL, ...)
+}
+\arguments{
+\item{data3js}{The data3js object}
+
+\item{rotation}{Plot starting rotation}
+
+\item{zoom}{Plot starting zoom factor}
+
+\item{translation}{Plot starting translation}
+
+\item{...}{Additional arguments to pass to `htmlwidgets::createWidget()`}
+}
+\value{
+Returns an html widget of the plot
 }
 \description{
-Creates an html widget from an r3js data object.
+This function takes the assembled data3js object and plots it as an
+htmlwidget.
 }

@@ -2,16 +2,20 @@
 % Please edit documentation in R/3JSgroups.R
 \name{lastID}
 \alias{lastID}
-\title{Find the ID of the last object(s) added}
+\title{Get the ID of the last object(s) added}
 \usage{
 lastID(data3js)
 }
 \arguments{
-\item{data3js}{The r3js data object}
+\item{data3js}{The data3js object}
 }
 \value{
-Returns a vector of IDs for the last objects added
+Returns a vector of ID(s) for the last object added. After e.g. `sphere3js()`, this
+will simply be a single id relating to the sphere added, after e.g. `points3js()` this will
+be a vector of ids relating to each point in turn.
 }
 \description{
-Find the ID of the last object(s) added to an r3js plot.
+Get the ID of the last object(s) added to an data3js object, this is useful when for
+example wanting to link different objects together into groups, you can use this
+function after adding each of them to keep a record of their unique plot id.
 }

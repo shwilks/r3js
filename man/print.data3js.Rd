@@ -2,7 +2,7 @@
 % Please edit documentation in R/3JSmethods.R
 \name{print.data3js}
 \alias{print.data3js}
-\title{Printing r3js data information}
+\title{Print data3js}
 \usage{
 \method{print}{data3js}(data3js)
 }
@@ -10,5 +10,5 @@
 \item{data3js}{The r3js data object}
 }
 \description{
-Prints information about an r3js data object.
+The print method for the data3js object, by default plotting the htmlwidget.
 }

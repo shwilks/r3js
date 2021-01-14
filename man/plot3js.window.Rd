@@ -2,16 +2,24 @@
 % Please edit documentation in R/3JSsetup.R
 \name{plot3js.window}
 \alias{plot3js.window}
-\title{Set axis limits for a 3js plot}
+\title{Set axis limits for a data3js object}
 \usage{
 plot3js.window(data3js, xlim, ylim, zlim, aspect = NULL)
 }
 \arguments{
-\item{zlim}{}
-}
-\value{
+\item{data3js}{The data3js object}
 
+\item{xlim}{x axis limits}
+
+\item{ylim}{y axis limits}
+
+\item{zlim}{z axis limits}
+
+\item{aspect}{vector of length 3 giving the aspect ratio, or null to
+automatically set the aspect ratio such that axes have the same visual
+length}
 }
 \description{
-Set axis limits for a 3js plot
+This is similar to the `plot.window()` command except that plot limits can
+only be set once for each plot.
 }

@@ -31,11 +31,3 @@ Thumbs.db
 ######################
 *.sublime-workspace
 *.sublime-project
-
-# Development files #
-#####################
-inst/htmlwidgets/data/bug.js
-inst/htmlwidgets/r3js_viewer.html
-inst/htmlwidgets/r3js_viewer_page.html
-dev
-docs

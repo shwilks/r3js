@@ -18,13 +18,15 @@ r3js provides some basic functions for doing 3d plots, the main one being `plot3
 base `plot()` function, for example:
 
 ```{r basic_plotting}
-plot3js(
+data3js <- plot3js(
   x = iris$Sepal.Length,
   y = iris$Sepal.Width,
   z = iris$Petal.Length,
   col = rainbow(3)[iris$Species],
   size = 4
 )
+
+r3js(data3js)
 ```
 
 ## 3D surface plots
@@ -65,5 +67,8 @@ data3js <- surface3js(
   col = cols
 )
 
-r3js(data3js)
+r3js(
+  data3js,
+  rotation = c(-1.2, 0, -0.35)
+)
 ```

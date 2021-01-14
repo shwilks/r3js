@@ -41,11 +41,13 @@ z <- runif(20, 0, 1)
 data3js <- plot3js.new()
 
 # Set plot dimensions and aspect ratios
-data3js <- plot3js.window(data3js,
-                          xlim = c(0,10),
-                          ylim = c(0,20),
-                          zlim = c(0,1),
-                          aspect = c(0.5,1,0.5))
+data3js <- plot3js.window(
+  data3js,
+  xlim = c(0,10),
+  ylim = c(0,20),
+  zlim = c(0,1),
+  aspect = c(0.5,1,0.5)
+)
 
 # Add box
 data3js <- box3js(data3js, col = "grey50")
@@ -72,11 +74,13 @@ Several ways to add interactivity to plots are currently supported, namely label
 Labels can be added simply by providing a string or string vector as input to the plotting function for the `label` argument:
 
 ```R
-plot3js(x = runif(100),
-        y = runif(100),
-        z = runif(100),
-        col = rainbow(100),
-        label = paste("Point", 1:100))
+plot3js(
+  x = runif(100),
+  y = runif(100),
+  z = runif(100),
+  col = rainbow(100),
+  label = paste("Point", 1:100)
+)
 ```
 
 
@@ -85,13 +89,17 @@ Features of a plotted object can be programmed to change upon rollover simply by
 rollover as a list to the `highlight` argument:
 
 ```R
-plot3js(x = runif(100),
-        y = runif(100),
-        z = runif(100),
-        col = rainbow(100),
-        highlight = list(size = 1.5,
-                         col = rev(rainbow(100)),
-                         mat = "basic"))
+plot3js(
+  x = runif(100),
+  y = runif(100),
+  z = runif(100),
+  col = rainbow(100),
+  highlight = list(
+    size = 1.5,
+    col = rev(rainbow(100)),
+    mat = "basic"
+  )
+)
 ```
 
 
@@ -103,14 +111,18 @@ x <- runif(100)
 y <- runif(100)
 z <- runif(100)
 
-col <- c(rep("blue", 50),
-         rep("red", 50))
+col <- c(
+  rep("blue", 50),
+  rep("red", 50)
+)
 
 toggle <- paste(col, "points")
 
-plot3js(x = x,
-        y = y,
-        z = z,
-        col = col,
-        toggle = toggle)
+plot3js(
+  x = x,
+  y = y,
+  z = z,
+  col = col,
+  toggle = toggle
+)
 ```

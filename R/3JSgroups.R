@@ -1,14 +1,20 @@
 
-#' Generate a new object ID
+#' Add a plot object to a data3js object
 #'
-#' Generate a new object ID for an r3js plot.
+#' This is used internally to add an object to a data3js object, it assigns the
+#' object an id and adds a record to the data3js object.
 #'
 #' @param data3js The r3js data object
-#' @param num The number of new IDs to generate
+#' @param object The plot object data to add
+#' @param number_of_ids The number of ids to assign to the object, e.g. 10 when adding 10 points.
 #'
-#' @return Returns the update r3js data object
-#' @export
-addObject3js <- function(data3js, object, number_of_ids = 1){
+#' @return Returns the updated data3js object
+#'
+addObject3js <- function(
+  data3js,
+  object,
+  number_of_ids = 1
+  ){
 
   # Generate an object ID
   if(is.null(data3js$lastID)){ data3js$lastID <- 0 }
@@ -31,14 +37,21 @@ addObject3js <- function(data3js, object, number_of_ids = 1){
 
 }
 
-#' Find the ID of the last object(s) added
+
+#' Get the ID of the last object(s) added
 #'
-#' Find the ID of the last object(s) added to an r3js plot.
+#' Get the ID of the last object(s) added to an data3js object, this is useful when for
+#' example wanting to link different objects together into groups, you can use this
+#' function after adding each of them to keep a record of their unique plot id.
 #'
-#' @param data3js The r3js data object
+#' @param data3js The data3js object
 #'
-#' @return Returns a vector of IDs for the last objects added
+#' @return Returns a vector of ID(s) for the last object added. After e.g. `sphere3js()`, this
+#' will simply be a single id relating to the sphere added, after e.g. `points3js()` this will
+#' be a vector of ids relating to each point in turn.
+#'
 #' @export
+#'
 lastID <- function(data3js){
 
   data3js$lastID
@@ -59,9 +72,11 @@ lastID <- function(data3js){
 #' @return Returns an empty r3js group object in the form of a list.
 #' @export
 #'
-group3js <- function(data3js,
-                     objectIDs,
-                     groupIDs = objectIDs){
+group3js <- function(
+  data3js,
+  objectIDs,
+  groupIDs = objectIDs
+  ){
 
   data3js$plot <- lapply(data3js$plot, function(object){
     if(object$ID %in% objectIDs){

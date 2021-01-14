@@ -262,32 +262,5 @@ R3JS.element.Polygon3d = class Polygon3d extends R3JS.element.base {
 
 }
 
-//     function convertBlob2D(object, blob){
-
-//         var fill    = object.children[0];
-//         var outline = object.children[1];
-
-//         // Work out geometry
-//         for(var i=0; i<blob.length; i++){
-//             var blobShape = new THREE.Shape();
-//             blobShape.moveTo( blob[i].x[0]-object.position.x, blob[i].y[0]-object.position.y );
-//             for(var j=0; j<blob[i].x.length; j++){
-//                 blobShape.lineTo(blob[i].x[j]-object.position.x, blob[i].y[j]-object.position.y);
-//             }
-            
-//             var blobshapegeo = new THREE.ShapeGeometry( blobShape );
-//             var blobgeo      = new THREE.BufferGeometry().fromGeometry( blobshapegeo );
-//         }
-        
-//         var bloboutlinegeo = convert2Outline(blobshapegeo.vertices, 0.1);
-//         bloboutlinegeo     = new THREE.BufferGeometry().fromGeometry( bloboutlinegeo );
-
-//         object.rotation.z = 0;
-
-//         fill.geometry    = blobgeo;
-//         outline.geometry = bloboutlinegeo;
-
-//     }
-
 
 

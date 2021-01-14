@@ -15,8 +15,3 @@ Returns a list of styles marked with `jsonlite::unbox()`
 \description{
 An internal function for converting a string of arguments into a set of css styles for an object.
 }
-\examples{
-styles <- style3js(color   = "#ff0000",
-                   padding = "2px")
-
-}

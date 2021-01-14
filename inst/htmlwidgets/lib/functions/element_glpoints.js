@@ -15,8 +15,6 @@ R3JS.element.constructors.glpoints = function(
         viewer : viewer
     });
 
-    // var element = glpoints.elements;
-
     return(glpoints);
 
 }

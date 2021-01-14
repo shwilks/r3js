@@ -2,18 +2,15 @@
 % Please edit documentation in R/3JSsetup.R
 \name{background3js}
 \alias{background3js}
-\title{Set the background color of an r3js plot}
+\title{Set the plot background color}
 \usage{
 background3js(data3js, col)
 }
 \arguments{
-\item{data3js}{The plotting object}
+\item{data3js}{The data3js object}
 
 \item{col}{The background color}
 }
-\value{
-
-}
 \description{
-Set the background color of an r3js plot
+Set the plot background color
 }
