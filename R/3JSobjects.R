@@ -175,7 +175,7 @@ shape3js <- function(
   object <- c()
   object$type <- "shape"
   object$vertices   <- vertices
-  object$faces      <- faces-1 # Need to convert to base 0
+  object$faces      <- faces - 1 # Need to convert to base 0
   object$normals    <- normals
   object$properties <- material3js(
     col = col,
