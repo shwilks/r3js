@@ -42,14 +42,16 @@ grid3js <- function(
   for(ax in axes){
     ax_sides <- sides[!grepl(ax, sides)]
     for(side in ax_sides){
-      data3js <- sidegrid3js(data3js,
-                             ax       = ax,
-                             side     = side,
-                             at       = at[[ax]],
-                             dynamic  = dynamic,
-                             col      = col,
-                             geometry = geometry,
-                             ...)
+      data3js <- sidegrid3js(
+        data3js,
+        ax       = ax,
+        side     = side,
+        at       = at[[ax]],
+        dynamic  = dynamic,
+        col      = col,
+        geometry = geometry,
+        ...
+      )
     }
   }
 
