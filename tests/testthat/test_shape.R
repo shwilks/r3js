@@ -9,7 +9,7 @@ data3js <- plot3js(
   y = shape$vertices[,2],
   z = shape$vertices[,3],
   show_plot = FALSE,
-  size = 0.2,
+  size = 0.1,
   type = "glpoints"
 )
 
