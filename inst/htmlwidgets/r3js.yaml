@@ -33,6 +33,7 @@ dependencies:
       - functions/element_text.js
       - functions/element_light.js
       - functions/element_polygon.js
+      - functions/element_triangles.js
       - functions/viewport.js
       - functions/utils.js
       - functions/buttons.js
