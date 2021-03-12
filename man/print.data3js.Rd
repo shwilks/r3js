@@ -4,10 +4,12 @@
 \alias{print.data3js}
 \title{Print data3js}
 \usage{
-\method{print}{data3js}(data3js)
+\method{print}{data3js}(x, ...)
 }
 \arguments{
-\item{data3js}{The r3js data object}
+\item{x}{The data3js object}
+
+\item{...}{Additional arguments, not used}
 }
 \description{
 The print method for the data3js object, by default plotting the htmlwidget.
