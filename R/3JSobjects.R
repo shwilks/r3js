@@ -185,7 +185,7 @@ shape3js <- function(
   data3js <- addObject3js(data3js, object)
 
   # Create the highlight object if requested
-  if(!missing(highlight)){
+  if (!missing(highlight)) {
     data3js <- highlight3js(data3js, highlight)
   }
 
