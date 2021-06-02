@@ -71,8 +71,7 @@ test_that("plot3js with complex triangles", {
 
   data3js <- triangle3js(data3js,
                          vertices = vertices,
-                         col = vert$color_ext,
-                         shiness = 0)
+                         col = vert$color_ext)
 
   # Add outlines to shape
   lims <- apply(vertices, 2, range)
