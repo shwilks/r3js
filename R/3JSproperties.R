@@ -68,7 +68,8 @@ material3js <- function(
   normalise = NULL,
   poffset = NULL,
   clippingPlanes = NULL,
-  doubleSide = TRUE,
+  frontSide = TRUE,
+  backSide = TRUE,
   renderOrder = NULL,
   renderSidesSeparately = NULL,
   removeSelfTransparency = NULL,
@@ -77,7 +78,7 @@ material3js <- function(
 ){
 
   # Get opacity from color if not otherwise specified
-  if(is.null(opacity)){ opacity <- grDevices::col2rgb(col, alpha = TRUE)[4]/255 }
+  if(is.null(opacity)){ opacity <- col_opacity(col) }
 
   props <- list(
     mat         = jsonlite::unbox(mat),
@@ -113,11 +114,21 @@ material3js <- function(
   if(!is.null(renderSidesSeparately) && opacity < 1)  { props$renderSidesSeparately  <- jsonlite::unbox(renderSidesSeparately)  }
   if(!is.null(removeSelfTransparency) && opacity < 1) { props$removeSelfTransparency <- jsonlite::unbox(removeSelfTransparency) }
   if(!is.null(breakupMesh) && opacity < 1)            { props$breakupMesh            <- jsonlite::unbox(breakupMesh)            }
-  props$doubleSide <- jsonlite::unbox(doubleSide)
+  props$frontSide <- jsonlite::unbox(frontSide)
+  props$backSide <- jsonlite::unbox(backSide)
 
 
   # Return properties
   props
+
+}
+
+
+#' Internal function to get opacity from a color specification
+col_opacity <- function(col) {
+
+  col[col == "inherit"] <- "black"
+  grDevices::col2rgb(col, alpha = TRUE)[4]/255
 
 }
 
@@ -129,12 +140,15 @@ material3js <- function(
 #' @return Returns a list with red, green and blue values
 #'
 convertCol3js <- function(col){
+
+  col[col == "inherit"] <- "black"
   rgbcol <- grDevices::col2rgb(col)/255
   list(
     r = rgbcol["red",],
     g = rgbcol["green",],
     b = rgbcol["blue",]
   )
+
 }
 
 
