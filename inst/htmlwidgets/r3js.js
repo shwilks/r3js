@@ -6,7 +6,7 @@ HTMLWidgets.widget({
 
   factory: function(el, width, height) {
 
-    r3jsviewer = new R3JS.Viewer(el);
+    var r3jsviewer = new R3JS.Viewer(el);
 
     return {
 
