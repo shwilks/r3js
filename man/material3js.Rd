@@ -31,7 +31,8 @@ material3js(
   normalise = NULL,
   poffset = NULL,
   clippingPlanes = NULL,
-  doubleSide = TRUE,
+  frontSide = TRUE,
+  backSide = TRUE,
   renderOrder = NULL,
   renderSidesSeparately = NULL,
   removeSelfTransparency = NULL,
@@ -94,8 +95,6 @@ or "line", see e.g.
 
 \item{clippingPlanes}{Clipping planes to apply to the object}
 
-\item{doubleSide}{Should the object be rendered as double sided, see [Material Constants](https://threejs.org/docs/index.html#api/en/constants/Materials)}
-
 \item{renderOrder}{See [renderOrder](https://threejs.org/docs/index.html#api/en/core/Object3D.renderOrder)}
 
 \item{renderSidesSeparately}{Render the front and back side separately (not implemented)}
@@ -105,6 +104,8 @@ or "line", see e.g.
 \item{breakupMesh}{Breakup the object mesh to achieve more realistic transparency rendering (not implemented)}
 
 \item{...}{Additional parameters that are not used}
+
+\item{doubleSide}{Should the object be rendered as double sided, see [Material Constants](https://threejs.org/docs/index.html#api/en/constants/Materials)}
 }
 \description{
 Set material properties of 3js object
