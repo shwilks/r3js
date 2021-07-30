@@ -1,0 +1,157 @@
+---
+title: "Grouping plot elements"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Grouping plot elements}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(r3js)
+```
+
+```{r groupings}
+# Set data
+x_vals <- iris$Sepal.Length
+y_vals <- iris$Sepal.Width
+z_vals <- iris$Petal.Length
+point_cols <- rainbow(3)[iris$Species]
+
+# Setup plot
+data3js <- plot3js(
+  x = x_vals,
+  y = y_vals,
+  z = z_vals,
+  xlab = "",
+  ylab = "",
+  zlab = ""
+)
+
+# Add points for each point
+for (n in seq_along(x_vals)) {
+  
+  # Set a record of point ids you're going to group
+  point_ids <- c()
+  
+  # Add the 3d point
+  data3js <- points3js(
+    data3js,
+    x = x_vals[n],
+    y = y_vals[n],
+    z = z_vals[n],
+    col = point_cols[n],
+    size = 2,
+    highlight = list(
+      size = 3
+    ),
+    interactive = TRUE
+  )
+  
+  point_ids <- c(point_ids, lastID(data3js))
+  
+  # Add the point on the z- face
+  data3js <- points3js(
+    data3js,
+    x = x_vals[n],
+    y = y_vals[n],
+    z = data3js$lims[[3]][1] + 0.001,
+    col = point_cols[n],
+    size = 1,
+    highlight = list(
+      size = 2
+    ),
+    interactive = TRUE,
+    depthWrite = FALSE,
+    dimensions = 2,
+    face = "z-"
+  )
+  
+  point_ids <- c(point_ids, lastID(data3js))
+  
+  # Add the point on the z+ face
+  data3js <- points3js(
+    data3js,
+    x = x_vals[n],
+    y = y_vals[n],
+    z = data3js$lims[[3]][2] - 0.001,
+    col = point_cols[n],
+    size = 1,
+    highlight = list(
+      size = 2
+    ),
+    interactive = TRUE,
+    depthWrite = FALSE,
+    dimensions = 2,
+    face = "z+"
+  )
+  
+  point_ids <- c(point_ids, lastID(data3js))
+  
+  # Add the point on the y- face
+  data3js <- points3js(
+    data3js,
+    x = x_vals[n],
+    y = data3js$lims[[2]][1] + 0.001,
+    z = z_vals[n],
+    col = point_cols[n],
+    size = 1,
+    highlight = list(
+      size = 2
+    ),
+    interactive = TRUE,
+    depthWrite = FALSE,
+    dimensions = 2,
+    rotation = c(0, 0, 90),
+    face = "y-"
+  )
+  
+  point_ids <- c(point_ids, lastID(data3js))
+  
+  # Add the point on the y+ face
+  data3js <- points3js(
+    data3js,
+    x = x_vals[n],
+    y = data3js$lims[[2]][2] - 0.001,
+    z = z_vals[n],
+    col = point_cols[n],
+    size = 1,
+    highlight = list(
+      size = 2
+    ),
+    interactive = TRUE,
+    depthWrite = FALSE,
+    dimensions = 2,
+    rotation = c(0, 0, 90),
+    face = "y+"
+  )
+  
+  point_ids <- c(point_ids, lastID(data3js))
+  
+  # Now group all the points you've added
+  data3js <- group3js(data3js, point_ids)
+  
+}
+
+
+# Fetch the ids of the points just added
+point_ids_xyz <- lastID(data3js)
+
+
+# Fetch the ids of the points just added
+point_ids_xy1 <- lastID(data3js)
+
+
+# Now start grouping the points
+
+
+r3js(data3js)
+
+```
