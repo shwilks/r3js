@@ -130,7 +130,7 @@ surface3js <- function(
     object$type <- "surface"
     if(missing(mat)){ mat <- "phong" }
   }
-  object$properties <- material3js(mat = mat, col = t(col), ...)
+  object$properties <- material3js(mat = mat, col = col, ...)
   object$x <- x
   object$y <- y
   object$z <- z
