@@ -130,6 +130,9 @@ points3js <- function(
   toggle = NULL,
   ...){
 
+  # Perform input checks
+  ellipsis::check_dots_used()
+
   # Repeat arguments to match length of points
   col    <- rep_len(col,    length(x))
   size   <- rep_len(size,   length(x))
@@ -154,22 +157,30 @@ points3js <- function(
       )
     }
   } else {
-    data3js <- glpoints3js(data3js,
-                           x = x,
-                           y = y,
-                           z = z,
-                           size = size,
-                           col = col,
-                           pch = pch,
-                           label = label,
-                           toggle = toggle,
-                           ...)
+    data3js <- glpoints3js(
+      data3js,
+      x = x,
+      y = y,
+      z = z,
+      size = size,
+      col = col,
+      pch = pch,
+      label = label,
+      toggle = toggle,
+      ...
+    )
   }
 
   # Create the highlights object if requested
   if(!missing(highlight)){
     data3js <- highlight3js(data3js, highlight)
   }
+
+  # Update the last IDs field
+  data3js$lastID <- seq(
+    from = data3js$lastID - length(x) + 1,
+    to = data3js$lastID
+  )
 
   # Return the updated object
   data3js
