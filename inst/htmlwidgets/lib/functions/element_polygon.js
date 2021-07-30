@@ -231,7 +231,6 @@ R3JS.element.Polygon3d = class Polygon3d extends R3JS.element.base {
 
             // Assign object
             this.object = new THREE.Mesh(geometry, material);
-            console.log(this.object);
 
         } else {
 
