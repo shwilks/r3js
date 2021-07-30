@@ -125,21 +125,24 @@ mtext3js <- function(
       bp <- c("-", "+")[b]
 
       if(side == "x"){
-        x <- at*data3js$aspect[1]
-        y <- (a-1)*data3js$aspect[2]+(a-1.5)*0.1*line
-        z <- (b-1)*data3js$aspect[3]+(b-1.5)*0.1*line
+        x <- mean(data3js$lims[[1]])
+        y <- switch(a, "1" = data3js$lims[[2]][1], "2" = data3js$lims[[2]][2])
+        z <- switch(b, "1" = data3js$lims[[3]][1], "2" = data3js$lims[[3]][2])
+        poffset <- c(0, (a-1.5)*line*0.1, (b-1.5)*line*0.1)
         cornercode <- paste0("x",ap,bp,cornerside)
       }
       if(side == "y"){
-        x <- (a-1)*data3js$aspect[1]+(a-1.5)*0.1*line
-        y <- at*data3js$aspect[2]
-        z <- (b-1)*data3js$aspect[3]+(b-1.5)*0.1*line
+        x <- switch(a, "1" = data3js$lims[[1]][1], "2" = data3js$lims[[1]][2])
+        y <- mean(data3js$lims[[2]])
+        z <- switch(b, "1" = data3js$lims[[3]][1], "2" = data3js$lims[[3]][2])
+        poffset <- c((a-1.5)*line*0.1, 0, (b-1.5)*line*0.1)
         cornercode <- paste0(ap,"y",bp,cornerside)
       }
       if(side == "z"){
-        x <- (b-1)*data3js$aspect[1]+(b-1.5)*0.1*line
-        y <- (a-1)*data3js$aspect[2]+(a-1.5)*0.1*line
-        z <- at*data3js$aspect[3]
+        x <- switch(b, "1" = data3js$lims[[1]][1], "2" = data3js$lims[[1]][2])
+        y <- switch(a, "1" = data3js$lims[[2]][1], "2" = data3js$lims[[2]][2])
+        z <- mean(data3js$lims[[3]])
+        poffset <- c((b-1.5)*line*0.1, (a-1.5)*line*0.1, 0)
         cornercode <- paste0(ap,bp,"z",cornerside)
       }
 
@@ -153,6 +156,7 @@ mtext3js <- function(
         col       = "black",
         type      = "html",
         normalise = FALSE,
+        poffset   = poffset,
         ...
       )
 
