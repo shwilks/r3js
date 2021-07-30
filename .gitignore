@@ -31,3 +31,6 @@ Thumbs.db
 ######################
 *.sublime-workspace
 *.sublime-project
+
+inst/doc
+docs
