@@ -143,10 +143,21 @@ convertCol3js <- function(col){
 
   col[col == "inherit"] <- "black"
   rgbcol <- grDevices::col2rgb(col)/255
+
+  rcol <- rgbcol["red",]
+  gcol <- rgbcol["green",]
+  bcol <- rgbcol["blue",]
+
+  if (is.matrix(col)) {
+    rcol <- matrix(rcol, nrow(col), ncol(col))
+    gcol <- matrix(gcol, nrow(col), ncol(col))
+    bcol <- matrix(bcol, nrow(col), ncol(col))
+  }
+
   list(
-    r = rgbcol["red",],
-    g = rgbcol["green",],
-    b = rgbcol["blue",]
+    r = rcol,
+    g = gcol,
+    b = bcol
   )
 
 }
