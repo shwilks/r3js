@@ -1,0 +1,287 @@
+
+library(r3js)
+library(testthat)
+
+test_that("Test point rotation", {
+
+  # Set data
+  x_vals <- iris$Sepal.Length
+  y_vals <- iris$Sepal.Width
+  z_vals <- iris$Petal.Length
+  point_cols <- rainbow(3)[iris$Species]
+
+  # Setup plot
+  data3js <- plot3js(
+    x = x_vals,
+    y = y_vals,
+    z = z_vals,
+    xlab = "Sepal Length",
+    ylab = "Sepal Width",
+    zlab = "Petal Length"
+  )
+
+  # Add points for each point
+  for (n in seq_along(x_vals)) {
+
+    # Set a record of point ids you're going to group
+    point_ids <- c()
+
+    # Add the 3d point
+    data3js <- points3js(
+      data3js,
+      x = x_vals[n],
+      y = y_vals[n],
+      z = z_vals[n],
+      col = point_cols[n],
+      size = 1,
+      highlight = list(
+        size = 2
+      ),
+      interactive = TRUE
+    )
+
+    point_ids <- c(point_ids, lastID(data3js))
+
+    # Add the point on the x- face
+    data3js <- points3js(
+      data3js,
+      x = data3js$lims[[1]][1] + 0.001,
+      y = y_vals[n],
+      z = z_vals[n],
+      col = point_cols[n],
+      size = 1,
+      opacity = 0.2,
+      highlight = list(
+        size = 2,
+        opacity = 1
+      ),
+      interactive = TRUE,
+      depthWrite = FALSE,
+      dimensions = 2,
+      rotation = c(0, 90, 0),
+      face = "x-"
+    )
+
+    point_ids <- c(point_ids, lastID(data3js))
+
+    # Add the point on the x+ face
+    data3js <- points3js(
+      data3js,
+      x = data3js$lims[[1]][2] - 0.001,
+      y = y_vals[n],
+      z = z_vals[n],
+      col = point_cols[n],
+      size = 1,
+      opacity = 0.2,
+      highlight = list(
+        size = 2,
+        opacity = 1
+      ),
+      interactive = TRUE,
+      depthWrite = FALSE,
+      dimensions = 2,
+      rotation = c(0, 90, 0),
+      face = "x+"
+    )
+
+    point_ids <- c(point_ids, lastID(data3js))
+
+
+    # Add the line to the x- face
+    data3js <- lines3js(
+      data3js,
+      x = c(data3js$lims[[1]][1], x_vals[n]),
+      y = c(y_vals[n], y_vals[n]),
+      z = c(z_vals[n], z_vals[n]),
+      lwd = 0,
+      highlight = list(
+        lwd = 2
+      ),
+      face = "x-"
+    )
+
+    point_ids <- c(point_ids, lastID(data3js))
+
+
+    # Add the line to the x+ face
+    data3js <- lines3js(
+      data3js,
+      x = c(x_vals[n], data3js$lims[[1]][2]),
+      y = c(y_vals[n], y_vals[n]),
+      z = c(z_vals[n], z_vals[n]),
+      lwd = 0,
+      highlight = list(
+        lwd = 2
+      ),
+      face = "x+"
+    )
+
+    point_ids <- c(point_ids, lastID(data3js))
+
+
+    # Add the point on the y- face
+    data3js <- points3js(
+      data3js,
+      x = x_vals[n],
+      y = data3js$lims[[2]][1] + 0.001,
+      z = z_vals[n],
+      col = point_cols[n],
+      size = 1,
+      opacity = 0.2,
+      highlight = list(
+        size = 2,
+        opacity = 1
+      ),
+      interactive = TRUE,
+      depthWrite = FALSE,
+      dimensions = 2,
+      rotation = c(90, 0, 0),
+      face = "y-"
+    )
+
+    point_ids <- c(point_ids, lastID(data3js))
+
+    # Add the point on the y+ face
+    data3js <- points3js(
+      data3js,
+      x = x_vals[n],
+      y = data3js$lims[[2]][2] - 0.001,
+      z = z_vals[n],
+      col = point_cols[n],
+      size = 1,
+      opacity = 0.2,
+      highlight = list(
+        size = 2,
+        opacity = 1
+      ),
+      interactive = TRUE,
+      depthWrite = FALSE,
+      dimensions = 2,
+      rotation = c(90, 0, 0),
+      face = "y+"
+    )
+
+    point_ids <- c(point_ids, lastID(data3js))
+
+
+    # Add the line to the y- face
+    data3js <- lines3js(
+      data3js,
+      x = c(x_vals[n], x_vals[n]),
+      y = c(data3js$lims[[2]][1], y_vals[n]),
+      z = c(z_vals[n], z_vals[n]),
+      lwd = 0,
+      highlight = list(
+        lwd = 2
+      ),
+      face = "y-"
+    )
+
+    point_ids <- c(point_ids, lastID(data3js))
+
+
+    # Add the line to the y+ face
+    data3js <- lines3js(
+      data3js,
+      x = c(x_vals[n], x_vals[n]),
+      y = c(y_vals[n], data3js$lims[[2]][2]),
+      z = c(z_vals[n], z_vals[n]),
+      lwd = 0,
+      highlight = list(
+        lwd = 2
+      ),
+      face = "y+"
+    )
+
+    point_ids <- c(point_ids, lastID(data3js))
+
+
+
+    # Add the point on the z- face
+    data3js <- points3js(
+      data3js,
+      x = x_vals[n],
+      y = y_vals[n],
+      z = data3js$lims[[3]][1] + 0.001,
+      col = point_cols[n],
+      size = 1,
+      opacity = 0.2,
+      highlight = list(
+        size = 2,
+        opacity = 1
+      ),
+      interactive = TRUE,
+      depthWrite = FALSE,
+      dimensions = 2,
+      face = "z-"
+    )
+
+    point_ids <- c(point_ids, lastID(data3js))
+
+
+    # Add the line to the z- face
+    data3js <- lines3js(
+      data3js,
+      x = c(x_vals[n], x_vals[n]),
+      y = c(y_vals[n], y_vals[n]),
+      z = c(data3js$lims[[3]][1], z_vals[n]),
+      lwd = 0,
+      highlight = list(
+        lwd = 2
+      ),
+      face = "z-"
+    )
+
+    point_ids <- c(point_ids, lastID(data3js))
+
+
+    # Add the line to the z+ face
+    data3js <- lines3js(
+      data3js,
+      x = c(x_vals[n], x_vals[n]),
+      y = c(y_vals[n], y_vals[n]),
+      z = c(z_vals[n], data3js$lims[[3]][2]),
+      lwd = 0,
+      highlight = list(
+        lwd = 2
+      ),
+      face = "z+"
+    )
+
+    point_ids <- c(point_ids, lastID(data3js))
+
+
+    # Add the point on the z+ face
+    data3js <- points3js(
+      data3js,
+      x = x_vals[n],
+      y = y_vals[n],
+      z = data3js$lims[[3]][2] - 0.001,
+      col = point_cols[n],
+      size = 1,
+      opacity = 0.2,
+      highlight = list(
+        size = 2,
+        opacity = 1
+      ),
+      interactive = TRUE,
+      depthWrite = FALSE,
+      dimensions = 2,
+      face = "z+"
+    )
+
+    point_ids <- c(point_ids, lastID(data3js))
+
+    # Now group all the points you've added
+    data3js <- group3js(data3js, point_ids)
+
+  }
+
+  # Export the test file
+  export.viewer.test(
+    r3js(data3js),
+    "point_rotation.html"
+  )
+
+})
+
