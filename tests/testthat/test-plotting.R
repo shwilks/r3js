@@ -46,8 +46,7 @@ test_that("plot3js", {
     x = iris$Sepal.Length,
     y = iris$Sepal.Width,
     z = iris$Petal.Length,
-    col = rainbow(3)[iris$Species],
-    show_plot = FALSE
+    col = rainbow(3)[iris$Species]
   )
 
   export.viewer.test(
@@ -69,8 +68,7 @@ test_that("plot3js with hover info", {
       col = "cyan",
       mat = "basic"
     ),
-    label = paste("Point", 1:100),
-    show_plot = FALSE
+    label = paste("Point", 1:100)
   )
 
   export.viewer.test(

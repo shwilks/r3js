@@ -11,8 +11,7 @@ test_that("Adding geometric text", {
     x = iris$Sepal.Length,
     y = iris$Sepal.Width,
     z = iris$Petal.Length,
-    col = rainbow(3)[iris$Species],
-    show_plot = FALSE
+    col = rainbow(3)[iris$Species]
   )
 
   data3js <- text3js(

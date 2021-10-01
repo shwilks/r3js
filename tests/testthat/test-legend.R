@@ -1,10 +1,11 @@
 
 # Setup a basic plot
-data3js <- plot3js(x   = runif(10),
-                   y   = runif(10),
-                   z   = runif(10),
-                   col = rainbow(10),
-                   show_plot = FALSE)
+data3js <- plot3js(
+  x   = runif(10),
+  y   = runif(10),
+  z   = runif(10),
+  col = rainbow(10)
+)
 
 # Add a simple legend
 data3js <- legend3js(
