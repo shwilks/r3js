@@ -109,7 +109,7 @@ for (n in seq_along(x_vals)) {
     interactive = TRUE,
     depthWrite = FALSE,
     dimensions = 2,
-    rotation = c(0, 0, 90),
+    rotation = c(90, 0, 0),
     face = "y-"
   )
   
@@ -129,7 +129,7 @@ for (n in seq_along(x_vals)) {
     interactive = TRUE,
     depthWrite = FALSE,
     dimensions = 2,
-    rotation = c(0, 0, 90),
+    rotation = c(90, 0, 0),
     face = "y+"
   )
   
