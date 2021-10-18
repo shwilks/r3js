@@ -38,7 +38,7 @@ devtools::install_github("shwilks/r3js")
 Generally, r3js works by generating an object containing the plotting data and then continuously updating it as new features are added to the plot (similar to plotly).  For a simple 3D scatterplot however, the `plot3js` function handles all of the plotting setup for you. Plotting syntax is intended to be similar to the base plotting functions in R, and that used in the RGL package.
 
 
-```{r}
+```{r, eval=FALSE}
 # Generate and view a simple 3D scatterplot
 x <- sort(rnorm(1000))
 y <- rnorm(1000)
@@ -50,7 +50,7 @@ plot3js(x, y, z, col = rainbow(1000))
 
 You can also build up a plot step by step using the lower level functions for initiating 3D plots:
 
-```{r}
+```{r, eval=FALSE}
 # Generate data
 x <- runif(20, 0, 10)
 y <- runif(20, 0, 20)
@@ -92,7 +92,7 @@ Several ways to add interactivity to plots are currently supported, namely label
 ### Labels
 Labels can be added simply by providing a string or string vector as input to the plotting function for the `label` argument:
 
-```{r}
+```{r, eval=FALSE}
 plot3js(
   x = runif(100),
   y = runif(100),
@@ -107,7 +107,7 @@ plot3js(
 Features of a plotted object can be programmed to change upon rollover simply by passing the arguments you wish to update on 
 rollover as a list to the `highlight` argument:
 
-```{r}
+```{r, eval=FALSE}
 plot3js(
   x = runif(100),
   y = runif(100),
@@ -124,7 +124,7 @@ plot3js(
 ### Toggle buttons
 To associate an object with a toggle button simply pass the desired toggle label to the `toggle` argument:
 
-```{r}
+```{r, eval=FALSE}
 x <- runif(100)
 y <- runif(100)
 z <- runif(100)
