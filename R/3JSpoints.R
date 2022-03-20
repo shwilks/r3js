@@ -140,6 +140,9 @@ points3js <- function(
   if(!is.null(label)) { label  <- rep_len(label,  length(x)) }
   if(!is.null(toggle)){ toggle <- rep_len(toggle, length(x)) }
 
+  if (length(y) != length(x)) stop("y and x have different lengths")
+  if (length(z) != length(x)) stop("z and x have different lengths")
+
   # Create the points
   if(geometry){
     for(n in 1:length(x)){
