@@ -13,3 +13,4 @@
 ^\.lintr$
 ^tests/testoutput$
 ^builds$
+^README\.Rmd$
