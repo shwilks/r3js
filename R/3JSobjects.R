@@ -224,18 +224,38 @@ shape3js <- function(
 }
 
 
-
-
 #' Add a triangle to a data3js object
 #'
 #' @param data3js The data3js object
 #' @param vertices An nx3 matrix of triangle vertices
-#' @param col Color of the triangle
+#' @param col Single color for the triangles or vector of vertex colors
 #' @param highlight highlight attributes (see `highlight3js()`)
 #' @param ... Additional attributes to pass to `material3js()`
 #'
-#' @export
+#' @examples
+#' # Draw some random triangles
+#' M <- matrix(
+#'   data = rnorm(36),
+#'   ncol = 3,
+#'   nrow = 12
+#' )
 #'
+#' p <- plot3js(
+#'   xlim = range(M[,1]),
+#'   ylim = range(M[,2]),
+#'   zlim = range(M[,3]),
+#'   label_axes = FALSE
+#' )
+#'
+#' p <- triangle3js(
+#'   p,
+#'   vertices = M,
+#'   col = rainbow(nrow(M))
+#' )
+#'
+#' p
+#'
+#' @export
 triangle3js <- function(
   data3js,
   vertices,
