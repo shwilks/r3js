@@ -1,5 +1,9 @@
 
-#' Set material properties of 3js object
+#' Set material properties of a 3js object
+#'
+#' Arguments refer to different material properties for an object, many of which
+#' refer directly to properties as described in the [threejs
+#' documentation](https://threejs.org/docs/index.html?q=material#api/en/materials/Material)
 #'
 #' @param mat Material to use for the object, one of "basic", "lambert", "phong"
 #'   or "line", see e.g.
@@ -9,35 +13,48 @@
 #' @param opacity Opacity
 #' @param xpd Should parts of the object outside the plot limits be shown
 #' @param lwd Line width
-#' @param lend Line end type (not implemented)
-#' @param ljoin Line join type (not implemented)
 #' @param dashSize Dash size for dashed lines
 #' @param gapSize Gap size for dashed lines
 #' @param interactive Is the object interactive
-#' @param moveable Is the object moveable (not implemented)
 #' @param label The label for the object
 #' @param toggle Toggle button associated with the object
-#' @param dimensions Dimensions of the object - relevant for point geometries, e.g. 3d is sphere 2d is a circle
-#' @param depthWrite See [depthWrite](https://threejs.org/docs/index.html#api/en/materials/Material.depthWrite)
-#' @param depthTest See [depthTest](https://threejs.org/docs/index.html#api/en/materials/Material.depthTest)
-#' @param polygonOffset See [polygonOffset](https://threejs.org/docs/index.html#api/en/materials/Material.polygonOffset)
-#' @param polygonOffsetFactor See [polygonOffsetFactor](https://threejs.org/docs/index.html#api/en/materials/Material.polygonOffsetFactor)
-#' @param polygonOffsetUnits See [polygonOffsetUnits](https://threejs.org/docs/index.html#api/en/materials/Material.polygonOffsetUnits)
-#' @param shininess Shininess of object surface
-#' @param faces For dynamically hidden objects, the face with which it is associated, see details.
-#' @param corners For dynamically hidden objects, the corners with which it is associated, see details.
-#' @param rotation In place rotation of the object geometry (most relevant for points)
-#' @param normalise Should coordinates be normalised to be with respect to axis ranges or placed according to the plotting box which has unit coordinates.
-#' @param poffset Positional offset, the offset is relative to the plotting area size rather than axis limits
-#' @param clippingPlanes Clipping planes to apply to the object
-#' @param doubleSide Should the object be rendered as double sided, see [Material Constants](https://threejs.org/docs/index.html#api/en/constants/Materials)
-#' @param renderOrder See [renderOrder](https://threejs.org/docs/index.html#api/en/core/Object3D.renderOrder)
-#' @param renderSidesSeparately Render the front and back side separately (not implemented)
-#' @param removeSelfTransparency Remove self-transparency (not implemented)
-#' @param breakupMesh Breakup the object mesh to achieve more realistic transparency rendering (not implemented)
-#' @param ... Additional parameters that are not used
+#' @param dimensions Dimensions of the object - relevant for point geometries,
+#'   e.g. 3d is sphere 2d is a circle
+#' @param depthWrite See
+#'   [depthWrite](https://threejs.org/docs/index.html#api/en/materials/Material.depthWrite)
 #'
-#' @details
+#' @param depthTest See
+#'   [depthTest](https://threejs.org/docs/index.html#api/en/materials/Material.depthTest)
+#'
+#' @param polygonOffset See
+#'   [polygonOffset](https://threejs.org/docs/index.html#api/en/materials/Material.polygonOffset)
+#'
+#' @param polygonOffsetFactor See
+#'   [polygonOffsetFactor](https://threejs.org/docs/index.html#api/en/materials/Material.polygonOffsetFactor)
+#'
+#' @param polygonOffsetUnits See
+#'   [polygonOffsetUnits](https://threejs.org/docs/index.html#api/en/materials/Material.polygonOffsetUnits)
+#'
+#' @param shininess Shininess of object surface
+#' @param faces For dynamically hidden objects, the face with which it is
+#'   associated, see details.
+#' @param corners For dynamically hidden objects, the corners with which it is
+#'   associated, see details.
+#' @param rotation In place rotation of the object geometry (most relevant for
+#'   points)
+#' @param normalise Should coordinates be normalised to be with respect to axis
+#'   ranges or placed according to the plotting box which has unit coordinates.
+#' @param poffset Positional offset, the offset is relative to the plotting area
+#'   size rather than axis limits
+#' @param clippingPlanes Clipping planes to apply to the object
+#' @param frontSide Logical indicating whether the front side of a mesh should
+#'   be rendered
+#' @param backSide Logical indicating whether the back side of a mesh should be
+#'   rendered
+#' @param renderOrder See
+#'   [renderOrder](https://threejs.org/docs/index.html#api/en/core/Object3D.renderOrder)
+#'
+#' @param ... Additional arguments (not used)
 #'
 #' @export
 #'
@@ -47,12 +64,9 @@ material3js <- function(
   opacity = NULL,
   xpd = TRUE,
   lwd = 1,
-  lend = 0,
-  ljoin = 0,
   dashSize = NULL,
   gapSize = NULL,
   interactive = NULL,
-  moveable = NULL,
   label = NULL,
   toggle = NULL,
   dimensions = NULL,
@@ -71,9 +85,6 @@ material3js <- function(
   frontSide = TRUE,
   backSide = TRUE,
   renderOrder = NULL,
-  renderSidesSeparately = NULL,
-  removeSelfTransparency = NULL,
-  breakupMesh = NULL,
   ...
 ){
 
@@ -86,15 +97,14 @@ material3js <- function(
     opacity     = jsonlite::unbox(opacity),
     xpd         = jsonlite::unbox(xpd),
     lwd         = jsonlite::unbox(lwd),
-    lend        = jsonlite::unbox(lend),
-    ljoin       = jsonlite::unbox(ljoin),
-    transparent = jsonlite::unbox(opacity < 1.0)
+    transparent = jsonlite::unbox(opacity < 1.0),
+    frontSide   = jsonlite::unbox(frontSide),
+    backSide    = jsonlite::unbox(backSide)
   )
 
   if(!is.null(dimensions))                            { props$dimensions             <- jsonlite::unbox(dimensions)             }
   if(!is.null(label))                                 { props$label                  <- label                                   }
   if(!is.null(interactive) && interactive)            { props$interactive            <- jsonlite::unbox(interactive)            }
-  if(!is.null(moveable) && moveable)                  { props$draggable              <- jsonlite::unbox(moveable)               }
   if(!is.null(toggle))                                { props$toggle                 <- jsonlite::unbox(toggle)                 }
   if(!is.null(dashSize))                              { props$dashSize               <- jsonlite::unbox(dashSize)               }
   if(!is.null(gapSize))                               { props$gapSize                <- jsonlite::unbox(gapSize)                }
@@ -111,12 +121,6 @@ material3js <- function(
   if(!is.null(shininess))                             { props$shininess              <- jsonlite::unbox(shininess)              }
   if(!is.null(clippingPlanes))                        { props$clippingPlanes         <- clippingPlanes                          }
   if(!is.null(renderOrder))                           { props$renderOrder            <- renderOrder                             }
-  if(!is.null(renderSidesSeparately) && opacity < 1)  { props$renderSidesSeparately  <- jsonlite::unbox(renderSidesSeparately)  }
-  if(!is.null(removeSelfTransparency) && opacity < 1) { props$removeSelfTransparency <- jsonlite::unbox(removeSelfTransparency) }
-  if(!is.null(breakupMesh) && opacity < 1)            { props$breakupMesh            <- jsonlite::unbox(breakupMesh)            }
-  props$frontSide <- jsonlite::unbox(frontSide)
-  props$backSide <- jsonlite::unbox(backSide)
-
 
   # Return properties
   props
@@ -124,7 +128,7 @@ material3js <- function(
 }
 
 
-#' Internal function to get opacity from a color specification
+# Internal function to get opacity from a color specification
 col_opacity <- function(col) {
 
   col[col == "inherit"] <- "black"
