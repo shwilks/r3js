@@ -2,7 +2,7 @@
 % Please edit documentation in R/3JSproperties.R
 \name{material3js}
 \alias{material3js}
-\title{Set material properties of 3js object}
+\title{Set material properties of a 3js object}
 \usage{
 material3js(
   mat = "phong",
@@ -10,12 +10,9 @@ material3js(
   opacity = NULL,
   xpd = TRUE,
   lwd = 1,
-  lend = 0,
-  ljoin = 0,
   dashSize = NULL,
   gapSize = NULL,
   interactive = NULL,
-  moveable = NULL,
   label = NULL,
   toggle = NULL,
   dimensions = NULL,
@@ -34,9 +31,6 @@ material3js(
   frontSide = TRUE,
   backSide = TRUE,
   renderOrder = NULL,
-  renderSidesSeparately = NULL,
-  removeSelfTransparency = NULL,
-  breakupMesh = NULL,
   ...
 )
 }
@@ -53,63 +47,66 @@ or "line", see e.g.
 
 \item{lwd}{Line width}
 
-\item{lend}{Line end type (not implemented)}
-
-\item{ljoin}{Line join type (not implemented)}
-
 \item{dashSize}{Dash size for dashed lines}
 
 \item{gapSize}{Gap size for dashed lines}
 
 \item{interactive}{Is the object interactive}
 
-\item{moveable}{Is the object moveable (not implemented)}
-
 \item{label}{The label for the object}
 
 \item{toggle}{Toggle button associated with the object}
 
-\item{dimensions}{Dimensions of the object - relevant for point geometries, e.g. 3d is sphere 2d is a circle}
+\item{dimensions}{Dimensions of the object - relevant for point geometries,
+e.g. 3d is sphere 2d is a circle}
 
-\item{depthWrite}{See [depthWrite](https://threejs.org/docs/index.html#api/en/materials/Material.depthWrite)}
+\item{depthWrite}{See
+[depthWrite](https://threejs.org/docs/index.html#api/en/materials/Material.depthWrite)}
 
-\item{depthTest}{See [depthTest](https://threejs.org/docs/index.html#api/en/materials/Material.depthTest)}
+\item{depthTest}{See
+[depthTest](https://threejs.org/docs/index.html#api/en/materials/Material.depthTest)}
 
-\item{polygonOffset}{See [polygonOffset](https://threejs.org/docs/index.html#api/en/materials/Material.polygonOffset)}
+\item{polygonOffset}{See
+[polygonOffset](https://threejs.org/docs/index.html#api/en/materials/Material.polygonOffset)}
 
-\item{polygonOffsetFactor}{See [polygonOffsetFactor](https://threejs.org/docs/index.html#api/en/materials/Material.polygonOffsetFactor)}
+\item{polygonOffsetFactor}{See
+[polygonOffsetFactor](https://threejs.org/docs/index.html#api/en/materials/Material.polygonOffsetFactor)}
 
-\item{polygonOffsetUnits}{See [polygonOffsetUnits](https://threejs.org/docs/index.html#api/en/materials/Material.polygonOffsetUnits)}
+\item{polygonOffsetUnits}{See
+[polygonOffsetUnits](https://threejs.org/docs/index.html#api/en/materials/Material.polygonOffsetUnits)}
 
 \item{shininess}{Shininess of object surface}
 
-\item{faces}{For dynamically hidden objects, the face with which it is associated, see details.}
+\item{faces}{For dynamically hidden objects, the face with which it is
+associated, see details.}
 
-\item{corners}{For dynamically hidden objects, the corners with which it is associated, see details.}
+\item{corners}{For dynamically hidden objects, the corners with which it is
+associated, see details.}
 
-\item{rotation}{In place rotation of the object geometry (most relevant for points)}
+\item{rotation}{In place rotation of the object geometry (most relevant for
+points)}
 
-\item{normalise}{Should coordinates be normalised to be with respect to axis ranges or placed according to the plotting box which has unit coordinates.}
+\item{normalise}{Should coordinates be normalised to be with respect to axis
+ranges or placed according to the plotting box which has unit coordinates.}
 
-\item{poffset}{Positional offset, the offset is relative to the plotting area size rather than axis limits}
+\item{poffset}{Positional offset, the offset is relative to the plotting area
+size rather than axis limits}
 
 \item{clippingPlanes}{Clipping planes to apply to the object}
 
-\item{renderOrder}{See [renderOrder](https://threejs.org/docs/index.html#api/en/core/Object3D.renderOrder)}
+\item{frontSide}{Logical indicating whether the front side of a mesh should
+be rendered}
 
-\item{renderSidesSeparately}{Render the front and back side separately (not implemented)}
+\item{backSide}{Logical indicating whether the back side of a mesh should be
+rendered}
 
-\item{removeSelfTransparency}{Remove self-transparency (not implemented)}
+\item{renderOrder}{See
+[renderOrder](https://threejs.org/docs/index.html#api/en/core/Object3D.renderOrder)}
 
-\item{breakupMesh}{Breakup the object mesh to achieve more realistic transparency rendering (not implemented)}
-
-\item{...}{Additional parameters that are not used}
-
-\item{doubleSide}{Should the object be rendered as double sided, see [Material Constants](https://threejs.org/docs/index.html#api/en/constants/Materials)}
+\item{...}{Additional arguments (not used)}
 }
 \description{
-Set material properties of 3js object
-}
-\details{
-
+Arguments refer to different material properties for an object, many of which
+refer directly to properties as described in the [threejs
+documentation](https://threejs.org/docs/index.html?q=material#api/en/materials/Material)
 }
