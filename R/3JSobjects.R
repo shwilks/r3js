@@ -105,9 +105,39 @@ arrow3js <- function(
 #' @param highlight highlight attributes (see `highlight3js()`)
 #' @param ... Material and texture properties. See `material3js()`
 #'
+#' @example
+#' # volcano example taken from "persp"
+#' z <- 2 * volcano        # Exaggerate the relief
+#' x <- 10 * (1:nrow(z))   # 10 meter spacing (S to N)
+#' y <- 10 * (1:ncol(z))   # 10 meter spacing (E to W)
+#'
+#' zlim <- range(z)
+#' zlen <- zlim[2] - zlim[1] + 1
+#'
+#' colorlut <- terrain.colors(zlen) # height color lookup table
+#' col <- colorlut[ z - zlim[1] + 1 ] # assign colors to heights for each point
+#'
+#' p <- plot3js(
+#'   xlim = range(x),
+#'   ylim = range(y),
+#'   zlim = range(z),
+#'   label_axes = FALSE,
+#'   aspect = c(1, 1, 1) # Maintain a constant aspect ratio
+#' )
+#'
+#' p <- surface3js(
+#'   data3js = p,
+#'   x, y, z,
+#'   col = col
+#' )
+#'
+#' r3js(
+#'   data3js = p,
+#'   rotation = c(-1.15, 0, -0.65),
+#'   zoom = 1.5
+#' )
+#'
 #' @export
-#'
-#'
 surface3js <- function(
   data3js,
   x, y, z,
@@ -148,7 +178,6 @@ surface3js <- function(
   data3js
 
 }
-
 
 
 #' Add a generic shape to an 3js plot
