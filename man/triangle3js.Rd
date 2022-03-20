@@ -11,7 +11,7 @@ triangle3js(data3js, vertices, col = "black", highlight, ...)
 
 \item{vertices}{An nx3 matrix of triangle vertices}
 
-\item{col}{Color of the triangle}
+\item{col}{Single color for the triangles or vector of vertex colors}
 
 \item{highlight}{highlight attributes (see `highlight3js()`)}
 
@@ -19,4 +19,28 @@ triangle3js(data3js, vertices, col = "black", highlight, ...)
 }
 \description{
 Add a triangle to a data3js object
+}
+\examples{
+# Draw some random triangles
+M <- matrix(
+  data = rnorm(36),
+  ncol = 3,
+  nrow = 12
+)
+
+p <- plot3js(
+  xlim = range(M[,1]),
+  ylim = range(M[,2]),
+  zlim = range(M[,3]),
+  label_axes = FALSE
+)
+
+p <- triangle3js(
+  p,
+  vertices = M,
+  col = rainbow(nrow(M))
+)
+
+p
+
 }

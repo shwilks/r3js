@@ -2,7 +2,7 @@
 % Please edit documentation in R/3JSplotting.R
 \name{plot3js}
 \alias{plot3js}
-\title{Generic r3js plotting function}
+\title{3D scatter / line plot}
 \usage{
 plot3js(
   x,
@@ -47,13 +47,15 @@ plot3js(
 
 \item{label}{optional vector of interactive point labels}
 
-\item{type}{plot type "p" for points or "l" for lines}
+\item{type}{plot type "p" for geometric points, "l" for lines, or "glpoints"
+gl.POINTS rendered points}
 
 \item{axislabel_line}{Distance of axis label from plot}
 
 \item{aspect}{Plot axis aspect ratio, see `plot3js.window()`}
 
-\item{label_axes}{Vector of axes to label, any combination of "x", "y" and "z"}
+\item{label_axes}{Vector of axes to label, any combination of "x", "y" and
+"z"}
 
 \item{draw_grid}{Should an axis grid be drawn in the background}
 
@@ -71,5 +73,17 @@ Returns a data3js object, that can be plotted as a widget using
   functions.
 }
 \description{
-Generic r3js plotting function
+A high level method for generating a 3D scatter or line plot.
+}
+\examples{
+plot3js(
+  x = iris$Sepal.Length,
+  y = iris$Sepal.Width,
+  z = iris$Petal.Length,
+  col = rainbow(3)[iris$Species],
+  xlab = "Sepal Length",
+  ylab = "Sepal Width",
+  zlab = "Petal Length"
+)
+
 }
