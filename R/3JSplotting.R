@@ -1,5 +1,7 @@
 
-#' Generic r3js plotting function
+#' 3D scatter / line plot
+#'
+#' A high level method for generating a 3D scatter or line plot.
 #'
 #' @param x x coords for points / lines
 #' @param y y coords for points / lines
@@ -11,10 +13,12 @@
 #' @param ylab y axis label
 #' @param zlab z axis label
 #' @param label optional vector of interactive point labels
-#' @param type plot type "p" for points or "l" for lines
+#' @param type plot type "p" for geometric points, "l" for lines, or "glpoints"
+#'   gl.POINTS rendered points
 #' @param axislabel_line Distance of axis label from plot
 #' @param aspect Plot axis aspect ratio, see `plot3js.window()`
-#' @param label_axes Vector of axes to label, any combination of "x", "y" and "z"
+#' @param label_axes Vector of axes to label, any combination of "x", "y" and
+#'   "z"
 #' @param draw_grid Should an axis grid be drawn in the background
 #' @param grid_lwd Grid line width
 #' @param axis_lwd Axis line width
@@ -25,10 +29,20 @@
 #'   `print()` or `r3js()` or further added to with the other plotting
 #'   functions.
 #'
-#' @export
+#' @examples
+#' plot3js(
+#'   x = iris$Sepal.Length,
+#'   y = iris$Sepal.Width,
+#'   z = iris$Petal.Length,
+#'   col = rainbow(3)[iris$Species],
+#'   xlab = "Sepal Length",
+#'   ylab = "Sepal Width",
+#'   zlab = "Petal Length"
+#' )
 #'
+#' @export
 plot3js <- function(
-  x,y,z,
+  x, y, z,
   xlim = grDevices::extendrange(x),
   ylim = grDevices::extendrange(y),
   zlim = grDevices::extendrange(z),
@@ -173,17 +187,3 @@ plot3js <- function(
   data3js
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
