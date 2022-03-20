@@ -13,10 +13,11 @@ LazyData: true
 Imports: 
     htmlwidgets, 
     htmltools, 
-    jsonlite
+    jsonlite,
+    ellipsis
 Suggests: 
     testthat,
     rmarkdown,
     knitr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2.9000
 VignetteBuilder: knitr
