@@ -1,8 +1,15 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^doc$
+^Meta$
 ^_pkgdown\.yml$
+^src/.clang-format$
 ^docs$
 ^pkgdown$
 ^LICENSE\.md$
-^vignettes/articles$
-^README\.Rmd$
+^index\.md$
+^.*\.vscode$
+^\.github$
+^\.lintr$
+^tests/testoutput$
+^builds$
