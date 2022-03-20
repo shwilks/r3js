@@ -258,20 +258,20 @@ R3JS.Geometries.circle2d = {
     return(new THREE.CircleBufferGeometry(0.1, 32));
   },
   outline : function(lwd){
-    return(new THREE.RingGeometry( Math.max(0, 0.1 - lwd/40), 0.1, 32 ));
+    return(new THREE.RingGeometry( 0.1-lwd/25, 0.2, 32 ));
   }
 }
 
 R3JS.Geometries.square2d = {
   fill : function(lwd){
-    return(new THREE.PlaneBufferGeometry(0.18, 0.18));
+    return(new THREE.PlaneBufferGeometry(0.3, 0.3));
   },
   outline : function(lwd){
-    lwd  = lwd/20;
-    var size = 0.18;
-    var inner = Math.sqrt((Math.pow(size-lwd,2))/2);
-    var outer = Math.sqrt((Math.pow(size,2))/2);
-    var geo = new THREE.RingBufferGeometry(Math.max(0,inner), outer, 4, 1);
+    lwd  = lwd/12;
+    var size = 0.3;
+    var inner = Math.sqrt((Math.pow(size,2))/2);
+    var outer = Math.sqrt((Math.pow(size+lwd,2))/2);
+    var geo = new THREE.RingBufferGeometry(inner, outer, 4, 1);
     geo.rotateZ( Math.PI/4 );
     return(geo);
   }
