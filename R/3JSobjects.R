@@ -190,8 +190,26 @@ surface3js <- function(
 #' @param highlight highlight attributes (see `highlight3js()`)
 #' @param ... Additional attributes to pass to `material3js()`
 #'
-#' @export
+#' @example
+#' # Draw a teapot
+#' p <- plot3js(
+#'   xlim = range(teapot$vertices[,1]),
+#'   ylim = range(teapot$vertices[,2]),
+#'   zlim = range(teapot$vertices[,3]),
+#'   label_axes = FALSE,
+#'   aspect = c(1, 1, 1)
+#' )
 #'
+#' p <- shape3js(
+#'   p,
+#'   vertices = teapot$vertices,
+#'   faces = teapot$edges,
+#'   col = "lightblue"
+#' )
+#'
+#' p
+#'
+#' @export
 shape3js <- function(
   data3js,
   vertices,
