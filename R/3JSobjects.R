@@ -105,7 +105,7 @@ arrow3js <- function(
 #' @param highlight highlight attributes (see `highlight3js()`)
 #' @param ... Material and texture properties. See `material3js()`
 #'
-#' @example
+#' @examples
 #' # volcano example taken from "persp"
 #' z <- 2 * volcano        # Exaggerate the relief
 #' x <- 10 * (1:nrow(z))   # 10 meter spacing (S to N)
@@ -190,7 +190,7 @@ surface3js <- function(
 #' @param highlight highlight attributes (see `highlight3js()`)
 #' @param ... Additional attributes to pass to `material3js()`
 #'
-#' @example
+#' @examples
 #' # Draw a teapot
 #' p <- plot3js(
 #'   xlim = range(teapot$vertices[,1]),

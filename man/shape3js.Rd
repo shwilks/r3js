@@ -32,3 +32,23 @@ shape3js(
 \description{
 Add a generic shape to an 3js plot
 }
+\examples{
+# Draw a teapot
+p <- plot3js(
+  xlim = range(teapot$vertices[,1]),
+  ylim = range(teapot$vertices[,2]),
+  zlim = range(teapot$vertices[,3]),
+  label_axes = FALSE,
+  aspect = c(1, 1, 1)
+)
+
+p <- shape3js(
+  p,
+  vertices = teapot$vertices,
+  faces = teapot$edges,
+  col = "lightblue"
+)
+
+p
+
+}
