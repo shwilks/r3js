@@ -32,6 +32,7 @@ R3JS.element.constructors.text = function(
         var element = new R3JS.element.htmltext({
             text   : plotobj.text,
             coords : plotobj.position,
+            size   : plotobj.size[0],
             alignment : plotobj.alignment,
             offset     : plotobj.offset,
             properties : R3JS.Material(plotobj.properties)
@@ -72,7 +73,7 @@ R3JS.element.htmltext = class htmltext extends R3JS.element.base {
 	    }
 	    
 	    // Set other styles and content
-	    textdiv.style.fontSize = args.size*100+"%";
+	    textdiv.style.fontSize = args.size+"px";
 	    textdiv.textContent    = args.text;
 	    R3JS.apply_style(textdiv, args.style);
 
