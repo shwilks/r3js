@@ -18,8 +18,6 @@
 #' @param interactive Is the object interactive
 #' @param label The label for the object
 #' @param toggle Toggle button associated with the object
-#' @param dimensions Dimensions of the object - relevant for point geometries,
-#'   e.g. 3d is sphere 2d is a circle
 #' @param depthWrite See
 #'   [depthWrite](https://threejs.org/docs/index.html#api/en/materials/Material.depthWrite)
 #'
@@ -69,7 +67,6 @@ material3js <- function(
   interactive = NULL,
   label = NULL,
   toggle = NULL,
-  dimensions = NULL,
   depthWrite = NULL,
   depthTest = NULL,
   polygonOffset = NULL,
@@ -102,7 +99,6 @@ material3js <- function(
     backSide    = jsonlite::unbox(backSide)
   )
 
-  if(!is.null(dimensions))                            { props$dimensions             <- jsonlite::unbox(dimensions)             }
   if(!is.null(label))                                 { props$label                  <- label                                   }
   if(!is.null(interactive) && interactive)            { props$interactive            <- jsonlite::unbox(interactive)            }
   if(!is.null(toggle))                                { props$toggle                 <- jsonlite::unbox(toggle)                 }

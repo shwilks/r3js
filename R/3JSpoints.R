@@ -1,21 +1,8 @@
 
-# Helper function for converting pch specifications
-# to shapes understood by r3js
-pch2shape <- function(pch){
-  shape <- rep_len(NA, length(pch))
-  shape[pch == 0]  <- "osquare"
-  shape[pch == 1]  <- "ocircle"
-  shape[pch == 2]  <- "otriangle"
-  shape[pch == 15] <- "square"
-  shape[pch == 16] <- "circle"
-  shape[pch == 17] <- "triangle"
-  shape
-}
-
 #' Add a geometric point to a data3js object
 #'
 #' This function underlies the points3js function when the geometry argument is set to TRUE.
-#' The point generated is included a 'physical' geometry, for example a sphere if pch=16,
+#' The point generated is included a 'physical' geometry, for example a sphere if shape = "circle",
 #' it will overlap with other points and shade according to the light source more realistically
 #' but is _much_ less computationally efficient than glpoints, which uses a single point plus
 #' different shader instructions depending on the point type.
@@ -26,7 +13,7 @@ pch2shape <- function(pch){
 #' @param z z coordinate
 #' @param size point size
 #' @param col point color
-#' @param pch point type
+#' @param shape point shape
 #' @param highlight point highlight appearance (see `highlight3js()`)
 #' @param ... other attributes to pass to `material3js()`
 #'
@@ -35,14 +22,14 @@ geopoint3js <- function(
   x, y, z,
   size,
   col,
-  pch = 16,
+  shape = "sphere",
   highlight,
   ...
 ){
 
   object <- c()
   object$type <- "point"
-  object$shape <- pch2shape(pch)
+  object$shape <- shape
   object$size <- size
   object$properties <- material3js(col = col, ...)
   object$position <- c(x,y,z)
@@ -65,7 +52,7 @@ geopoint3js <- function(
 #' @param z z coordinates
 #' @param size point sizes
 #' @param col point colors
-#' @param pch plotting characters
+#' @param shape point shapes
 #' @param highlight highlight characteristics (see `highlight3ks()`)
 #' @param ... further parameters to pass to `material3js()`
 #'
@@ -76,13 +63,13 @@ glpoints3js <- function(
   x, y, z,
   size = 1,
   col  = "black",
-  pch  = 16,
+  shape = "sphere",
   highlight,
   ...){
 
   object <- c()
   object$type  <- "glpoints"
-  object$shape <- pch2shape(rep_len(pch, length(x)))
+  object$shape <- shape
   object$size  <- rep_len(size, length(x))
   object$properties <- material3js(col = col, ...)
   object$position   <- cbind(x,y,z)
@@ -109,11 +96,13 @@ glpoints3js <- function(
 #' @param z point z coords
 #' @param size point sizes
 #' @param col point colors
-#' @param pch point types
+#' @param shape point shapes, one of "circle", "open circle", "square", "open
+#'   square", "sphere", "cube" or "open cube". For geometry = FALSE, currently
+#'   only "circle" and "sphere" are supported.
 #' @param geometry logical, should the point be rendered as a physical geometry
-#' @param highlight highlight characteristics (see `highlight3ks()`)
-#' @param label optional vector of interactive labels to apply to the points (see `highlight3ks()`)
-#' @param toggle optional vector of interactive toggles associate to each point (see `highlight3ks()`)
+#' @param highlight highlight characteristics (see `highlight3js()`)
+#' @param label optional vector of interactive labels to apply to the points (see `highlight3js()`)
+#' @param toggle optional vector of interactive toggles associate to each point (see `highlight3js()`)
 #' @param ... further parameters to pass to `material3js()`
 #'
 #' @export
@@ -122,13 +111,13 @@ points3js <- function(
   data3js,
   x, y, z,
   size = 1,
-  col  = "black",
-  pch  = 16,
+  col = "black",
+  shape = "sphere",
   highlight,
   geometry = TRUE,
   label = NULL,
   toggle = NULL,
-  ...){
+  ...) {
 
   # Perform input checks
   ellipsis::check_dots_used()
@@ -136,7 +125,7 @@ points3js <- function(
   # Repeat arguments to match length of points
   col    <- rep_len(col,    length(x))
   size   <- rep_len(size,   length(x))
-  pch    <- rep_len(pch,    length(x))
+  shape  <- rep_len(shape,  length(x))
   if(!is.null(label)) { label  <- rep_len(label,  length(x)) }
   if(!is.null(toggle)){ toggle <- rep_len(toggle, length(x)) }
 
@@ -145,6 +134,7 @@ points3js <- function(
 
   # Create the points
   if(geometry){
+
     for(n in 1:length(x)){
       data3js <- geopoint3js(
         data3js = data3js,
@@ -153,13 +143,21 @@ points3js <- function(
         z = z[n],
         size = size[n],
         col = col[n],
-        pch = pch[n],
+        shape = shape[n],
         label = label[n],
         toggle = toggle[n],
         ...
       )
     }
+
+    # Update the last IDs field to reflect all the points added
+    data3js$lastID <- seq(
+      from = data3js$lastID - length(x) + 1,
+      to = data3js$lastID
+    )
+
   } else {
+
     data3js <- glpoints3js(
       data3js,
       x = x,
@@ -167,23 +165,18 @@ points3js <- function(
       z = z,
       size = size,
       col = col,
-      pch = pch,
+      shape = shape,
       label = label,
       toggle = toggle,
       ...
     )
+
   }
 
   # Create the highlights object if requested
   if(!missing(highlight)){
     data3js <- highlight3js(data3js, highlight)
   }
-
-  # Update the last IDs field
-  data3js$lastID <- seq(
-    from = data3js$lastID - length(x) + 1,
-    to = data3js$lastID
-  )
 
   # Return the updated object
   data3js

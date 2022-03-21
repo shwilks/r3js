@@ -14,20 +14,17 @@ R3JS.element.constructors.point = function(
 
     // Decide on the shape
     var shape;
-    if(plotobj.properties.dimensions == 2){
-      if(plotobj.shape[0] == "circle" || plotobj.shape[0] == "ocircle"){
-        shape = "circle2d";
-      }
-      if(plotobj.shape[0] == "square" || plotobj.shape[0] == "osquare"){
-        shape = "square2d";
-      }
-    } else {
-      if(plotobj.shape[0] == "circle" || plotobj.shape[0] == "ocircle"){
-        shape = "circle3d";
-      }
-      if(plotobj.shape[0] == "square" || plotobj.shape[0] == "osquare"){
-        shape = "square3d";
-      }
+    if(plotobj.shape[0] == "circle" || plotobj.shape[0] == "open circle"){
+      shape = "circle";
+    }
+    if(plotobj.shape[0] == "square" || plotobj.shape[0] == "open square"){
+      shape = "square";
+    }
+    if(plotobj.shape[0] == "sphere" || plotobj.shape[0] == "open sphere"){
+      shape = "sphere";
+    }
+    if(plotobj.shape[0] == "cube" || plotobj.shape[0] == "open cube"){
+      shape = "cube";
     }
 
     var element = new R3JS.element.Point({
@@ -171,7 +168,7 @@ R3JS.element.Point = class Point extends R3JS.element.base {
 // Point geometries
 R3JS.Geometries = {};
 
-R3JS.Geometries.circle3d = {
+R3JS.Geometries.sphere = {
   fill : function(lwd){
     return( new THREE.SphereBufferGeometry(0.1, 25, 25) );
   },
@@ -180,14 +177,14 @@ R3JS.Geometries.circle3d = {
   }
 }
 
-R3JS.Geometries.square3d = {
+R3JS.Geometries.cube = {
   fill : function(lwd){
-    return(new THREE.BoxBufferGeometry( 0.12, 0.12, 0.12 ));
+    return(new THREE.BoxBufferGeometry( 0.2, 0.2, 0.2 ));
   },
   outline : function(lwd){
-    var size = 0.12;
+    var size = 0.2;
     lwd  = lwd/60;
-    var lims = [-size/2-lwd/4, size/2+lwd/4];
+    var lims = [-size/2+lwd/2, size/2-lwd/2];
     var components = [];
 
     // Draw lines
@@ -253,24 +250,24 @@ R3JS.Geometries.square3d = {
 
 
 // 2D point geometries
-R3JS.Geometries.circle2d = {
+R3JS.Geometries.circle = {
   fill : function(lwd){
     return(new THREE.CircleBufferGeometry(0.1, 32));
   },
   outline : function(lwd){
-    return(new THREE.RingGeometry( 0.1-lwd/25, 0.2, 32 ));
+    return(new THREE.RingGeometry( 0.1-lwd/25, 0.1, 32 ));
   }
 }
 
-R3JS.Geometries.square2d = {
+R3JS.Geometries.square = {
   fill : function(lwd){
-    return(new THREE.PlaneBufferGeometry(0.3, 0.3));
+    return(new THREE.PlaneBufferGeometry(0.2, 0.2));
   },
   outline : function(lwd){
     lwd  = lwd/12;
-    var size = 0.3;
-    var inner = Math.sqrt((Math.pow(size,2))/2);
-    var outer = Math.sqrt((Math.pow(size+lwd,2))/2);
+    var size = 0.2;
+    var inner = Math.sqrt((Math.pow(size-lwd,2))/2);
+    var outer = Math.sqrt((Math.pow(size,2))/2);
     var geo = new THREE.RingBufferGeometry(inner, outer, 4, 1);
     geo.rotateZ( Math.PI/4 );
     return(geo);
