@@ -6,26 +6,19 @@ R3JS.element.constructors.point = function(
     ){
 
     // Generate the point object
-    if(plotobj.shape[0].substring(0,1) == "o"){
+    if(plotobj.shape[0].substring(plotobj.shape[0].length - 4) == "open") {
       plotobj.properties.outlinecolor = plotobj.properties.color;
     } else {
       plotobj.properties.fillcolor = plotobj.properties.color;
     }
 
     // Decide on the shape
-    var shape;
-    if(plotobj.shape[0] == "circle" || plotobj.shape[0] == "open circle"){
-      shape = "circle";
-    }
-    if(plotobj.shape[0] == "square" || plotobj.shape[0] == "open square"){
-      shape = "square";
-    }
-    if(plotobj.shape[0] == "sphere" || plotobj.shape[0] == "open sphere"){
-      shape = "sphere";
-    }
-    if(plotobj.shape[0] == "cube" || plotobj.shape[0] == "open cube"){
-      shape = "cube";
-    }
+    var shape = plotobj.shape[0];
+    if(shape == "circle open")   shape = "circle";
+    if(shape == "square open")   shape = "square";
+    if(shape == "triangle open") shape = "triangle";
+    if(shape == "sphere open")   shape = "sphere";
+    if(shape == "cube open")     shape = "cube";
 
     var element = new R3JS.element.Point({
         coords : plotobj.position,
@@ -183,8 +176,8 @@ R3JS.Geometries.cube = {
   },
   outline : function(lwd){
     var size = 0.2;
-    lwd  = lwd/60;
-    var lims = [-size/2+lwd/2, size/2-lwd/2];
+    lwd  = lwd/12;
+    var lims = [-size/2+lwd/4, size/2-lwd/4];
     var components = [];
 
     // Draw lines
@@ -270,6 +263,93 @@ R3JS.Geometries.square = {
     var outer = Math.sqrt((Math.pow(size,2))/2);
     var geo = new THREE.RingBufferGeometry(inner, outer, 4, 1);
     geo.rotateZ( Math.PI/4 );
+    return(geo);
+  }
+}
+
+R3JS.Geometries.triangle = {
+  fill : function(lwd){
+    
+    const geo = new THREE.BufferGeometry();
+    
+    const vertices = new Float32Array([
+      -0.1154, -0.1,  0.0,
+       0.1154, -0.1,  0.0,
+       0.0,  0.1,  0.0
+    ]);
+
+    const normals = new Float32Array([
+      0, 0, 1,
+      0, 0, 1,
+      0, 0, 1,
+    ]);
+
+    geo.setAttribute('position', new THREE.BufferAttribute( vertices, 3 ));
+    geo.setAttribute('normal', new THREE.BufferAttribute( normals, 3 ));
+    
+    return(geo);
+
+  },
+  outline : function(lwd){
+    lwd  = lwd/12;
+    const geo = new THREE.BufferGeometry();
+    // -0.1154,        -0.1,  0.0, // Bottom left
+    //  0.1154,        -0.1,  0.0, // Bottom right
+    //  0.0,            0.1,  0.0, // Middle top
+    //  -0.06736, -0.058335,  0.0, // Bottom left inner
+    //  0.06736,  -0.058335,  0.0, // Bottom right inner
+    //  0.0,       0.058335,  0.0, // Middle top inner
+
+    const vertices = new Float32Array([
+       0.0,            0.1,  0.0, // Middle top
+      -0.1154,        -0.1,  0.0, // Bottom left
+      -0.0385,   -0.058335,  0.0, // Bottom left inner
+       0.0,            0.1,  0.0, // Middle top
+      -0.0385,   -0.058335,  0.0, // Bottom left inner
+       0.0,       0.01667,   0.0, // Middle top inner
+
+      -0.1154,        -0.1,  0.0, // Bottom left
+       0.1154,        -0.1,  0.0, // Bottom right
+      -0.0385,   -0.058335,  0.0, // Bottom left inner
+       0.0385,   -0.058335,  0.0, // Bottom right inner
+      -0.0385,   -0.058335,  0.0, // Bottom left inner
+       0.1154,        -0.1,  0.0, // Bottom right
+
+       0.0385,   -0.058335,  0.0, // Bottom right inner
+       0.1154,        -0.1,  0.0, // Bottom right
+       0.0,       0.01667,   0.0, // Middle top inner
+       0.0,            0.1,  0.0, // Middle top
+       0.0,       0.01667,   0.0, // Middle top inner
+       0.1154,        -0.1,  0.0, // Bottom right
+
+    ]);
+
+    const normals = new Float32Array([
+      0, 0, 1,
+      0, 0, 1,
+      0, 0, 1,
+      0, 0, 1,
+      0, 0, 1,
+      0, 0, 1,
+
+      0, 0, 1,
+      0, 0, 1,
+      0, 0, 1,
+      0, 0, 1,
+      0, 0, 1,
+      0, 0, 1,
+
+      0, 0, 1,
+      0, 0, 1,
+      0, 0, 1,
+      0, 0, 1,
+      0, 0, 1,
+      0, 0, 1,
+    ]);
+
+    geo.setAttribute('position', new THREE.BufferAttribute( vertices, 3 ));
+    geo.setAttribute('normal', new THREE.BufferAttribute( normals, 3 ));
+
     return(geo);
   }
 }
