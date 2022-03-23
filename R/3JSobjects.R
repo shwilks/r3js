@@ -15,8 +15,39 @@
 #' @param highlight highlight attributes (see `highlight3js()`)
 #' @param ... other arguments to pass to `material3js()`
 #'
-#' @export
+#' @examples
+#' # Setup base plot
+#' p <- plot3js(
+#'   xlim = c(-10, 10),
+#'   ylim = c(-5, 5),
+#'   zlim = c(-8, 8)
+#' )
 #'
+#' # Add sphere (this will look distorted because of axis scaling)
+#' sphere3js(
+#'   data3js = p,
+#'   0, 0, 0,
+#'   radius = 5,
+#'   col = "green"
+#' )
+#'
+#' # Setup base plot with equal aspect ratio
+#' p <- plot3js(
+#'   xlim = c(-10, 10),
+#'   ylim = c(-5, 5),
+#'   zlim = c(-8, 8),
+#'   aspect = c(1, 1, 1)
+#' )
+#'
+#' # Add sphere (fixed aspect ratio now makes the sphere look spherical)
+#' sphere3js(
+#'   data3js = p,
+#'   0, 0, 0,
+#'   radius = 5,
+#'   col = "green"
+#' )
+#'
+#' @export
 sphere3js <- function(
   data3js,
   x, y, z,
@@ -192,6 +223,7 @@ surface3js <- function(
 #'
 #' @examples
 #' # Draw a teapot
+#' data(teapot)
 #' p <- plot3js(
 #'   xlim = range(teapot$vertices[,1]),
 #'   ylim = range(teapot$vertices[,2]),
