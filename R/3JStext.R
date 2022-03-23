@@ -2,30 +2,68 @@
 #' Add text to a data3js object
 #'
 #' The text added can either be as an html text object, superimposed on the scene
-#' but moving relative to appear relative to the specified coordiantes, or an actual
+#' but moving relative to appear relative to the specified coordinqtes, or an actual
 #' geometry, which will appear in the scene, zoom and rotate with it etc.
 #'
 #' @param data3js The data3js object
-#' @param x x coord
-#' @param y y coord
-#' @param z z coord
-#' @param text text string
-#' @param size text size
+#' @param x x coords
+#' @param y y coords
+#' @param z z coords
+#' @param text character vector of text
+#' @param size text size, if type is "geometry" this is interpreted in terms of
+#'   text height within the plotting space (default 1), if type is "html" then
+#'   this is interpreted as size in pts (default 16).
 #' @param col text color
 #' @param toggle associated text toggle button
 #' @param type text type, either "geometry" or "html"
 #' @param alignment text alignment, i.e. "left" "top" "topright"
-#' @param offset onscreen text offset for html text x then y
+#' @param offset onscreen text offset for html text, x then y
 #' @param style named list of css style attributes to apply to the html text
 #' @param ... Additional attributes to pass to `material3js()`
 #'
-#' @export
+#' @examples
+#' # Set text parameters
+#' x <- 1:4
+#' y <- rep(0, 4)
+#' z <- rep(0, 4)
+#' labels <- LETTERS[1:4]
+#' sizes <- c(0.4, 0.6, 0.8, 1)
 #'
+#' # Create empty plot
+#' p <- plot3js(
+#'   xlim = c(0, 5),
+#'   ylim = c(-1, 1),
+#'   zlim = c(-1, 1),
+#'   aspect = c(1, 1, 1)
+#' )
+#'
+#' # Add text as a geometry
+#' text3js(
+#'   data3js = p,
+#'   x = x,
+#'   y = y,
+#'   z = z,
+#'   size = sizes,
+#'   text = labels
+#' )
+#'
+#' # Add text as a html labels
+#' text3js(
+#'   data3js = p,
+#'   x = x,
+#'   y = y,
+#'   z = z,
+#'   size = sizes*40,
+#'   text = labels,
+#'   type = "html"
+#' )
+#'
+#' @export
 text3js <- function(
   data3js,
   x, y, z,
   text,
-  size = 1,
+  size   = NULL,
   col    = "inherit",
   toggle = NULL,
   type   = "geometry",
@@ -33,6 +71,15 @@ text3js <- function(
   offset    = c(0, 0),
   style     = list(),
   ...){
+
+  # Set default size
+  if (is.null(size)) {
+    size <- switch(
+      type,
+      geometry = 1,
+      html = 16
+    )
+  }
 
   # Repeat arguments to match length of points
   col  <- rep_len(col,  length(x))
