@@ -101,23 +101,6 @@ sphere3js <- function(
 #' # Setup base plot
 #' p <- plot3js()
 #'
-#' # Add points
-#' p <- points3js(
-#'   p,
-#'   x = from[,1],
-#'   y = from[,2],
-#'   z = from[,3],
-#'   col = "lightblue"
-#' )
-#'
-#' p <- points3js(
-#'   p,
-#'   x = to[,1],
-#'   y = to[,2],
-#'   z = to[,3],
-#'   col = "red"
-#' )
-#'
 #' # Add arrows
 #' arrows3js(
 #'   p, from, to,
