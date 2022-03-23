@@ -91,13 +91,53 @@ gllines3js <- function(
 #' @param y y coordinates
 #' @param z z coordinates
 #' @param lwd line width
-#' @param col line color
+#' @param col line color (only a single color is currently supported)
 #' @param highlight highlight characteristics (see `highlight3ks()`)
 #' @param geometry logical, should the point be rendered as a physical geometry
 #' @param ... further parameters to pass to `material3js()`
 #'
-#' @export
+#' @examples
+#' # Draw three lines
+#' x <- seq(from = 0, to = 6, length.out = 100)
+#' y <- cos(x*5)
+#' z <- sin(x*5)
+#' linecols <- rainbow(100)
 #'
+#' p <- plot3js(
+#'   xlim = c(0, 6),
+#'   ylim = c(0, 6),
+#'   zlim = c(-1, 1),
+#'   aspect = c(1, 1, 1)
+#' )
+#'
+#' # Add a line using the linegl representation
+#' p <- lines3js(
+#'   data3js = p,
+#'   x, y + 1, z,
+#'   col = linecols
+#' )
+#'
+#' # Add a thicker line using the linegl representation
+#' p <- lines3js(
+#'   data3js = p,
+#'   x, y + 3, z,
+#'   lwd = 3,
+#'   col = linecols
+#' )
+#'
+#' # Add a line as a physical geometry to the plot
+#' p <- lines3js(
+#'   data3js = p,
+#'   x, y + 5, z,
+#'   lwd = 0.2,
+#'   geometry = TRUE,
+#'   col = "blue" # Currently only supports fixed colors
+#' )
+#'
+#' # View the plot
+#' p
+#'
+#' @export
 lines3js <- function(
   data3js,
   x, y, z,
@@ -108,21 +148,36 @@ lines3js <- function(
   ...
 ){
 
-  # Set color
-  col <- rep_len(col, length(x))
 
   # Create the points
   if(geometry){
-    data3js <- line3js(
-      data3js = data3js,
-      x = x,
-      y = y,
-      z = z,
-      lwd = lwd,
-      col = col,
-      ...
+
+    # Check color
+    if (length(col) > 1) stop("Only a single line color is currently supported for geometric lines", call. = F)
+
+    for (i in seq_len(length(x) - 1)) {
+      data3js <- line3js(
+        data3js = data3js,
+        x = x[c(i, i+1)],
+        y = y[c(i, i+1)],
+        z = z[c(i, i+1)],
+        lwd = lwd,
+        col = col,
+        ...
+      )
+    }
+
+    # Update the last IDs field to reflect all the points added
+    data3js$lastID <- seq(
+      from = data3js$lastID - length(x)-1 + 1,
+      to = data3js$lastID
     )
+
   } else {
+
+    # Set color
+    col <- rep_len(col, length(x))
+
     data3js <- gllines3js(
       data3js = data3js,
       x = x,
