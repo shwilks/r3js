@@ -76,15 +76,11 @@ sphere3js <- function(
 }
 
 
-
-#' Add an arrow to a data3js object
-#'
-#' This is not yet implemented
+#' Add arrows to a data3js object
 #'
 #' @param data3js The data3js object
-#' @param x x coordinates (from then to)
-#' @param y y coordinates (from then to)
-#' @param z z coordinates (from then to)
+#' @param from nx3 matrix of coords for the arrow start points
+#' @param to nx3 matrix of coords for the arrow end points
 #' @param lwd line width
 #' @param arrowhead_width arrowhead width
 #' @param arrowhead_length arrowhead length
@@ -92,26 +88,112 @@ sphere3js <- function(
 #' @param mat material (see `material3js()`)
 #' @param ... other arguments to pass to `material3js()`
 #'
-#' @export
+#' @examples
+#' # Draw a set of arrows
+#' from <- cbind(
+#'   runif(10, 0.2, 0.8),
+#'   runif(10, 0.2, 0.8),
+#'   runif(10, 0.2, 0.8)
+#' )
 #'
-arrow3js <- function(
+#' to <- jitter(from, amount = 0.2)
+#'
+#' # Setup base plot
+#' p <- plot3js()
+#'
+#' # Add points
+#' p <- points3js(
+#'   p,
+#'   x = from[,1],
+#'   y = from[,2],
+#'   z = from[,3],
+#'   col = "lightblue"
+#' )
+#'
+#' p <- points3js(
+#'   p,
+#'   x = to[,1],
+#'   y = to[,2],
+#'   z = to[,3],
+#'   col = "red"
+#' )
+#'
+#' # Add arrows
+#' arrows3js(
+#'   p, from, to,
+#'   arrowhead_length = 0.06,
+#'   arrowhead_width = 0.04,
+#'   lwd = 0.01
+#' )
+#'
+#' @export
+arrows3js <- function(
   data3js,
-  x, y, z,
+  from, to,
   lwd = 1,
   arrowhead_width = 0.2,
   arrowhead_length = 0.5,
-  col,
-  mat = "basic",
+  col = "black",
+  mat = "lambert",
+  ...){
+
+  # Cycle through arrows
+  for (i in seq_len(nrow(from))) {
+    data3js <- arrow3js(
+      data3js = data3js,
+      from = from[i,],
+      to = to[i,],
+      lwd = lwd,
+      arrowhead_width = arrowhead_width,
+      arrowhead_length = arrowhead_length,
+      col = col,
+      mat = mat,
+      ...
+    )
+  }
+
+  # Update the last IDs field to reflect all the points added
+  data3js$lastID <- seq(
+    from = data3js$lastID - length(x) + 1,
+    to = data3js$lastID
+  )
+
+  data3js
+
+}
+
+
+
+#' Add an arrow to a data3js object
+#'
+#' @param data3js The data3js object
+#' @param from Vector of coords for the arrow start point
+#' @param to Vector of coords for the arrow end point
+#' @param lwd line width
+#' @param arrowhead_width arrowhead width
+#' @param arrowhead_length arrowhead length
+#' @param col color
+#' @param mat material (see `material3js()`)
+#' @param ... other arguments to pass to `material3js()`
+#'
+arrow3js <- function(
+  data3js,
+  from,
+  to,
+  lwd = 1,
+  arrowhead_width = 0.2,
+  arrowhead_length = 0.5,
+  col = "black",
+  mat = "lambert",
   ...){
 
   object <- c()
   object$type <- "arrow"
-  object$lwd <- lwd
   object$arrowhead_length <- arrowhead_length
   object$arrowhead_width  <- arrowhead_width
-  object$properties       <- material3js(mat = mat, col = col, ...)
-  object$position$from <- c(x[1],y[1],z[1])
-  object$position$to   <- c(x[2],y[2],z[2])
+  object$properties       <- material3js(mat = mat, col = col, lwd = lwd, ...)
+  object$position$from    <- from
+  object$position$to      <- to
   object
 
   data3js <- addObject3js(data3js, object)

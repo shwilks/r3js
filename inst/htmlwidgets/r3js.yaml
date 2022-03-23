@@ -23,6 +23,7 @@ dependencies:
       - threejs/lines/Line2.js
       - threejs/lines/Wireframe.js
       - functions/element.js
+      - functions/element_arrow.js
       - functions/element_points.js
       - functions/element_glpoints.js
       - functions/element_gllines.js

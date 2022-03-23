@@ -211,8 +211,48 @@ lines3js <- function(
 #' @param geometry logical, should the lines be rendered as a physical geometries
 #' @param ... further parameters to pass to `material3js()`
 #'
-#' @export
+#' @examples
+#' # Draw three lines
+#' x <- seq(from = 0, to = 6, length.out = 100)
+#' y <- cos(x*5)
+#' z <- sin(x*5)
+#' linecols <- rainbow(100)
 #'
+#' p <- plot3js(
+#'   xlim = c(0, 6),
+#'   ylim = c(0, 6),
+#'   zlim = c(-1, 1),
+#'   aspect = c(1, 1, 1)
+#' )
+#'
+#' # Add a line using the linegl representation
+#' p <- segments3js(
+#'   data3js = p,
+#'   x, y + 1, z,
+#'   col = linecols
+#' )
+#'
+#' # Add a thicker line using the linegl representation
+#' p <- segments3js(
+#'   data3js = p,
+#'   x, y + 3, z,
+#'   lwd = 3,
+#'   col = linecols
+#' )
+#'
+#' # Add a line as a physical geometry to the plot
+#' p <- segments3js(
+#'   data3js = p,
+#'   x, y + 5, z,
+#'   lwd = 0.2,
+#'   geometry = TRUE,
+#'   col = "blue" # Currently only supports fixed colors
+#' )
+#'
+#' # View the plot
+#' p
+#'
+#' @export
 segments3js <- function(
   data3js,
   x, y, z,

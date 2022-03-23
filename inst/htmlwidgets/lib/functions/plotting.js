@@ -120,6 +120,12 @@ R3JS.element.make = function(
             plotobj,
             viewer
         );
+    } else if(plotobj.type == "arrow"){
+        // Arrow
+        var element = this.constructors.arrow3d(
+            plotobj,
+            viewer
+        );
     } else if(plotobj.type == "text"){
         // Text
         var element = this.constructors.text(
