@@ -59,6 +59,7 @@
 material3js <- function(
   mat = "phong",
   col = "black",
+  fill = "black",
   opacity = NULL,
   xpd = TRUE,
   lwd = 1,
@@ -142,22 +143,25 @@ col_opacity <- function(col) {
 convertCol3js <- function(col){
 
   col[col == "inherit"] <- "black"
-  rgbcol <- grDevices::col2rgb(col)/255
+  rgbcol <- grDevices::col2rgb(col, alpha = TRUE)/255
 
   rcol <- rgbcol["red",]
   gcol <- rgbcol["green",]
   bcol <- rgbcol["blue",]
+  acol <- rgbcol["alpha",]
 
   if (is.matrix(col)) {
     rcol <- matrix(rcol, nrow(col), ncol(col))
     gcol <- matrix(gcol, nrow(col), ncol(col))
     bcol <- matrix(bcol, nrow(col), ncol(col))
+    acol <- matrix(acol, nrow(col), ncol(col))
   }
 
   list(
     r = rcol,
     g = gcol,
-    b = bcol
+    b = bcol,
+    a = acol
   )
 
 }
