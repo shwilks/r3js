@@ -21,7 +21,8 @@ geopoint3js <- function(
   data3js,
   x, y, z,
   size,
-  col,
+  col  = "black",
+  fill = col,
   shape = "sphere",
   highlight,
   ...
@@ -31,6 +32,7 @@ geopoint3js <- function(
   object$type <- "point"
   object$shape <- shape
   object$size <- size
+  object$fill <- convertCol3js(fill)
   object$properties <- material3js(col = col, ...)
   object$position <- c(x,y,z)
 
@@ -63,6 +65,7 @@ glpoints3js <- function(
   x, y, z,
   size = 1,
   col  = "black",
+  fill = col,
   shape = "sphere",
   highlight,
   ...){
@@ -71,6 +74,7 @@ glpoints3js <- function(
   object$type  <- "glpoints"
   object$shape <- shape
   object$size  <- rep_len(size, length(x))
+  object$fill  <- convertCol3js(fill)
   object$properties <- material3js(col = col, ...)
   object$position   <- cbind(x,y,z)
 
@@ -105,13 +109,89 @@ glpoints3js <- function(
 #' @param toggle optional vector of interactive toggles associate to each point (see `highlight3js()`)
 #' @param ... further parameters to pass to `material3js()`
 #'
-#' @export
+#' @examples
+#' geo_shapes <- c(
+#'   "circle", "square", "triangle",
+#'   "circle open", "square open", "triangle open",
+#'   "circle filled", "square filled", "triangle filled",
+#'   "sphere", "cube", "tetrahedron",
+#'   "cube open",
+#'   "cube filled"
+#' )
 #'
+#' gl_shapes <- c(
+#'   "circle", "square", "triangle",
+#'   "circle open", "square open", "triangle open",
+#'   "circle filled", "square filled", "triangle filled",
+#'   "sphere"
+#' )
+#'
+#' # Setup base plot
+#' p <- plot3js(
+#'   xlim = c(0, length(geo_shapes) + 1),
+#'   ylim = c(-4, 4),
+#'   zlim = c(-4, 4)
+#' )
+#'
+#' # Plot the three different point geometries
+#' points3js(
+#'   data3js = p,
+#'   x = seq_along(geo_shapes),
+#'   y = rep(0, length(geo_shapes)),
+#'   z = rep(0, length(geo_shapes)),
+#'   size = 2,
+#'   shape = geo_shapes,
+#'   col = rainbow(length(geo_shapes)),
+#'   fill = "grey70"
+#' )
+#'
+#' # Setup base plot
+#' p <- plot3js(
+#'   xlim = c(0, length(gl_shapes) + 1),
+#'   ylim = c(-4, 4),
+#'   zlim = c(-4, 4)
+#' )
+#'
+#'     # Plot the three different point geometries
+#' points3js(
+#'   data3js = p,
+#'   x = seq_along(gl_shapes),
+#'   y = rep(0, length(gl_shapes)),
+#'   z = rep(0, length(gl_shapes)),
+#'   size = 2,
+#'   shape = gl_shapes,
+#'   col = rainbow(length(gl_shapes)),
+#'   fill = "grey50",
+#'   geometry = FALSE
+#' )
+#'
+#' # Plot a 10,000 points using the much more efficient webgl representation
+#' # Add a set of points as the default sphere representation
+#' # Setup base plot
+#' p <- plot3js(
+#'   xlim = c(-4, 4),
+#'   ylim = c(-4, 4),
+#'   zlim = c(-4, 4)
+#' )
+#'
+#' points3js(
+#'   data3js = p,
+#'   x = rnorm(10000, 0),
+#'   y = rnorm(10000, 0),
+#'   z = rnorm(10000, 0),
+#'   size = 0.6,
+#'   col = rainbow(10000),
+#'   shape = "sphere",
+#'   geometry = FALSE
+#' )
+#'
+#' @export
 points3js <- function(
   data3js,
   x, y, z,
   size = 1,
   col = "black",
+  fill = col,
   shape = "sphere",
   highlight,
   geometry = TRUE,
@@ -124,6 +204,7 @@ points3js <- function(
 
   # Repeat arguments to match length of points
   col    <- rep_len(col,    length(x))
+  fill   <- rep_len(fill,   length(x))
   size   <- rep_len(size,   length(x))
   shape  <- rep_len(shape,  length(x))
   if(!is.null(label)) { label  <- rep_len(label,  length(x)) }
@@ -143,6 +224,7 @@ points3js <- function(
         z = z[n],
         size = size[n],
         col = col[n],
+        fill = fill[n],
         shape = shape[n],
         label = label[n],
         toggle = toggle[n],
@@ -165,6 +247,7 @@ points3js <- function(
       z = z,
       size = size,
       col = col,
+      fill = fill,
       shape = shape,
       label = label,
       toggle = toggle,

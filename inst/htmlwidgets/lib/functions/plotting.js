@@ -12,6 +12,7 @@ R3JS.DefaultProperties = function(properties, n) {
 R3JS.DefaultArray = function(array, defaultvalue, n) {
 
     if (array === undefined) array = [defaultvalue];
+    if (!Array.isArray(array)) array = [array];
     if (array.length != n) array = Array(n).fill(array[0]);
     return array;
 
@@ -31,10 +32,10 @@ R3JS.DefaultColor = function(color, n) {
     if (!Array.isArray(color.b)) color.b = [color.b];
     if (!Array.isArray(color.a)) color.a = [color.a];
 
-    if (color.r.length != n) color.r = Array(n).fill(color.r);
-    if (color.g.length != n) color.g = Array(n).fill(color.g);
-    if (color.b.length != n) color.b = Array(n).fill(color.b);
-    if (color.a.length != n) color.a = Array(n).fill(color.a);
+    if (color.r.length != n) color.r = Array(n).fill(color.r[0]);
+    if (color.g.length != n) color.g = Array(n).fill(color.g[0]);
+    if (color.b.length != n) color.b = Array(n).fill(color.b[0]);
+    if (color.a.length != n) color.a = Array(n).fill(color.a[0]);
 
     return color;
 

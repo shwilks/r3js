@@ -8,17 +8,28 @@ R3JS.element.constructors.point = function(
     // Generate the point object
     if(plotobj.shape[0].substring(plotobj.shape[0].length - 4) == "open") {
       plotobj.properties.outlinecolor = plotobj.properties.color;
-    } else {
-      plotobj.properties.fillcolor = plotobj.properties.color;
+      delete plotobj.properties.color;
+    } else if(plotobj.shape[0].substring(plotobj.shape[0].length - 6) == "filled") {
+      plotobj.properties.outlinecolor = plotobj.properties.color;
+      plotobj.properties.fillcolor = plotobj.fill;
+      delete plotobj.properties.color;
     }
 
     // Decide on the shape
     var shape = plotobj.shape[0];
-    if(shape == "circle open")   shape = "circle";
-    if(shape == "square open")   shape = "square";
-    if(shape == "triangle open") shape = "triangle";
-    if(shape == "sphere open")   shape = "sphere";
-    if(shape == "cube open")     shape = "cube";
+    switch(shape) {
+      case "circle open": shape = "circle"; break;
+      case "circle filled": shape = "circle"; break;
+      case "square open": shape = "square"; break;
+      case "square filled": shape = "square"; break;
+      case "triangle open": shape = "triangle"; break;
+      case "triangle filled": shape = "triangle"; break;
+      case "sphere open": shape = "sphere"; break;
+      case "sphere filled": shape = "sphere"; break;
+      case "cube open": shape = "cube"; break;
+      case "cube filled": shape = "cube"; break;
+      default: "circle"
+    }
 
     var element = new R3JS.element.Point({
         coords : plotobj.position,
@@ -62,10 +73,17 @@ R3JS.element.Point = class Point extends R3JS.element.base {
       this.lwd = args.properties.lwd;
 
       // Make fill object
+      if(args.properties.color){
+        var mat = R3JS.Material(args.properties);
+        var geo = R3JS.Geometries[args.shape].fill(this.lwd);
+        this.fill = new THREE.Mesh(geo, mat);
+        this.fill.element = this;
+        this.object.add(this.fill);
+      }
       if(args.properties.fillcolor){
         args.properties.color = args.properties.fillcolor;
         var mat = R3JS.Material(args.properties);
-        var geo = R3JS.Geometries[args.shape].fill(this.lwd);
+        var geo = R3JS.Geometries[args.shape].inner(this.lwd);
         this.fill = new THREE.Mesh(geo, mat);
         this.fill.element = this;
         this.object.add(this.fill);
@@ -238,6 +256,23 @@ R3JS.Geometries.cube = {
     var geo = THREE.BufferGeometryUtils.mergeBufferGeometries(components);
     return(geo);
 
+  },
+  inner : function(lwd){
+    lwd  = lwd/12;
+    return(new THREE.BoxBufferGeometry( 0.2-lwd, 0.2-lwd, 0.2-lwd ));
+  }
+}
+
+R3JS.Geometries.tetrahedron = {
+  fill : function(lwd){
+    var geo = new THREE.TetrahedronGeometry(0.16);
+    geo.rotateZ( Math.PI/4 );
+    geo.rotateX( -Math.PI/5 );
+    geo.translate(0, -0.05, -0.05);
+    return(geo);
+  },
+  outline : function(lwd){
+    return( new THREE.BufferGeometry() );
   }
 }
 
@@ -249,6 +284,9 @@ R3JS.Geometries.circle = {
   },
   outline : function(lwd){
     return(new THREE.RingGeometry( 0.1-lwd/25, 0.1, 32 ));
+  },
+  inner : function(lwd){
+    return(new THREE.CircleBufferGeometry(0.1-lwd/25, 32));
   }
 }
 
@@ -264,92 +302,31 @@ R3JS.Geometries.square = {
     var geo = new THREE.RingBufferGeometry(inner, outer, 4, 1);
     geo.rotateZ( Math.PI/4 );
     return(geo);
+  },
+  inner : function(lwd){
+    return(new THREE.PlaneBufferGeometry(0.2 - lwd/12, 0.2 - lwd/12));
   }
 }
 
 R3JS.Geometries.triangle = {
   fill : function(lwd){
-    
-    const geo = new THREE.BufferGeometry();
-    
-    const vertices = new Float32Array([
-      -0.1154, -0.1,  0.0,
-       0.1154, -0.1,  0.0,
-       0.0,  0.1,  0.0
-    ]);
-
-    const normals = new Float32Array([
-      0, 0, 1,
-      0, 0, 1,
-      0, 0, 1,
-    ]);
-
-    geo.setAttribute('position', new THREE.BufferAttribute( vertices, 3 ));
-    geo.setAttribute('normal', new THREE.BufferAttribute( normals, 3 ));
-    
+    const geo = new THREE.CircleBufferGeometry(0.13, 0);
+    geo.rotateZ( Math.PI/2 );
+    geo.translate(0, -0.03, 0);
     return(geo);
-
   },
   outline : function(lwd){
     lwd  = lwd/12;
-    const geo = new THREE.BufferGeometry();
-    // -0.1154,        -0.1,  0.0, // Bottom left
-    //  0.1154,        -0.1,  0.0, // Bottom right
-    //  0.0,            0.1,  0.0, // Middle top
-    //  -0.06736, -0.058335,  0.0, // Bottom left inner
-    //  0.06736,  -0.058335,  0.0, // Bottom right inner
-    //  0.0,       0.058335,  0.0, // Middle top inner
-
-    const vertices = new Float32Array([
-       0.0,            0.1,  0.0, // Middle top
-      -0.1154,        -0.1,  0.0, // Bottom left
-      -0.0385,   -0.058335,  0.0, // Bottom left inner
-       0.0,            0.1,  0.0, // Middle top
-      -0.0385,   -0.058335,  0.0, // Bottom left inner
-       0.0,       0.01667,   0.0, // Middle top inner
-
-      -0.1154,        -0.1,  0.0, // Bottom left
-       0.1154,        -0.1,  0.0, // Bottom right
-      -0.0385,   -0.058335,  0.0, // Bottom left inner
-       0.0385,   -0.058335,  0.0, // Bottom right inner
-      -0.0385,   -0.058335,  0.0, // Bottom left inner
-       0.1154,        -0.1,  0.0, // Bottom right
-
-       0.0385,   -0.058335,  0.0, // Bottom right inner
-       0.1154,        -0.1,  0.0, // Bottom right
-       0.0,       0.01667,   0.0, // Middle top inner
-       0.0,            0.1,  0.0, // Middle top
-       0.0,       0.01667,   0.0, // Middle top inner
-       0.1154,        -0.1,  0.0, // Bottom right
-
-    ]);
-
-    const normals = new Float32Array([
-      0, 0, 1,
-      0, 0, 1,
-      0, 0, 1,
-      0, 0, 1,
-      0, 0, 1,
-      0, 0, 1,
-
-      0, 0, 1,
-      0, 0, 1,
-      0, 0, 1,
-      0, 0, 1,
-      0, 0, 1,
-      0, 0, 1,
-
-      0, 0, 1,
-      0, 0, 1,
-      0, 0, 1,
-      0, 0, 1,
-      0, 0, 1,
-      0, 0, 1,
-    ]);
-
-    geo.setAttribute('position', new THREE.BufferAttribute( vertices, 3 ));
-    geo.setAttribute('normal', new THREE.BufferAttribute( normals, 3 ));
-
+    const geo = new THREE.RingBufferGeometry(0.13 - lwd, 0.13, 1, 1);
+    geo.rotateZ( Math.PI/2 );
+    geo.translate(0, -0.03, 0);
+    return(geo);
+  },
+  inner : function(lwd){
+    lwd  = lwd/12;
+    const geo = new THREE.CircleBufferGeometry(0.13 - lwd, 0);
+    geo.rotateZ( Math.PI/2 );
+    geo.translate(0, -0.03, 0);
     return(geo);
   }
 }
