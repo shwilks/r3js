@@ -43,9 +43,9 @@
 #' @export
 plot3js <- function(
   x, y, z,
-  xlim = grDevices::extendrange(x),
-  ylim = grDevices::extendrange(y),
-  zlim = grDevices::extendrange(z),
+  xlim = NULL,
+  ylim = NULL,
+  zlim = NULL,
   xlab = NULL,
   ylab = NULL,
   zlab = NULL,
@@ -63,6 +63,22 @@ plot3js <- function(
 
   # Setup plot
   data3js <- plot3js.new()
+
+  # Set default limits
+  if (is.null(xlim)) {
+    if (missing(x)) xlim <- c(0, 1)
+    else            xlim <- grDevices::extendrange(x)
+  }
+
+  if (is.null(ylim)) {
+    if (missing(y)) ylim <- c(0, 1)
+    else            ylim <- grDevices::extendrange(y)
+  }
+
+  if (is.null(zlim)) {
+    if (missing(z)) zlim <- c(0, 1)
+    else            zlim <- grDevices::extendrange(z)
+  }
 
   data3js <- plot3js.window(
     data3js,
