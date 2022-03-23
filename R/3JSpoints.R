@@ -216,18 +216,18 @@ points3js <- function(
   # Create the points
   if(geometry){
 
-    for(n in 1:length(x)){
+    for(i in seq_along(x)) {
       data3js <- geopoint3js(
         data3js = data3js,
-        x = x[n],
-        y = y[n],
-        z = z[n],
-        size = size[n],
-        col = col[n],
-        fill = fill[n],
-        shape = shape[n],
-        label = label[n],
-        toggle = toggle[n],
+        x = x[i],
+        y = y[i],
+        z = z[i],
+        size = size[i],
+        col = col[i],
+        fill = fill[i],
+        shape = shape[i],
+        label = label[i],
+        toggle = toggle[i],
         ...
       )
     }
