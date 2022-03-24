@@ -9,6 +9,7 @@ r3js(
   rotation = c(-1.45, 0, -2.35),
   zoom = 4,
   translation = c(0, 0, 0),
+  styles = list(),
   ...
 )
 }
@@ -21,6 +22,8 @@ r3js(
 
 \item{translation}{Plot starting translation}
 
+\item{styles}{List of styles controlling elements of the plot, see examples}
+
 \item{...}{Additional arguments to pass to \code{htmlwidgets::createWidget()}}
 }
 \value{
@@ -29,4 +32,40 @@ Returns an html widget of the plot
 \description{
 This function takes the assembled data3js object and plots it as an
 htmlwidget.
+}
+\examples{
+# Control toggle button appearance
+r3js(
+  plot3js(
+    x = iris$Sepal.Length,
+    y = iris$Sepal.Width,
+    z = iris$Petal.Length,
+    col = rainbow(3)[iris$Species],
+    xlab = "Sepal Length",
+    ylab = "Sepal Width",
+    zlab = "Petal Length",
+    toggle = iris$Species
+  ),
+  styles = list(
+    togglediv = list(
+      bottom = "4px",
+      right = "4px"
+    ),
+    toggles = list(
+      setosa = list(
+        on  = list(backgroundColor = colorspace::darken(rainbow(3)[1], 0.1), color = "white"),
+        off = list(backgroundColor = colorspace::lighten(rainbow(3)[1], 0.8), color = "white")
+      ),
+      versicolor = list(
+        on  = list(backgroundColor = colorspace::darken(rainbow(3)[2], 0.1), color = "white"),
+        off = list(backgroundColor = colorspace::lighten(rainbow(3)[2], 0.8), color = "white")
+      ),
+      virginica = list(
+        on  = list(backgroundColor = colorspace::darken(rainbow(3)[3], 0.1), color = "white"),
+        off = list(backgroundColor = colorspace::lighten(rainbow(3)[3], 0.8), color = "white")
+      )
+    )
+  )
+)
+
 }

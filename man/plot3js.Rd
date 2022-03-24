@@ -88,6 +88,8 @@ functions.
 A high level method for generating a 3D scatter or line plot.
 }
 \examples{
+
+# Simple plot example
 plot3js(
   x = iris$Sepal.Length,
   y = iris$Sepal.Width,
@@ -96,6 +98,23 @@ plot3js(
   xlab = "Sepal Length",
   ylab = "Sepal Width",
   zlab = "Petal Length"
+)
+
+# Plotting with point rollover info and highlighting
+plot3js(
+  x = USJudgeRatings$CONT,
+  y = USJudgeRatings$INTG,
+  z = USJudgeRatings$DMNR,
+  highlight = list(
+    col = "darkgreen",
+    size = 2.5
+  ),
+  xlab = "CONT",
+  ylab = "INTG",
+  zlab = "DMNR",
+  size = 2,
+  col = "green",
+  label = rownames(USJudgeRatings)
 )
 
 }

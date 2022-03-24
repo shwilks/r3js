@@ -151,7 +151,7 @@ string3js <- function(
   # If the type is html text turn on the label renderer and set text style
   if(type == "html"){
     data3js$label_renderer = TRUE
-    object$style <- do.call(style3js, args = style)
+    object$style <- do.call(convert_style, args = style)
   }
 
   # Set object properties

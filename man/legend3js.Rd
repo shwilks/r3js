@@ -4,7 +4,7 @@
 \alias{legend3js}
 \title{Add a legend to an data3js object}
 \usage{
-legend3js(data3js, legend, fill, padding.bottom = "8px", padding.right = "8px")
+legend3js(data3js, legend, fill)
 }
 \arguments{
 \item{data3js}{The data3js object}
@@ -12,10 +12,6 @@ legend3js(data3js, legend, fill, padding.bottom = "8px", padding.right = "8px")
 \item{legend}{Character vector of legend labels}
 
 \item{fill}{If supplied the fill color of a box placed next to each label}
-
-\item{padding.bottom}{Padding from bottom side}
-
-\item{padding.right}{Padding from right side}
 }
 \description{
 Add a legend to an data3js object

@@ -88,6 +88,7 @@ sphere3js <- function(
 #' @param mat material (see `material3js()`)
 #' @param ... other arguments to pass to `material3js()`
 #'
+#' @export
 #' @examples
 #' # Draw a set of arrows
 #' from <- cbind(
@@ -109,7 +110,6 @@ sphere3js <- function(
 #'   lwd = 0.01
 #' )
 #'
-#' @export
 arrows3js <- function(
   data3js,
   from, to,
@@ -158,6 +158,8 @@ arrows3js <- function(
 #' @param col color
 #' @param mat material (see `material3js()`)
 #' @param ... other arguments to pass to `material3js()`
+#'
+#' @noRd
 #'
 arrow3js <- function(
   data3js,

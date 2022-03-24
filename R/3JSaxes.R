@@ -90,6 +90,8 @@ axis3js <- function(
 #' @param n Desired number of break points
 #' @param include_lims Should axis limits be included or excluded
 #'
+#' @noRd
+#'
 pretty_axis <- function(
   x,
   n = 5,

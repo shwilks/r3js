@@ -10,8 +10,6 @@
 #'
 print.data3js <- function(x, ...){
 
-  print(r3js(x))
+  print(r3js(x), ...)
 
 }
-
-

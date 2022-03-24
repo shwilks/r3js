@@ -18,6 +18,8 @@
 #' @param highlight point highlight appearance (see `highlight3js()`)
 #' @param ... other attributes to pass to `material3js()`
 #'
+#' @noRd
+#'
 geopoint3js <- function(
   data3js,
   x, y, z,
@@ -60,7 +62,7 @@ geopoint3js <- function(
 #' @param highlight highlight characteristics (see `highlight3ks()`)
 #' @param ... further parameters to pass to `material3js()`
 #'
-#' @export
+#' @noRd
 #'
 glpoints3js <- function(
   data3js,

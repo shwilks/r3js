@@ -9,6 +9,7 @@
 #' @param number_of_ids The number of ids to assign to the object, e.g. 10 when adding 10 points.
 #'
 #' @return Returns the updated data3js object
+#' @noRd
 #'
 addObject3js <- function(
   data3js,

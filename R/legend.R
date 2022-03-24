@@ -9,7 +9,9 @@
 #' @return
 #' Returns a list of styles marked with `jsonlite::unbox()`
 #'
-style3js <- function(...){
+#' @noRd
+#'
+convert_style <- function(...){
 
   lapply(list(...), jsonlite::unbox)
 
@@ -21,16 +23,12 @@ style3js <- function(...){
 #' @param data3js The data3js object
 #' @param legend Character vector of legend labels
 #' @param fill If supplied the fill color of a box placed next to each label
-#' @param padding.bottom Padding from bottom side
-#' @param padding.right Padding from right side
 #'
 #' @export
 legend3js <- function(
   data3js,
   legend,
-  fill,
-  padding.bottom = "8px",
-  padding.right = "8px"
+  fill
 ){
 
   # Set variables
@@ -38,13 +36,13 @@ legend3js <- function(
   box.height     <- "14px"
   font.size      <- "14px"
   legend.spacing <- "4px"
-
-  # "this.parentElement.parentElement.parentElement.racviewer.selectPointsByIndices([0,1])"
+  padding.bottom <- "12px"
+  padding.right  <- "12px"
 
   # Create the legend holder
   div.legend <- htmltools::div(
     style = sprintf(
-      "position:absolute; bottom:%s; right:%s;",
+      "position:absolute; bottom:%s; left:%s;",
       padding.bottom,
       padding.right
     )

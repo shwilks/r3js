@@ -140,6 +140,7 @@ col_opacity <- function(col) {
 #' @param col The color to convert in a format R understands
 #'
 #' @return Returns a list with red, green and blue values
+#' @noRd
 #'
 convertCol3js <- function(col){
 

@@ -12,6 +12,8 @@
 #' @param mat material (see `material3js()`)
 #' @param ... further parameters to pass to `material3js()`
 #'
+#' @noRd
+#'
 line3js <- function(
   data3js,
   x, y, z,
@@ -49,6 +51,7 @@ line3js <- function(
 #' @param segments Should the line be interpreted as segments, e.g. a dashed line
 #' @param ... Additional arguments to pass to `material3js()`
 #'
+#' @noRd
 gllines3js <- function(
   data3js,
   x, y, z,
