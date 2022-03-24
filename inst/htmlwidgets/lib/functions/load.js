@@ -5,6 +5,15 @@ R3JS.Viewer.prototype.load = function(plotData){
     this.viewport.hidePlaceholder();
     this.contentLoaded = true;
 
+    // Set background color
+    if (plotData.scene && plotData.scene.background) {
+        this.scene.setBackgroundColor({
+            r: plotData.scene.background.r[0],
+            g: plotData.scene.background.g[0],
+            b: plotData.scene.background.b[0]
+        });
+    }
+
     // Set lims and aspect
     this.setPlotDims({
         lims   : plotData.lims,
@@ -30,7 +39,8 @@ R3JS.Viewer.prototype.load = function(plotData){
 
         // Default lighting
         this.scene.addLight({
-            position: [-1,1,1]
+            position: [-1,1,1],
+            lighttype: "directional"
         });
 
     } else {
@@ -38,9 +48,7 @@ R3JS.Viewer.prototype.load = function(plotData){
         // Add specified lighting
         for(var i=0; i<plotData.light.length; i++){
 
-            this.scene.addLight({
-                position: plotData.light[i].position
-            });
+            this.scene.addLight(plotData.light[i]);
 
         }
 
