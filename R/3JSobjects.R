@@ -137,7 +137,7 @@ arrows3js <- function(
 
   # Update the last IDs field to reflect all the points added
   data3js$lastID <- seq(
-    from = data3js$lastID - length(x) + 1,
+    from = data3js$lastID - nrow(from) + 1,
     to = data3js$lastID
   )
 
