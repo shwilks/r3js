@@ -20,9 +20,13 @@
 #' @param label_axes Vector of axes to label, any combination of "x", "y" and
 #'   "z"
 #' @param draw_grid Should an axis grid be drawn in the background
+#' @param draw_box Should a box be drawn around the plot
 #' @param grid_lwd Grid line width
+#' @param grid_col Grid line color
 #' @param axis_lwd Axis line width
 #' @param box_lwd Box line width
+#' @param box_col Box color
+#' @param background Background color for the plot
 #' @param ... Further parameters to pass to `material3js()`
 #'
 #' @return Returns a data3js object, that can be plotted as a widget using
@@ -54,15 +58,19 @@ plot3js <- function(
   axislabel_line = 3,
   aspect = NULL,
   label_axes = c("x", "y", "z"),
+  draw_box   = TRUE,
   draw_grid  = TRUE,
   grid_lwd   = 1,
+  grid_col   = "grey90",
   axis_lwd   = grid_lwd,
   box_lwd    = grid_lwd,
+  box_col    = grid_col,
+  background = "#ffffff",
   ...
 ){
 
   # Setup plot
-  data3js <- plot3js.new()
+  data3js <- plot3js.new(background = background)
 
   # Set default limits
   if (is.null(xlim)) {
@@ -89,7 +97,9 @@ plot3js <- function(
   )
 
   # Add a box
-  data3js <- box3js(data3js, lwd = box_lwd)
+  if (draw_box) {
+    data3js <- box3js(data3js, lwd = box_lwd, col = box_col)
+  }
 
   # Add axes
   xaxs_ticks <- pretty_axis(xlim, n = 8)
@@ -160,7 +170,8 @@ plot3js <- function(
   if(draw_grid){
     data3js <- grid3js(
       data3js,
-      lwd = grid_lwd
+      lwd = grid_lwd,
+      col = grid_col
     )
   }
 
