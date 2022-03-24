@@ -49,6 +49,7 @@ test_that("Test point rotation", {
       y = y_vals[n],
       z = z_vals[n],
       col = point_cols[n],
+      shape = "circle",
       size = 1,
       opacity = 0.2,
       highlight = list(
@@ -57,7 +58,6 @@ test_that("Test point rotation", {
       ),
       interactive = TRUE,
       depthWrite = FALSE,
-      dimensions = 2,
       rotation = c(0, 90, 0),
       face = "x-"
     )
@@ -72,6 +72,7 @@ test_that("Test point rotation", {
       z = z_vals[n],
       col = point_cols[n],
       size = 1,
+      shape = "circle",
       opacity = 0.2,
       highlight = list(
         size = 2,
@@ -79,7 +80,6 @@ test_that("Test point rotation", {
       ),
       interactive = TRUE,
       depthWrite = FALSE,
-      dimensions = 2,
       rotation = c(0, 90, 0),
       face = "x+"
     )
@@ -127,6 +127,7 @@ test_that("Test point rotation", {
       z = z_vals[n],
       col = point_cols[n],
       size = 1,
+      shape = "circle",
       opacity = 0.2,
       highlight = list(
         size = 2,
@@ -134,7 +135,6 @@ test_that("Test point rotation", {
       ),
       interactive = TRUE,
       depthWrite = FALSE,
-      dimensions = 2,
       rotation = c(90, 0, 0),
       face = "y-"
     )
@@ -149,6 +149,7 @@ test_that("Test point rotation", {
       z = z_vals[n],
       col = point_cols[n],
       size = 1,
+      shape = "circle",
       opacity = 0.2,
       highlight = list(
         size = 2,
@@ -156,7 +157,6 @@ test_that("Test point rotation", {
       ),
       interactive = TRUE,
       depthWrite = FALSE,
-      dimensions = 2,
       rotation = c(90, 0, 0),
       face = "y+"
     )
@@ -205,6 +205,7 @@ test_that("Test point rotation", {
       z = data3js$lims[[3]][1] + 0.001,
       col = point_cols[n],
       size = 1,
+      shape = "circle",
       opacity = 0.2,
       highlight = list(
         size = 2,
@@ -212,7 +213,6 @@ test_that("Test point rotation", {
       ),
       interactive = TRUE,
       depthWrite = FALSE,
-      dimensions = 2,
       face = "z-"
     )
 
@@ -259,6 +259,7 @@ test_that("Test point rotation", {
       z = data3js$lims[[3]][2] - 0.001,
       col = point_cols[n],
       size = 1,
+      shape = "circle",
       opacity = 0.2,
       highlight = list(
         size = 2,
@@ -266,7 +267,6 @@ test_that("Test point rotation", {
       ),
       interactive = TRUE,
       depthWrite = FALSE,
-      dimensions = 2,
       face = "z+"
     )
 
