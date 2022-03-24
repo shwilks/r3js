@@ -19,9 +19,9 @@ line3js(data3js, x, y, z, lwd = 1, col = "black", mat = "basic", ...)
 
 \item{col}{line color}
 
-\item{mat}{material (see `material3js()`)}
+\item{mat}{material (see \code{material3js()})}
 
-\item{...}{further parameters to pass to `material3js()`}
+\item{...}{further parameters to pass to \code{material3js()}}
 }
 \description{
 This underlies the lines3js function.

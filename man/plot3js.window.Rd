@@ -20,6 +20,6 @@ automatically set the aspect ratio such that axes have the same visual
 length}
 }
 \description{
-This is similar to the `plot.window()` command except that plot limits can
+This is similar to the \code{plot.window()} command except that plot limits can
 only be set once for each plot.
 }

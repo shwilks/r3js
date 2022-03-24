@@ -13,9 +13,9 @@ triangle3js(data3js, vertices, col = "black", highlight, ...)
 
 \item{col}{Single color for the triangles or vector of vertex colors}
 
-\item{highlight}{highlight attributes (see `highlight3js()`)}
+\item{highlight}{highlight attributes (see \code{highlight3js()})}
 
-\item{...}{Additional attributes to pass to `material3js()`}
+\item{...}{Additional attributes to pass to \code{material3js()}}
 }
 \description{
 Add a triangle to a data3js object

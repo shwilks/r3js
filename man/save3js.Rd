@@ -27,7 +27,7 @@ placed in an adjacent directory.}
 \item{libdir}{Directory to copy HTML dependencies into (defaults to
 filename_files)}
 
-\item{...}{Further arguments to pass to `r3js()`}
+\item{...}{Further arguments to pass to \code{r3js()}}
 }
 \description{
 Converts r3js plot data to a widget and saves it to an HTML file (e.g. for

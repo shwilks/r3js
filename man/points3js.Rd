@@ -11,7 +11,8 @@ points3js(
   z,
   size = 1,
   col = "black",
-  pch = 16,
+  fill = col,
+  shape = "sphere",
   highlight,
   geometry = TRUE,
   label = NULL,
@@ -32,24 +33,103 @@ points3js(
 
 \item{col}{point colors}
 
-\item{pch}{point types}
+\item{shape}{point shapes, one of "circle", "open circle", "square", "open
+square", "sphere", "cube" or "open cube". For geometry = FALSE, currently
+only "circle" and "sphere" are supported.}
 
-\item{highlight}{highlight characteristics (see `highlight3ks()`)}
+\item{highlight}{highlight characteristics (see \code{highlight3js()})}
 
 \item{geometry}{logical, should the point be rendered as a physical geometry}
 
-\item{label}{optional vector of interactive labels to apply to the points (see `highlight3ks()`)}
+\item{label}{optional vector of interactive labels to apply to the points (see \code{highlight3js()})}
 
-\item{toggle}{optional vector of interactive toggles associate to each point (see `highlight3ks()`)}
+\item{toggle}{optional vector of interactive toggles associate to each point (see \code{highlight3js()})}
 
-\item{...}{further parameters to pass to `material3js()`}
+\item{...}{further parameters to pass to \code{material3js()}}
 }
 \description{
 This is the base function for adding points to a plot. Alongside other parameters
 you will need to decide whether you want the points plotted as physical geometries
 (geometry = TRUE) or webgl points rendered with a shader (geometry = FALSE). Points
-rendered as geometries use `geopoint3js()` and will respect lighting and intersect
+rendered as geometries use \code{geopoint3js()} and will respect lighting and intersect
 properly, also more point types are supported but come at a larger computational
-cost of rendering. webgl points use `glpoints3js()` and are rendered orders of
+cost of rendering. webgl points use \code{glpoints3js()} and are rendered orders of
 magnitude faster but have less flexible appearances and ignore lighting.
+}
+\examples{
+geo_shapes <- c(
+  "circle", "square", "triangle",
+  "circle open", "square open", "triangle open",
+  "circle filled", "square filled", "triangle filled",
+  "sphere", "cube", "tetrahedron",
+  "cube open",
+  "cube filled"
+)
+
+gl_shapes <- c(
+  "circle", "square", "triangle",
+  "circle open", "square open", "triangle open",
+  "circle filled", "square filled", "triangle filled",
+  "sphere"
+)
+
+# Setup base plot
+p <- plot3js(
+  xlim = c(0, length(geo_shapes) + 1),
+  ylim = c(-4, 4),
+  zlim = c(-4, 4)
+)
+
+# Plot the three different point geometries
+points3js(
+  data3js = p,
+  x = seq_along(geo_shapes),
+  y = rep(0, length(geo_shapes)),
+  z = rep(0, length(geo_shapes)),
+  size = 2,
+  shape = geo_shapes,
+  col = rainbow(length(geo_shapes)),
+  fill = "grey70"
+)
+
+# Setup base plot
+p <- plot3js(
+  xlim = c(0, length(gl_shapes) + 1),
+  ylim = c(-4, 4),
+  zlim = c(-4, 4)
+)
+
+    # Plot the three different point geometries
+points3js(
+  data3js = p,
+  x = seq_along(gl_shapes),
+  y = rep(0, length(gl_shapes)),
+  z = rep(0, length(gl_shapes)),
+  size = 2,
+  shape = gl_shapes,
+  col = rainbow(length(gl_shapes)),
+  fill = "grey50",
+  geometry = FALSE
+)
+
+# Plot a 10,000 points using the much more efficient webgl representation
+# Add a set of points as the default sphere representation
+# Setup base plot
+p <- plot3js(
+  xlim = c(-4, 4),
+  ylim = c(-4, 4),
+  zlim = c(-4, 4)
+)
+
+points3js(
+  data3js = p,
+  x = rnorm(10000, 0),
+  y = rnorm(10000, 0),
+  z = rnorm(10000, 0),
+  size = 0.6,
+  col = rainbow(10000),
+  shape = "sphere",
+  geometry = FALSE
+)
+
 }

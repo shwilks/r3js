@@ -11,7 +11,8 @@ glpoints3js(
   z,
   size = 1,
   col = "black",
-  pch = 16,
+  fill = col,
+  shape = "sphere",
   highlight,
   ...
 )
@@ -29,11 +30,11 @@ glpoints3js(
 
 \item{col}{point colors}
 
-\item{pch}{plotting characters}
+\item{shape}{point shapes}
 
-\item{highlight}{highlight characteristics (see `highlight3ks()`)}
+\item{highlight}{highlight characteristics (see \code{highlight3ks()})}
 
-\item{...}{further parameters to pass to `material3js()`}
+\item{...}{further parameters to pass to \code{material3js()}}
 }
 \description{
 Adds points to a plot represented as webgl points rather than geometries. They are a much more

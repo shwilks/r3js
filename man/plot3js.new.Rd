@@ -14,7 +14,7 @@ Returns a new data3js plotting object
 }
 \description{
 This function sets up a new r3js plot and returns an r3js plotting object
-that can later be added to using other functions such as `points3js()`
-and `lines3js()` etc.  It is in many ways equivalent to the `plot.new()`
+that can later be added to using other functions such as \code{points3js()}
+and \code{lines3js()} etc.  It is in many ways equivalent to the \code{plot.new()}
 command.
 }

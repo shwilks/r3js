@@ -19,13 +19,46 @@ sphere3js(data3js, x, y, z, radius, col, highlight, ...)
 
 \item{col}{color}
 
-\item{highlight}{highlight attributes (see `highlight3js()`)}
+\item{highlight}{highlight attributes (see \code{highlight3js()})}
 
-\item{...}{other arguments to pass to `material3js()`}
+\item{...}{other arguments to pass to \code{material3js()}}
 }
 \description{
 Unlike points3js, where geometric points can also be represented as
 spheres, this adds sphere that is sized with respect to the actual
 dimensions of the plotting space (and so if aspect ratios differ for
 each axis may not actually appear sphere-like!).
+}
+\examples{
+# Setup base plot
+p <- plot3js(
+  xlim = c(-10, 10),
+  ylim = c(-5, 5),
+  zlim = c(-8, 8)
+)
+
+# Add sphere (this will look distorted because of axis scaling)
+sphere3js(
+  data3js = p,
+  0, 0, 0,
+  radius = 5,
+  col = "green"
+)
+
+# Setup base plot with equal aspect ratio
+p <- plot3js(
+  xlim = c(-10, 10),
+  ylim = c(-5, 5),
+  zlim = c(-8, 8),
+  aspect = c(1, 1, 1)
+)
+
+# Add sphere (fixed aspect ratio now makes the sphere look spherical)
+sphere3js(
+  data3js = p,
+  0, 0, 0,
+  radius = 5,
+  col = "green"
+)
+
 }

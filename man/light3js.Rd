@@ -4,15 +4,81 @@
 \alias{light3js}
 \title{Add a light source to a data3js object}
 \usage{
-light3js(data3js, position = NULL)
+light3js(
+  data3js,
+  position = NULL,
+  intensity = 1,
+  type = "directional",
+  col = "white"
+)
 }
 \arguments{
 \item{data3js}{The data3js object}
 
-\item{position}{Position of the light source in x, y, z coords}
+\item{position}{Position of the light source in x, y, z coords, see details.}
+
+\item{intensity}{Light intensity}
+
+\item{type}{Type of light, either "point", "directional" or "ambient", see details.}
+
+\item{col}{Light color}
 }
 \description{
 When no light source is provided the 3d scene is lit from the top left, this
 function allows you to specify different numbers of light sources at
 different positions - not yet fully implemented.
+}
+\details{
+If light position is "directional", the default light will appear to
+come from the direction of the position argument but from an infinite
+distance. If "point" the light will appear to emanate from that position in
+coordinate space light a light bulb. If "ambient" any position argument is
+ignored and the light will light all aspects of the scene evenly from no
+particular position.
+}
+\examples{
+# Set up a plot
+p <- plot3js(
+  x = 1:4,
+  y = c(2,1,3,4),
+  z = c(3,2,4,1),
+  xlim = c(0, 5),
+  ylim = c(0, 5),
+  zlim = c(0, 5),
+  size = 20,
+  col = c("white", "blue", "red", "green"),
+  grid_col = "grey40",
+  background = "black"
+)
+
+# Light scene intensely from above
+export.viewer.test(
+  r3js(light3js(
+    p,
+    position = c(0, 1, 0)
+  )),
+  "light_directional.html"
+)
+
+# Light scene positionally from the middle of the plot
+export.viewer.test(
+  r3js(light3js(
+    p,
+    position = c(2.5, 2.5, 2.5),
+    type = "point"
+  )),
+  "light_positional.html"
+)
+
+# Light scene ambiently with a yellow light
+export.viewer.test(
+  r3js(light3js(
+    p,
+    intensity = 0.3,
+    type = "ambient",
+    col = "yellow"
+  )),
+  "light_ambient.html"
+)
+
 }

@@ -17,11 +17,23 @@ mtext3js(data3js, text, side, line = 0, at = 0.5, cornerside = "f", ...)
 
 \item{at}{Position along the plot edge, defaults to 0.5 (middle)}
 
-\item{cornerside}{See `material3js()`}
+\item{cornerside}{See \code{material3js()}}
 
-\item{...}{Other arguments to pass to `material3js()`}
+\item{...}{Other arguments to pass to \code{material3js()}}
 }
 \description{
 This is used for example to add axis labels but can also
 be used for other purposes.
+}
+\examples{
+# Create a blank plot
+p <- plot3js.new()
+p <- box3js(p)
+
+# Add some margin text
+p <- mtext3js(p, "0.5m", side = "x")
+p <- mtext3js(p, "0.25m", side = "x", at = 0.25, line = 1)
+p <- mtext3js(p, "1m", side = "y", at = 1, line = 2)
+p
+
 }

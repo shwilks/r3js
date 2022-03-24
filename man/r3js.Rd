@@ -4,18 +4,24 @@
 \alias{r3js}
 \title{Plot a data3js object}
 \usage{
-r3js(data3js, rotation = NULL, zoom = NULL, translation = NULL, ...)
+r3js(
+  data3js,
+  rotation = c(-1.45, 0, -2.35),
+  zoom = 4,
+  translation = c(0, 0, 0),
+  ...
+)
 }
 \arguments{
 \item{data3js}{The data3js object}
 
-\item{rotation}{Plot starting rotation}
+\item{rotation}{Plot starting rotation as an XYZ Euler rotation}
 
 \item{zoom}{Plot starting zoom factor}
 
 \item{translation}{Plot starting translation}
 
-\item{...}{Additional arguments to pass to `htmlwidgets::createWidget()`}
+\item{...}{Additional arguments to pass to \code{htmlwidgets::createWidget()}}
 }
 \value{
 Returns an html widget of the plot

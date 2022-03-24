@@ -27,21 +27,63 @@ lines3js(
 
 \item{lwd}{line width}
 
-\item{col}{line color}
+\item{col}{line color (only a single color is currently supported)}
 
-\item{highlight}{highlight characteristics (see `highlight3ks()`)}
+\item{highlight}{highlight characteristics (see \code{highlight3ks()})}
 
 \item{geometry}{logical, should the point be rendered as a physical geometry}
 
-\item{...}{further parameters to pass to `material3js()`}
+\item{...}{further parameters to pass to \code{material3js()}}
 }
 \description{
-This adds lines to a plot, similarly to the `lines()` function. You have to decide whether
+This adds lines to a plot, similarly to the \code{lines()} function. You have to decide whether
 you would like lines to physically exist as geometries in the scene (geometry = TRUE), i.e. as
 cylinders, or rather as webgl lines draw into the scene (geometry = FALSE). Such lines added will
 be "non-geometric" in the sense that they do not physically exist in the scene, so will not be
 shaded according to lighting, and their width will remain constant independent of how the plot
-is zoomed. As with `glpoints()` lines drawn in this way are rendered much more efficiently
-and sometimes the fixed width characteristic is desirable, for example grid lines are drawn
-in this way.
+is zoomed. As with \code{points3js(geometry = FALSE)} lines drawn in this way are rendered much more
+efficiently and sometimes the fixed width characteristic is desirable, for example grid lines
+are drawn in this way.
+}
+\examples{
+# Draw three lines
+x <- seq(from = 0, to = 6, length.out = 100)
+y <- cos(x*5)
+z <- sin(x*5)
+linecols <- rainbow(100)
+
+p <- plot3js(
+  xlim = c(0, 6),
+  ylim = c(0, 6),
+  zlim = c(-1, 1),
+  aspect = c(1, 1, 1)
+)
+
+# Add a line using the linegl representation
+p <- lines3js(
+  data3js = p,
+  x, y + 1, z,
+  col = linecols
+)
+
+# Add a thicker line using the linegl representation
+p <- lines3js(
+  data3js = p,
+  x, y + 3, z,
+  lwd = 3,
+  col = linecols
+)
+
+# Add a line as a physical geometry to the plot
+p <- lines3js(
+  data3js = p,
+  x, y + 5, z,
+  lwd = 0.2,
+  geometry = TRUE,
+  col = "blue" # Currently only supports fixed colors
+)
+
+# View the plot
+p
+
 }

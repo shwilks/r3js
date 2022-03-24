@@ -23,14 +23,14 @@ axis3js(
 
 \item{labels}{Vector of labels to use}
 
-\item{cornerside}{See `material3js()`}
+\item{cornerside}{See \code{material3js()}}
 
 \item{labeloffset}{Amount of offset of axis labels from the edge of the plot}
 
-\item{...}{Other arguments to pass to `material3js()`}
+\item{...}{Other arguments to pass to \code{material3js()}}
 }
 \description{
-This is used as part of the `plot3js()` function but can be called
+This is used as part of the \code{plot3js()} function but can be called
 separately to add an axis, generally in combination after other lower
-level functions like `plot3js.new()` and `plot3js.window()`.
+level functions like \code{plot3js.new()} and \code{plot3js.window()}.
 }

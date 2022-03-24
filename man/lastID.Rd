@@ -10,8 +10,8 @@ lastID(data3js)
 \item{data3js}{The data3js object}
 }
 \value{
-Returns a vector of ID(s) for the last object added. After e.g. `sphere3js()`, this
-will simply be a single id relating to the sphere added, after e.g. `points3js()` this will
+Returns a vector of ID(s) for the last object added. After e.g. \code{sphere3js()}, this
+will simply be a single id relating to the sphere added, after e.g. \code{points3js()} this will
 be a vector of ids relating to each point in turn.
 }
 \description{

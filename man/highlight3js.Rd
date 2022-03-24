@@ -17,5 +17,5 @@ example changing the color or size of a point. This can be particularly helpful
 when combined with a point label which will also show on mouse-over. The
 highlight parameter takes a list of arguments to apply to the highlighted
 version of the object, for example if you want a point to turn blue and increase
-to size 4, you could supply `highlight = list(col="blue", size=4)`.
+to size 4, you could supply \code{highlight = list(col="blue", size=4)}.
 }

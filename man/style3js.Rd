@@ -10,7 +10,7 @@ style3js(...)
 \item{...}{The list of styles and values}
 }
 \value{
-Returns a list of styles marked with `jsonlite::unbox()`
+Returns a list of styles marked with \code{jsonlite::unbox()}
 }
 \description{
 An internal function for converting a string of arguments into a set of css styles for an object.

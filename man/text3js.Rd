@@ -10,7 +10,7 @@ text3js(
   y,
   z,
   text,
-  size = 1,
+  size = NULL,
   col = "inherit",
   toggle = NULL,
   type = "geometry",
@@ -23,15 +23,17 @@ text3js(
 \arguments{
 \item{data3js}{The data3js object}
 
-\item{x}{x coord}
+\item{x}{x coords}
 
-\item{y}{y coord}
+\item{y}{y coords}
 
-\item{z}{z coord}
+\item{z}{z coords}
 
-\item{text}{text string}
+\item{text}{character vector of text}
 
-\item{size}{text size}
+\item{size}{text size, if type is "geometry" this is interpreted in terms of
+text height within the plotting space (default 1), if type is "html" then
+this is interpreted as size in pts (default 16).}
 
 \item{col}{text color}
 
@@ -41,14 +43,52 @@ text3js(
 
 \item{alignment}{text alignment, i.e. "left" "top" "topright"}
 
-\item{offset}{onscreen text offset for html text x then y}
+\item{offset}{onscreen text offset for html text, x then y}
 
 \item{style}{named list of css style attributes to apply to the html text}
 
-\item{...}{Additional attributes to pass to `material3js()`}
+\item{...}{Additional attributes to pass to \code{material3js()}}
 }
 \description{
 The text added can either be as an html text object, superimposed on the scene
-but moving relative to appear relative to the specified coordiantes, or an actual
+but moving relative to appear relative to the specified coordinqtes, or an actual
 geometry, which will appear in the scene, zoom and rotate with it etc.
+}
+\examples{
+# Set text parameters
+x <- 1:4
+y <- rep(0, 4)
+z <- rep(0, 4)
+labels <- LETTERS[1:4]
+sizes <- c(0.4, 0.6, 0.8, 1)
+
+# Create empty plot
+p <- plot3js(
+  xlim = c(0, 5),
+  ylim = c(-1, 1),
+  zlim = c(-1, 1),
+  aspect = c(1, 1, 1)
+)
+
+# Add text as a geometry
+text3js(
+  data3js = p,
+  x = x,
+  y = y,
+  z = z,
+  size = sizes,
+  text = labels
+)
+
+# Add text as a html labels
+text3js(
+  data3js = p,
+  x = x,
+  y = y,
+  z = z,
+  size = sizes*40,
+  text = labels,
+  type = "html"
+)
+
 }

@@ -7,6 +7,7 @@
 material3js(
   mat = "phong",
   col = "black",
+  fill = "black",
   opacity = NULL,
   xpd = TRUE,
   lwd = 1,
@@ -15,7 +16,6 @@ material3js(
   interactive = NULL,
   label = NULL,
   toggle = NULL,
-  dimensions = NULL,
   depthWrite = NULL,
   depthTest = NULL,
   polygonOffset = NULL,
@@ -37,7 +37,7 @@ material3js(
 \arguments{
 \item{mat}{Material to use for the object, one of "basic", "lambert", "phong"
 or "line", see e.g.
-[MeshBasicMaterial](https://threejs.org/docs/index.html#api/en/materials/MeshBasicMaterial)}
+\href{https://threejs.org/docs/index.html#api/en/materials/MeshBasicMaterial}{MeshBasicMaterial}}
 
 \item{col}{Color}
 
@@ -57,23 +57,20 @@ or "line", see e.g.
 
 \item{toggle}{Toggle button associated with the object}
 
-\item{dimensions}{Dimensions of the object - relevant for point geometries,
-e.g. 3d is sphere 2d is a circle}
-
 \item{depthWrite}{See
-[depthWrite](https://threejs.org/docs/index.html#api/en/materials/Material.depthWrite)}
+\href{https://threejs.org/docs/index.html#api/en/materials/Material.depthWrite}{depthWrite}}
 
 \item{depthTest}{See
-[depthTest](https://threejs.org/docs/index.html#api/en/materials/Material.depthTest)}
+\href{https://threejs.org/docs/index.html#api/en/materials/Material.depthTest}{depthTest}}
 
 \item{polygonOffset}{See
-[polygonOffset](https://threejs.org/docs/index.html#api/en/materials/Material.polygonOffset)}
+\href{https://threejs.org/docs/index.html#api/en/materials/Material.polygonOffset}{polygonOffset}}
 
 \item{polygonOffsetFactor}{See
-[polygonOffsetFactor](https://threejs.org/docs/index.html#api/en/materials/Material.polygonOffsetFactor)}
+\href{https://threejs.org/docs/index.html#api/en/materials/Material.polygonOffsetFactor}{polygonOffsetFactor}}
 
 \item{polygonOffsetUnits}{See
-[polygonOffsetUnits](https://threejs.org/docs/index.html#api/en/materials/Material.polygonOffsetUnits)}
+\href{https://threejs.org/docs/index.html#api/en/materials/Material.polygonOffsetUnits}{polygonOffsetUnits}}
 
 \item{shininess}{Shininess of object surface}
 
@@ -101,12 +98,11 @@ be rendered}
 rendered}
 
 \item{renderOrder}{See
-[renderOrder](https://threejs.org/docs/index.html#api/en/core/Object3D.renderOrder)}
+\href{https://threejs.org/docs/index.html#api/en/core/Object3D.renderOrder}{renderOrder}}
 
 \item{...}{Additional arguments (not used)}
 }
 \description{
 Arguments refer to different material properties for an object, many of which
-refer directly to properties as described in the [threejs
-documentation](https://threejs.org/docs/index.html?q=material#api/en/materials/Material)
+refer directly to properties as described in the \href{https://threejs.org/docs/index.html?q=material#api/en/materials/Material}{threejs documentation}
 }

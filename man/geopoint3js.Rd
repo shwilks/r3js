@@ -4,7 +4,18 @@
 \alias{geopoint3js}
 \title{Add a geometric point to a data3js object}
 \usage{
-geopoint3js(data3js, x, y, z, size, col, pch = 16, highlight, ...)
+geopoint3js(
+  data3js,
+  x,
+  y,
+  z,
+  size,
+  col = "black",
+  fill = col,
+  shape = "sphere",
+  highlight,
+  ...
+)
 }
 \arguments{
 \item{data3js}{The data3js object}
@@ -19,16 +30,16 @@ geopoint3js(data3js, x, y, z, size, col, pch = 16, highlight, ...)
 
 \item{col}{point color}
 
-\item{pch}{point type}
+\item{shape}{point shape}
 
-\item{highlight}{point highlight appearance (see `highlight3js()`)}
+\item{highlight}{point highlight appearance (see \code{highlight3js()})}
 
-\item{...}{other attributes to pass to `material3js()`}
+\item{...}{other attributes to pass to \code{material3js()}}
 }
 \description{
 This function underlies the points3js function when the geometry argument is set to TRUE.
-The point generated is included a 'physical' geometry, for example a sphere if pch=16,
+The point generated is included a 'physical' geometry, for example a sphere if shape = "circle",
 it will overlap with other points and shade according to the light source more realistically
-but is _much_ less computationally efficient than glpoints, which uses a single point plus
+but is \emph{much} less computationally efficient than glpoints, which uses a single point plus
 different shader instructions depending on the point type.
 }

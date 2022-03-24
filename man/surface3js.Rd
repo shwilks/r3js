@@ -32,9 +32,9 @@ surface3js(
 
 \item{wireframe}{Logical value for if the surface should be displayed as a mesh}
 
-\item{highlight}{highlight attributes (see `highlight3js()`)}
+\item{highlight}{highlight attributes (see \code{highlight3js()})}
 
-\item{...}{Material and texture properties. See `material3js()`}
+\item{...}{Material and texture properties. See \code{material3js()}}
 }
 \description{
 This function behaves very similarly to the \code{surface3d} function in the \code{rgl}

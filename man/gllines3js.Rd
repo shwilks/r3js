@@ -21,8 +21,8 @@ gllines3js(data3js, x, y, z, lwd = 1, col = "black", segments = FALSE, ...)
 
 \item{segments}{Should the line be interpreted as segments, e.g. a dashed line}
 
-\item{...}{Additional arguments to pass to `material3js()`}
+\item{...}{Additional arguments to pass to \code{material3js()}}
 }
 \description{
-This underlies the `lines3js()` function
+This underlies the \code{lines3js()} function
 }

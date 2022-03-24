@@ -25,15 +25,16 @@ shape3js(
 
 \item{col}{Shape color}
 
-\item{highlight}{highlight attributes (see `highlight3js()`)}
+\item{highlight}{highlight attributes (see \code{highlight3js()})}
 
-\item{...}{Additional attributes to pass to `material3js()`}
+\item{...}{Additional attributes to pass to \code{material3js()}}
 }
 \description{
 Add a generic shape to an 3js plot
 }
 \examples{
 # Draw a teapot
+data(teapot)
 p <- plot3js(
   xlim = range(teapot$vertices[,1]),
   ylim = range(teapot$vertices[,2]),

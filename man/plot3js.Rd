@@ -8,9 +8,9 @@ plot3js(
   x,
   y,
   z,
-  xlim = grDevices::extendrange(x),
-  ylim = grDevices::extendrange(y),
-  zlim = grDevices::extendrange(z),
+  xlim = NULL,
+  ylim = NULL,
+  zlim = NULL,
   xlab = NULL,
   ylab = NULL,
   zlab = NULL,
@@ -19,10 +19,14 @@ plot3js(
   axislabel_line = 3,
   aspect = NULL,
   label_axes = c("x", "y", "z"),
+  draw_box = TRUE,
   draw_grid = TRUE,
   grid_lwd = 1,
+  grid_col = "grey90",
   axis_lwd = grid_lwd,
   box_lwd = grid_lwd,
+  box_col = grid_col,
+  background = "#ffffff",
   ...
 )
 }
@@ -52,25 +56,33 @@ gl.POINTS rendered points}
 
 \item{axislabel_line}{Distance of axis label from plot}
 
-\item{aspect}{Plot axis aspect ratio, see `plot3js.window()`}
+\item{aspect}{Plot axis aspect ratio, see \code{plot3js.window()}}
 
 \item{label_axes}{Vector of axes to label, any combination of "x", "y" and
 "z"}
+
+\item{draw_box}{Should a box be drawn around the plot}
 
 \item{draw_grid}{Should an axis grid be drawn in the background}
 
 \item{grid_lwd}{Grid line width}
 
+\item{grid_col}{Grid line color}
+
 \item{axis_lwd}{Axis line width}
 
 \item{box_lwd}{Box line width}
 
-\item{...}{Further parameters to pass to `material3js()`}
+\item{box_col}{Box color}
+
+\item{background}{Background color for the plot}
+
+\item{...}{Further parameters to pass to \code{material3js()}}
 }
 \value{
 Returns a data3js object, that can be plotted as a widget using
-  `print()` or `r3js()` or further added to with the other plotting
-  functions.
+\code{print()} or \code{r3js()} or further added to with the other plotting
+functions.
 }
 \description{
 A high level method for generating a 3D scatter or line plot.

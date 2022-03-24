@@ -29,12 +29,54 @@ segments3js(
 
 \item{col}{line color}
 
-\item{highlight}{highlight characteristics (see `highlight3ks()`)}
+\item{highlight}{highlight characteristics (see \code{highlight3ks()})}
 
 \item{geometry}{logical, should the lines be rendered as a physical geometries}
 
-\item{...}{further parameters to pass to `material3js()`}
+\item{...}{further parameters to pass to \code{material3js()}}
 }
 \description{
 Add lines segments a 3js object
+}
+\examples{
+# Draw three lines
+x <- seq(from = 0, to = 6, length.out = 100)
+y <- cos(x*5)
+z <- sin(x*5)
+linecols <- rainbow(100)
+
+p <- plot3js(
+  xlim = c(0, 6),
+  ylim = c(0, 6),
+  zlim = c(-1, 1),
+  aspect = c(1, 1, 1)
+)
+
+# Add a line using the linegl representation
+p <- segments3js(
+  data3js = p,
+  x, y + 1, z,
+  col = linecols
+)
+
+# Add a thicker line using the linegl representation
+p <- segments3js(
+  data3js = p,
+  x, y + 3, z,
+  lwd = 3,
+  col = linecols
+)
+
+# Add a line as a physical geometry to the plot
+p <- segments3js(
+  data3js = p,
+  x, y + 5, z,
+  lwd = 0.2,
+  geometry = TRUE,
+  col = "blue" # Currently only supports fixed colors
+)
+
+# View the plot
+p
+
 }

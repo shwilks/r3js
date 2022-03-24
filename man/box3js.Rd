@@ -23,12 +23,17 @@ box3js(
 
 \item{col}{Box color}
 
-\item{geometry}{Should the box be rendered as a physical geometry in the scene (see `lines3js()`)}
+\item{geometry}{Should the box be rendered as a physical geometry in the scene (see \code{lines3js()})}
 
 \item{renderOrder}{The render order for the box, defaults to 1}
 
-\item{...}{Other arguments to pass to `material3js()`}
+\item{...}{Other arguments to pass to \code{material3js()}}
 }
 \description{
 Add a box to an r3js plot
+}
+\examples{
+p <- plot3js.new()
+box3js(p)
+
 }

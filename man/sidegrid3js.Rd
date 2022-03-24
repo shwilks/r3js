@@ -6,7 +6,7 @@
 \usage{
 sidegrid3js(
   data3js,
-  ax,
+  axis,
   side,
   at = NULL,
   col = "grey80",
@@ -18,7 +18,7 @@ sidegrid3js(
 \arguments{
 \item{data3js}{The data3js object}
 
-\item{ax}{Axis for which to draw lines, one of "x", "y" or "z"}
+\item{axis}{Axis for which to draw lines, one of "x", "y" or "z"}
 
 \item{side}{The side of the grid, one of "x", "y" or "z"}
 
@@ -28,9 +28,9 @@ sidegrid3js(
 
 \item{dynamic}{Should edges of the box closest to the viewer hide themselves automatically}
 
-\item{geometry}{Should the lines be rendered as a physical geometry in the scene (see `lines3js()`)}
+\item{geometry}{Should the lines be rendered as a physical geometry in the scene (see \code{lines3js()})}
 
-\item{...}{Other arguments to pass to `material3js()`}
+\item{...}{Other arguments to pass to \code{material3js()}}
 }
 \description{
 This is used by the function grid3js to add a grid on the faces of the plot region,

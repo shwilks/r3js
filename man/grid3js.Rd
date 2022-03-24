@@ -11,6 +11,7 @@ grid3js(
   at = NULL,
   dynamic = TRUE,
   col = "grey95",
+  lwd = 1,
   geometry = FALSE,
   ...
 )
@@ -28,11 +29,35 @@ grid3js(
 
 \item{col}{Grid line color}
 
-\item{geometry}{Should the lines be rendered as a physical geometry in the scene (see `lines3js()`)}
+\item{lwd}{Grid line width}
 
-\item{...}{Other arguments to pass to `material3js()`}
+\item{geometry}{Should the lines be rendered as a physical geometry in the scene (see \code{lines3js()})}
+
+\item{...}{Other arguments to pass to \code{material3js()}}
 }
 \description{
-This is used for example by `plot3js()` to add axis grids to a plot
+This is used for example by \code{plot3js()} to add axis grids to a plot
 these show along the faces of the plotting box, indicating axis ticks.
+}
+\examples{
+# Setup blank base plot
+p <- plot3js(draw_grid = F, xlab = "X", ylab = "Y", zlab = "Z")
+
+# Add a box
+p <- box3js(p)
+
+# Add grid lines but only for the z axis
+grid3js(
+  p, col = "red",
+  axes = "z"
+)
+
+# Add grid lines but only for the z axis and
+# only at either end of the x axis
+grid3js(
+  p, col = "blue",
+  axes = "z",
+  sides = "x"
+)
+
 }
