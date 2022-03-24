@@ -10,11 +10,32 @@
 #' @param at Where to draw grid lines along the axis
 #' @param dynamic Should edges of the box closest to the viewer hide themselves automatically
 #' @param col Grid line color
+#' @param lwd Grid line width
 #' @param geometry Should the lines be rendered as a physical geometry in the scene (see `lines3js()`)
 #' @param ... Other arguments to pass to `material3js()`
 #'
-#' @export
+#' @examples
+#' # Setup blank base plot
+#' p <- plot3js(draw_grid = F, xlab = "X", ylab = "Y", zlab = "Z")
 #'
+#' # Add a box and margin text
+#' p <- box3js(p)
+#'
+#' # Add grid lines but only for the z axis
+#' grid3js(
+#'   p, col = "red",
+#'   axes = "z"
+#' )
+#'
+#' # Add grid lines but only for the z axis and
+#' # only at either end of the x axis
+#' grid3js(
+#'   p, col = "blue",
+#'   axes = "z",
+#'   sides = "x"
+#' )
+#'
+#' @export
 grid3js <- function(
   data3js,
   sides = c("x","y","z"),
@@ -22,6 +43,7 @@ grid3js <- function(
   at = NULL,
   dynamic = TRUE,
   col = "grey95",
+  lwd = 1,
   geometry = FALSE,
   ...
 ){
@@ -50,6 +72,7 @@ grid3js <- function(
         dynamic  = dynamic,
         col      = col,
         geometry = geometry,
+        lwd      = lwd,
         ...
       )
     }

@@ -11,7 +11,6 @@
 #' @return Returns a new data3js plotting object
 #'
 #' @export
-#'
 plot3js.new <- function(
   background = "#ffffff"
   ){
