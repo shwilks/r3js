@@ -4,6 +4,8 @@
 # r3js
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/shwilks/r3js/workflows/R-CMD-check/badge.svg)](https://github.com/shwilks/r3js/actions)
 <!-- badges: end -->
 
 This is the project directory for the r3js, a package to provide R and

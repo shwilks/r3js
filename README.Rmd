@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
 # r3js
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/shwilks/r3js/workflows/R-CMD-check/badge.svg)](https://github.com/shwilks/r3js/actions)
 <!-- badges: end -->
 
 This is the project directory for the r3js, a package to provide R and javascript functions to allow WebGL-based 3D plotting in R using the three.js javascript library. Simple interactivity through roll-over highlighting and toggle buttons is also supported.
