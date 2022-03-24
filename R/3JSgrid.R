@@ -18,7 +18,7 @@
 #' # Setup blank base plot
 #' p <- plot3js(draw_grid = F, xlab = "X", ylab = "Y", zlab = "Z")
 #'
-#' # Add a box and margin text
+#' # Add a box
 #' p <- box3js(p)
 #'
 #' # Add grid lines but only for the z axis
@@ -90,7 +90,7 @@ grid3js <- function(
 #' marking for example axis points.
 #'
 #' @param data3js The data3js object
-#' @param ax Axis for which to draw lines, one of "x", "y" or "z"
+#' @param axis Axis for which to draw lines, one of "x", "y" or "z"
 #' @param side The side of the grid, one of "x", "y" or "z"
 #' @param at Where to draw grid lines, defaults to the current axis tick marks
 #' @param col Color of the grid lines
@@ -100,7 +100,7 @@ grid3js <- function(
 #'
 sidegrid3js <- function(
   data3js,
-  ax,
+  axis,
   side,
   at = NULL,
   col = "grey80",
@@ -111,7 +111,7 @@ sidegrid3js <- function(
 
   # Setup grid data
   grid_data <- list()
-  axnum <- match(ax, c("x","y","z"))
+  axnum <- match(axis, c("x","y","z"))
 
   # Set where the tick marks will be drawn
   if(is.null(at)){
@@ -138,7 +138,7 @@ sidegrid3js <- function(
       x = grid_data[[1]],
       y = grid_data[[2]],
       z = grid_data[[3]],
-      ax = ax,
+      axis = axis,
       faces = side,
       col   = col,
       geometry = geometry,
@@ -150,7 +150,7 @@ sidegrid3js <- function(
       x = grid_data[[1]],
       y = grid_data[[2]],
       z = grid_data[[3]],
-      ax  = ax,
+      axis  = axis,
       col = col,
       geometry = geometry,
       ...
@@ -169,7 +169,7 @@ sidegrid3js <- function(
 axislines3js <- function(
   data3js,
   x, y, z,
-  ax,
+  axis,
   lwd = 0.9,
   col = "grey80",
   geometry = FALSE,
@@ -178,7 +178,7 @@ axislines3js <- function(
 
   # Setup grid
   grid_data <- list(x,y,z)
-  axnum <- match(ax, c("x","y","z"))
+  axnum <- match(axis, c("x","y","z"))
   grid_data[-axnum][[1]] <- rep_len(grid_data[-axnum][[1]], 2)
   grid_data[-axnum][[2]] <- rep_len(grid_data[-axnum][[2]], 2)
 

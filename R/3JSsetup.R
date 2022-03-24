@@ -104,8 +104,18 @@ background3js <- function(
 #' @param cornerside See `material3js()`
 #' @param ... Other arguments to pass to `material3js()`
 #'
-#' @export
+#' @examples
+#' # Create a blank plot
+#' p <- plot3js.new()
+#' p <- box3js(p)
 #'
+#' # Add some margin text
+#' p <- mtext3js(p, "0.5m", side = "x")
+#' p <- mtext3js(p, "0.25m", side = "x", at = 0.25, line = 1)
+#' p <- mtext3js(p, "1m", side = "y", at = 1, line = 2)
+#' p
+#'
+#' @export
 mtext3js <- function(
   data3js,
   text,
@@ -124,7 +134,7 @@ mtext3js <- function(
       bp <- c("-", "+")[b]
 
       if(side == "x"){
-        x <- mean(data3js$lims[[1]])
+        x <- data3js$lims[[1]][1] + diff(range(data3js$lims[[1]]))*at
         y <- switch(a, "1" = data3js$lims[[2]][1], "2" = data3js$lims[[2]][2])
         z <- switch(b, "1" = data3js$lims[[3]][1], "2" = data3js$lims[[3]][2])
         poffset <- c(0, (a-1.5)*line*0.1, (b-1.5)*line*0.1)
@@ -132,7 +142,7 @@ mtext3js <- function(
       }
       if(side == "y"){
         x <- switch(a, "1" = data3js$lims[[1]][1], "2" = data3js$lims[[1]][2])
-        y <- mean(data3js$lims[[2]])
+        y <- data3js$lims[[2]][1] + diff(range(data3js$lims[[2]]))*at
         z <- switch(b, "1" = data3js$lims[[3]][1], "2" = data3js$lims[[3]][2])
         poffset <- c((a-1.5)*line*0.1, 0, (b-1.5)*line*0.1)
         cornercode <- paste0(ap,"y",bp,cornerside)
@@ -140,7 +150,7 @@ mtext3js <- function(
       if(side == "z"){
         x <- switch(b, "1" = data3js$lims[[1]][1], "2" = data3js$lims[[1]][2])
         y <- switch(a, "1" = data3js$lims[[2]][1], "2" = data3js$lims[[2]][2])
-        z <- mean(data3js$lims[[3]])
+        z <- data3js$lims[[3]][1] + diff(range(data3js$lims[[3]]))*at
         poffset <- c((b-1.5)*line*0.1, (a-1.5)*line*0.1, 0)
         cornercode <- paste0(ap,bp,"z",cornerside)
       }
@@ -179,8 +189,11 @@ mtext3js <- function(
 #' @param renderOrder The render order for the box, defaults to 1
 #' @param ... Other arguments to pass to `material3js()`
 #'
-#' @export
+#' @examples
+#' p <- plot3js.new()
+#' box3js(p)
 #'
+#' @export
 box3js <- function(
   data3js,
   sides = c("x","y","z"),
