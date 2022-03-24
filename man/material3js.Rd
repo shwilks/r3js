@@ -41,6 +41,8 @@ or "line", see e.g.
 
 \item{col}{Color}
 
+\item{fill}{Fill color}
+
 \item{opacity}{Opacity}
 
 \item{xpd}{Should parts of the object outside the plot limits be shown}

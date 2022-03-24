@@ -13,6 +13,7 @@
 #' @param z z coordinate
 #' @param size point size
 #' @param col point color
+#' @param fill point fill color
 #' @param shape point shape
 #' @param highlight point highlight appearance (see `highlight3js()`)
 #' @param ... other attributes to pass to `material3js()`
@@ -54,6 +55,7 @@ geopoint3js <- function(
 #' @param z z coordinates
 #' @param size point sizes
 #' @param col point colors
+#' @param fill point fill color
 #' @param shape point shapes
 #' @param highlight highlight characteristics (see `highlight3ks()`)
 #' @param ... further parameters to pass to `material3js()`
@@ -100,6 +102,7 @@ glpoints3js <- function(
 #' @param z point z coords
 #' @param size point sizes
 #' @param col point colors
+#' @param fill point fill color
 #' @param shape point shapes, one of "circle", "open circle", "square", "open
 #'   square", "sphere", "cube" or "open cube". For geometry = FALSE, currently
 #'   only "circle" and "sphere" are supported.

@@ -435,33 +435,24 @@ triangle3js <- function(
 #' )
 #'
 #' # Light scene intensely from above
-#' export.viewer.test(
-#'   r3js(light3js(
-#'     p,
-#'     position = c(0, 1, 0)
-#'   )),
-#'   "light_directional.html"
+#' light3js(
+#'   p,
+#'   position = c(0, 1, 0)
 #' )
 #'
 #' # Light scene positionally from the middle of the plot
-#' export.viewer.test(
-#'   r3js(light3js(
-#'     p,
-#'     position = c(2.5, 2.5, 2.5),
-#'     type = "point"
-#'   )),
-#'   "light_positional.html"
+#' light3js(
+#'   p,
+#'   position = c(2.5, 2.5, 2.5),
+#'   type = "point"
 #' )
 #'
 #' # Light scene ambiently with a yellow light
-#' export.viewer.test(
-#'   r3js(light3js(
-#'     p,
-#'     intensity = 0.3,
-#'     type = "ambient",
-#'     col = "yellow"
-#'   )),
-#'   "light_ambient.html"
+#' light3js(
+#'   p,
+#'   intensity = 0.3,
+#'   type = "ambient",
+#'   col = "yellow"
 #' )
 #'
 #' @export

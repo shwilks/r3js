@@ -1,5 +1,10 @@
 ---
 title: "Basic 3D plotting"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Basic 3D plotting}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}

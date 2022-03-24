@@ -41,7 +41,7 @@ these show along the faces of the plotting box, indicating axis ticks.
 }
 \examples{
 # Setup blank base plot
-p <- plot3js(draw_grid = F, xlab = "X", ylab = "Y", zlab = "Z")
+p <- plot3js(draw_grid = FALSE, xlab = "X", ylab = "Y", zlab = "Z")
 
 # Add a box
 p <- box3js(p)

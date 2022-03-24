@@ -10,6 +10,7 @@
 #'   [MeshBasicMaterial](https://threejs.org/docs/index.html#api/en/materials/MeshBasicMaterial)
 #'
 #' @param col Color
+#' @param fill Fill color
 #' @param opacity Opacity
 #' @param xpd Should parts of the object outside the plot limits be shown
 #' @param lwd Line width

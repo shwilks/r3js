@@ -30,6 +30,8 @@ geopoint3js(
 
 \item{col}{point color}
 
+\item{fill}{point fill color}
+
 \item{shape}{point shape}
 
 \item{highlight}{point highlight appearance (see \code{highlight3js()})}

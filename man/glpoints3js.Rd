@@ -30,6 +30,8 @@ glpoints3js(
 
 \item{col}{point colors}
 
+\item{fill}{point fill color}
+
 \item{shape}{point shapes}
 
 \item{highlight}{highlight characteristics (see \code{highlight3ks()})}

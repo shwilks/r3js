@@ -33,6 +33,8 @@ points3js(
 
 \item{col}{point colors}
 
+\item{fill}{point fill color}
+
 \item{shape}{point shapes, one of "circle", "open circle", "square", "open
 square", "sphere", "cube" or "open cube". For geometry = FALSE, currently
 only "circle" and "sphere" are supported.}
