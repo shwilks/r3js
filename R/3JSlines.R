@@ -82,9 +82,9 @@ gllines3js <- function(
 #' cylinders, or rather as webgl lines draw into the scene (geometry = FALSE). Such lines added will
 #' be "non-geometric" in the sense that they do not physically exist in the scene, so will not be
 #' shaded according to lighting, and their width will remain constant independent of how the plot
-#' is zoomed. As with `glpoints()` lines drawn in this way are rendered much more efficiently
-#' and sometimes the fixed width characteristic is desirable, for example grid lines are drawn
-#' in this way.
+#' is zoomed. As with `points3js(geometry = FALSE)` lines drawn in this way are rendered much more
+#' efficiently and sometimes the fixed width characteristic is desirable, for example grid lines
+#' are drawn in this way.
 #'
 #' @param data3js The data3js object
 #' @param x x coordinates
