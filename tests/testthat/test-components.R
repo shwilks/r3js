@@ -1,5 +1,99 @@
 
 # r3js::legend3js
+test_that("legend", {
+
+  # Setup plot
+  p <- plot3js(
+    x = iris$Sepal.Length,
+    y = iris$Sepal.Width,
+    z = iris$Petal.Length,
+    col = rainbow(3)[iris$Species],
+    xlab = "Sepal Length",
+    ylab = "Sepal Width",
+    zlab = "Petal Length"
+  )
+
+  # Add simple legend
+  export.viewer.test(
+    r3js(
+      legend3js(
+        data3js = p,
+        legend = levels(iris$Species),
+        fill = rainbow(3)
+      )
+    ),
+    "legend.html"
+  )
+
+})
+
+# rollover
+test_that("rollover", {
+
+  export.viewer.test(
+    r3js(
+      plot3js(
+        x = USJudgeRatings$CONT,
+        y = USJudgeRatings$INTG,
+        z = USJudgeRatings$DMNR,
+        highlight = list(
+          col = "darkgreen",
+          size = 2.5
+        ),
+        xlab = "CONT",
+        ylab = "INTG",
+        zlab = "DMNR",
+        size = 2,
+        col = "green",
+        label = rownames(USJudgeRatings)
+      )
+    ),
+    "rollover.html"
+  )
+
+})
+
+# toggle
+test_that("toggle", {
+
+  # Add toggles to a plot
+  export.viewer.test(
+    r3js(
+      plot3js(
+        x = iris$Sepal.Length,
+        y = iris$Sepal.Width,
+        z = iris$Petal.Length,
+        col = rainbow(3)[iris$Species],
+        xlab = "Sepal Length",
+        ylab = "Sepal Width",
+        zlab = "Petal Length",
+        toggle = iris$Species
+      ),
+      styles = list(
+        togglediv = list(
+          bottom = "4px",
+          right = "4px"
+        ),
+        toggles = list(
+          setosa = list(
+            on  = list(backgroundColor = colorspace::darken(rainbow(3)[1], 0.1), color = "white"),
+            off = list(backgroundColor = colorspace::lighten(rainbow(3)[1], 0.8), color = "white")
+          ),
+          versicolor = list(
+            on  = list(backgroundColor = colorspace::darken(rainbow(3)[2], 0.1), color = "white"),
+            off = list(backgroundColor = colorspace::lighten(rainbow(3)[2], 0.8), color = "white")
+          ),
+          virginica = list(
+            on  = list(backgroundColor = colorspace::darken(rainbow(3)[3], 0.1), color = "white"),
+            off = list(backgroundColor = colorspace::lighten(rainbow(3)[3], 0.8), color = "white")
+          )
+        )
+      )
+    ),
+    "toggles.html"
+  )
+
+})
 
 # r3js::plot3js
 test_that("plot3js", {

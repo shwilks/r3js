@@ -1,9 +1,10 @@
 
-R3JS.Viewer.prototype.load = function(plotData){
+R3JS.Viewer.prototype.load = function(plotData, settings = {}){
 
     // Hide the placeholder
     this.viewport.hidePlaceholder();
     this.contentLoaded = true;
+    this.settings = settings;
 
     // Set background color
     if (plotData.scene && plotData.scene.background) {

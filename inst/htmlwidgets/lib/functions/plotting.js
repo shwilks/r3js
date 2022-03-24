@@ -176,12 +176,6 @@ R3JS.element.make = function(
 
     }
 
-    
-
-    // if(element.object.material){
-    //     // element.object = R3JS.utils.separateSides(element.object);
-    // }
-
     // Return the object
     return(element);
 

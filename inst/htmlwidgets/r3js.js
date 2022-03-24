@@ -13,7 +13,7 @@ HTMLWidgets.widget({
       renderValue: function(x) {
 
         // Code to render the widget
-        r3jsviewer.load(x.data3js);
+        r3jsviewer.load(x.data3js, x.settings);
 
       },
 
