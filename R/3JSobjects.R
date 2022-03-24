@@ -407,18 +407,78 @@ triangle3js <- function(
 #' different positions - not yet fully implemented.
 #'
 #' @param data3js The data3js object
-#' @param position Position of the light source in x, y, z coords
+#' @param position Position of the light source in x, y, z coords, see details.
+#' @param intensity Light intensity
+#' @param type Type of light, either "point", "directional" or "ambient", see details.
+#' @param col Light color
+#'
+#' @details If light position is "directional", the default light will appear to
+#'   come from the direction of the position argument but from an infinite
+#'   distance. If "point" the light will appear to emanate from that position in
+#'   coordinate space light a light bulb. If "ambient" any position argument is
+#'   ignored and the light will light all aspects of the scene evenly from no
+#'   particular position.
+#'
+#' @examples
+#' # Set up a plot
+#' p <- plot3js(
+#'   x = 1:4,
+#'   y = c(2,1,3,4),
+#'   z = c(3,2,4,1),
+#'   xlim = c(0, 5),
+#'   ylim = c(0, 5),
+#'   zlim = c(0, 5),
+#'   size = 20,
+#'   col = c("white", "blue", "red", "green"),
+#'   grid_col = "grey40",
+#'   background = "black"
+#' )
+#'
+#' # Light scene intensely from above
+#' export.viewer.test(
+#'   r3js(light3js(
+#'     p,
+#'     position = c(0, 1, 0)
+#'   )),
+#'   "light_directional.html"
+#' )
+#'
+#' # Light scene positionally from the middle of the plot
+#' export.viewer.test(
+#'   r3js(light3js(
+#'     p,
+#'     position = c(2.5, 2.5, 2.5),
+#'     type = "point"
+#'   )),
+#'   "light_positional.html"
+#' )
+#'
+#' # Light scene ambiently with a yellow light
+#' export.viewer.test(
+#'   r3js(light3js(
+#'     p,
+#'     intensity = 0.3,
+#'     type = "ambient",
+#'     col = "yellow"
+#'   )),
+#'   "light_ambient.html"
+#' )
 #'
 #' @export
-#'
 light3js <- function(
   data3js,
-  position = NULL
+  position = NULL,
+  intensity = 1,
+  type = "directional",
+  col = "white"
   ){
 
-  object          <- c()
-  object$type     <- "light"
-  object$position <- position
+  object           <- c()
+  object$type      <- "light"
+  object$lighttype <- jsonlite::unbox(type)
+  object$position  <- position
+  object$intensity <- jsonlite::unbox(intensity)
+  object$color     <- convertCol3js(col)
 
   # Update the plot object
   if(is.null(data3js$light)) data3js$light <- list()
