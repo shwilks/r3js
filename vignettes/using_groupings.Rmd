@@ -12,9 +12,6 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-```
-
-```{r setup}
 library(r3js)
 ```
 
@@ -293,5 +290,5 @@ for (n in seq_along(x_vals)) {
 }
 
 # View the plot
-data3js
+r3js(data3js)
 ```
