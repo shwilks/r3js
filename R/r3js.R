@@ -5,7 +5,7 @@
 #' htmlwidget.
 #'
 #' @param data3js The data3js object
-#' @param rotation Plot starting rotation
+#' @param rotation Plot starting rotation as an XYZ Euler rotation
 #' @param zoom Plot starting zoom factor
 #' @param translation Plot starting translation
 #' @param ... Additional arguments to pass to `htmlwidgets::createWidget()`
@@ -15,9 +15,9 @@
 #'
 r3js <- function(
   data3js,
-  rotation     = NULL,
-  zoom         = NULL,
-  translation  = NULL,
+  rotation     = c(-1.45, 0, -2.35),
+  zoom         = 4,
+  translation  = c(0, 0, 0),
   ...
   ) {
 
