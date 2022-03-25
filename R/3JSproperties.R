@@ -240,9 +240,10 @@ allargs <- function(orig_values = FALSE, ...) {
 #' This function can be used to create a clipping plane that can then be applied
 #' to individual objects in a plot
 #'
-#' @param coplanarPoints A matrix of 3 points coplanar to the plane, each row is a point, cols are coordinates
+#' @param coplanarPoints A matrix of 3 points coplanar to the plane, each row is
+#'   a point, cols are coordinates
 #'
-#' @return Returns and r3js clipping plane object
+#' @return Returns a r3js clipping plane object
 #' @export
 #'
 clippingPlane3js <- function(
