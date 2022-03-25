@@ -1,4 +1,13 @@
 
+# r3js::print
+test_that("print", {
+
+  p <- plot3js()
+  expect_equal(class(p), c("data3js", "list"))
+  expect_equal(class(print(p)), c("r3js", "htmlwidget"))
+
+})
+
 # r3js::save3js
 test_that("save3js", {
 
