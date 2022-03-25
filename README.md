@@ -7,7 +7,7 @@
 
 [![R-CMD-check](https://github.com/shwilks/r3js/workflows/R-CMD-check/badge.svg)](https://github.com/shwilks/r3js/actions)
 [![Codecov test
-coverage](https://codecov.io/gh/shwilks/r3js/branch/master/graph/badge.svg)](https://https://app.codecov.io/gh/shwilks/r3js?branch=master)
+coverage](https://codecov.io/gh/shwilks/r3js/branch/master/graph/badge.svg)](https://app.codecov.io/gh/shwilks/r3js?branch=master)
 <!-- badges: end -->
 
 This is the project directory for the r3js, a package to provide R and
