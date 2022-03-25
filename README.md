@@ -12,8 +12,8 @@ coverage](https://codecov.io/gh/shwilks/r3js/branch/master/graph/badge.svg)](htt
 
 This is the project directory for the r3js, a package to provide R and
 javascript functions to allow WebGL-based 3D plotting in R using the
-three.js javascript library. Simple interactivity through roll-over
-highlighting and toggle buttons is also supported.
+[three.js](https://threejs.org) javascript library. Simple interactivity
+through roll-over highlighting and toggle buttons is also supported.
 
 Plots are built as html widgets, using the RStudio viewer panel to
 display the plots interactively. Plots can also be exported using the
