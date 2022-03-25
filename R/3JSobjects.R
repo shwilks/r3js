@@ -52,7 +52,7 @@ sphere3js <- function(
   data3js,
   x, y, z,
   radius,
-  col,
+  col = "black",
   highlight,
   ...) {
 
