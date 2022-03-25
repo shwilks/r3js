@@ -1,4 +1,26 @@
 
+# r3js::save3js
+test_that("save3js", {
+
+  # Create plot
+  p <- plot3js(
+    x = iris$Sepal.Length,
+    y = iris$Sepal.Width,
+    z = iris$Petal.Length,
+    col = rainbow(3)[iris$Species],
+    xlab = "Sepal Length",
+    ylab = "Sepal Width",
+    zlab = "Petal Length"
+  )
+
+  # Save the plot
+  tmp <- tempfile()
+  save3js(p, tmp)
+  expect_true(file.exists(tmp))
+  file.remove(tmp)
+
+})
+
 # r3js::clippingPlane3js
 test_that("clippingPlane", {
 
