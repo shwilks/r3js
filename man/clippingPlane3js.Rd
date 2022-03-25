@@ -4,15 +4,56 @@
 \alias{clippingPlane3js}
 \title{Create a clipping plane object}
 \usage{
-clippingPlane3js(coplanarPoints = NULL)
+clippingPlane3js(coplanarPoints)
 }
 \arguments{
-\item{coplanarPoints}{A matrix of 3 points coplanar to the plane, each row is a point, cols are coordinates}
+\item{coplanarPoints}{A matrix of 3 points coplanar to the plane, each row is
+a point, cols are coordinates}
 }
 \value{
-Returns and r3js clipping plane object
+Returns a r3js clipping plane object
 }
 \description{
 This function can be used to create a clipping plane that can then be applied
 to individual objects in a plot
+}
+\examples{
+# Set up plot
+p <- plot3js(
+  xlim = c(-2, 2),
+  ylim = c(-2, 2),
+  zlim = c(-2, 2)
+)
+
+# Add a sphere with clipping planes
+sphere3js(
+  data3js = p,
+  0, 0, 0,
+  radius = 2,
+  col = "red",
+  clippingPlanes = list(
+    clippingPlane3js(
+      rbind(
+        c(1.5,0,1),
+        c(1.5,1,1),
+        c(1.5,0,0)
+      )
+    ),
+    clippingPlane3js(
+      rbind(
+        c(1,1.8,1),
+        c(0,1.8,1),
+        c(1,1.8,0)
+      )
+    ),
+    clippingPlane3js(
+      rbind(
+        c(0,-1.8,1),
+        c(1,-1.8,1),
+        c(1,-1.8,0)
+      )
+    )
+  )
+)
+
 }

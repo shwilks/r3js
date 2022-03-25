@@ -4,7 +4,7 @@
 \alias{sphere3js}
 \title{Add a sphere of defined radius to a data3js object}
 \usage{
-sphere3js(data3js, x, y, z, radius, col, highlight, ...)
+sphere3js(data3js, x, y, z, radius, col = "black", highlight, ...)
 }
 \arguments{
 \item{data3js}{The data3js object}

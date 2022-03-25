@@ -246,8 +246,47 @@ allargs <- function(orig_values = FALSE, ...) {
 #' @return Returns a r3js clipping plane object
 #' @export
 #'
+#' @examples
+#' # Set up plot
+#' p <- plot3js(
+#'   xlim = c(-2, 2),
+#'   ylim = c(-2, 2),
+#'   zlim = c(-2, 2)
+#' )
+#'
+#' # Add a sphere with clipping planes
+#' sphere3js(
+#'   data3js = p,
+#'   0, 0, 0,
+#'   radius = 2,
+#'   col = "red",
+#'   clippingPlanes = list(
+#'     clippingPlane3js(
+#'       rbind(
+#'         c(1.5,0,1),
+#'         c(1.5,1,1),
+#'         c(1.5,0,0)
+#'       )
+#'     ),
+#'     clippingPlane3js(
+#'       rbind(
+#'         c(1,1.8,1),
+#'         c(0,1.8,1),
+#'         c(1,1.8,0)
+#'       )
+#'     ),
+#'     clippingPlane3js(
+#'       rbind(
+#'         c(0,-1.8,1),
+#'         c(1,-1.8,1),
+#'         c(1,-1.8,0)
+#'       )
+#'     )
+#'   )
+#' )
+#'
 clippingPlane3js <- function(
-  coplanarPoints = NULL
+  coplanarPoints
 ){
 
   clippingPlane <- c()
