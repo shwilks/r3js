@@ -1,4 +1,79 @@
+url: https://shwilks.github.io/r3js
 destination: docs
 template:
   params:
     bootswatch: flatly
+navbar:
+  structure:
+    left:
+    - home
+    - intro
+    - reference
+    - articles
+    - tutorials
+    - news
+    right: github
+  components:
+    home:
+      icon: fas fa-home fa-lg
+      href: index.html
+    reference:
+      text: Reference
+      href: reference/index.html
+    github:
+      icon: fab fa-github fa-lg
+      href: https://github.com/shwilks/r3js/
+    articles:
+      text: Articles
+      href: articles/index.html
+articles:
+- title: Getting started
+  contents:
+  - basic-3d-plotting
+- title: Map diagnostics
+  contents:
+  - plot-from-scratch
+  - using-groupings
+reference:
+- title: Setting up a plot
+  contents:
+  - plot3js
+  - plot3js.new
+  - background3js
+  - plot3js.window
+- title: Plot components
+  contents:
+  - points3js
+  - lines3js
+  - segments3js
+  - arrows3js
+  - shape3js
+  - sphere3js
+  - surface3js
+  - mtext3js
+  - axis3js
+  - box3js
+  - grid3js
+  - legend3js
+  - light3js
+  - text3js
+  - triangle3js
+- title: Grouping plot components
+  contents:
+  - group3js
+  - lastID
+- title: Viewing plots
+  contents:
+  - r3js
+  - r3jsOutput
+  - renderR3js
+  - save3js
+  - save3jsWidget
+  - print.data3js
+- title: Utility functions
+  contents:
+  - clippingPlane3js
+  - material3js
+- title: Datasets
+  contents:
+  - teapot
