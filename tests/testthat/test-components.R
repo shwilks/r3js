@@ -113,6 +113,24 @@ test_that("rollover", {
   export.viewer.test(
     r3js(
       plot3js(
+        x = runif(100),
+        y = runif(100),
+        z = runif(100),
+        col = rainbow(100),
+        highlight = list(
+          size = 1.5,
+          col = rev(rainbow(100)),
+          mat = "basic"
+        ),
+        interactive = TRUE
+      )
+    ),
+    "rollover_basic.html"
+  )
+
+  export.viewer.test(
+    r3js(
+      plot3js(
         x = USJudgeRatings$CONT,
         y = USJudgeRatings$INTG,
         z = USJudgeRatings$DMNR,
@@ -135,6 +153,30 @@ test_that("rollover", {
 
 # toggle
 test_that("toggle", {
+
+  x <- runif(100)
+  y <- runif(100)
+  z <- runif(100)
+
+  col <- c(
+    rep("blue", 50),
+    rep("red", 50)
+  )
+
+  toggle <- paste(col, "points")
+
+  p <- plot3js(
+    x = x,
+    y = y,
+    z = z,
+    col = col,
+    toggle = toggle
+  )
+
+  export.viewer.test(
+    r3js(p),
+    "toggles_basic.html"
+  )
 
   # Add toggles to a plot
   export.viewer.test(
@@ -170,7 +212,7 @@ test_that("toggle", {
         )
       )
     ),
-    "toggles.html"
+    "toggles_custom.html"
   )
 
 })
