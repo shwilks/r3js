@@ -9,11 +9,6 @@ R3JS.element.constructors.text = function(
 
     // Apply any additional offset
     var plotdims = viewer.scene.plotdims;
-    if(plotobj.properties.poffset){
-        plotobj.position[0] = plotobj.position[0] + plotobj.properties.poffset[0]*plotdims.size[0]/plotdims.aspect[0];
-        plotobj.position[1] = plotobj.position[1] + plotobj.properties.poffset[1]*plotdims.size[1]/plotdims.aspect[1];
-        plotobj.position[2] = plotobj.position[2] + plotobj.properties.poffset[2]*plotdims.size[2]/plotdims.aspect[2];
-    }
 
     // Create the object
     if(plotobj.rendering == "geometry"){

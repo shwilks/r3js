@@ -91,9 +91,9 @@ R3JS.element.make = function(
     // Apply any additional offset
     var plotdims = viewer.scene.plotdims;
     if(plotobj.properties && plotobj.properties.poffset && plotobj.position) {
-        plotobj.position[0] = plotobj.position[0] + plotobj.properties.poffset[0]*plotdims.size[0]/plotdims.aspect[0];
-        plotobj.position[1] = plotobj.position[1] + plotobj.properties.poffset[1]*plotdims.size[1]/plotdims.aspect[1];
-        plotobj.position[2] = plotobj.position[2] + plotobj.properties.poffset[2]*plotdims.size[2]/plotdims.aspect[2];
+        plotobj.position[0] = plotobj.position[0] + plotobj.properties.poffset[0]*plotdims.size[0];
+        plotobj.position[1] = plotobj.position[1] + plotobj.properties.poffset[1]*plotdims.size[1];
+        plotobj.position[2] = plotobj.position[2] + plotobj.properties.poffset[2]*plotdims.size[2];
     }
 
     if(plotobj.type == "point"){
