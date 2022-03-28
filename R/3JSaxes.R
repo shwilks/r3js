@@ -5,6 +5,9 @@
 #' separately to add an axis, generally in combination after other lower
 #' level functions like `plot3js.new()` and `plot3js.window()`.
 #'
+#' @export
+#' @family {plot components}
+#'
 #' @param data3js The data3js object
 #' @param side The axis side, either "x", "y" or "z"
 #' @param at Where to draw labels
@@ -12,8 +15,6 @@
 #' @param cornerside See `material3js()`
 #' @param labeloffset Amount of offset of axis labels from the edge of the plot
 #' @param ... Other arguments to pass to `material3js()`
-#'
-#' @export
 #'
 axis3js <- function(
   data3js,

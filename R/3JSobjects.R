@@ -4,7 +4,7 @@
 #' Unlike points3js, where geometric points can also be represented as
 #' spheres, this adds sphere that is sized with respect to the actual
 #' dimensions of the plotting space (and so if aspect ratios differ for
-#' each axis may not actually appear sphere-like!).
+#' each axis may not actually appear sphere-like).
 #'
 #' @param data3js The data3js object
 #' @param x x coordinate of the sphere center
@@ -15,6 +15,9 @@
 #' @param highlight highlight attributes (see `highlight3js()`)
 #' @param ... other arguments to pass to `material3js()`
 #'
+#' @export
+#' @family {plot components}
+#'
 #' @examples
 #' # Setup base plot
 #' p <- plot3js(
@@ -24,12 +27,14 @@
 #' )
 #'
 #' # Add sphere (this will look distorted because of axis scaling)
-#' sphere3js(
+#' p <- sphere3js(
 #'   data3js = p,
 #'   0, 0, 0,
 #'   radius = 5,
 #'   col = "green"
 #' )
+#'
+#' r3js(p, zoom = 2.5)
 #'
 #' # Setup base plot with equal aspect ratio
 #' p <- plot3js(
@@ -40,14 +45,15 @@
 #' )
 #'
 #' # Add sphere (fixed aspect ratio now makes the sphere look spherical)
-#' sphere3js(
+#' p <- sphere3js(
 #'   data3js = p,
 #'   0, 0, 0,
 #'   radius = 5,
 #'   col = "green"
 #' )
 #'
-#' @export
+#' r3js(p, zoom = 2)
+#'
 sphere3js <- function(
   data3js,
   x, y, z,
@@ -89,6 +95,8 @@ sphere3js <- function(
 #' @param ... other arguments to pass to `material3js()`
 #'
 #' @export
+#' @family {plot components}
+#'
 #' @examples
 #' # Draw a set of arrows
 #' from <- cbind(
@@ -100,15 +108,18 @@ sphere3js <- function(
 #' to <- jitter(from, amount = 0.2)
 #'
 #' # Setup base plot
-#' p <- plot3js()
+#' p <- plot3js(label_axes = FALSE)
 #'
 #' # Add arrows
-#' arrows3js(
+#' p <- arrows3js(
 #'   p, from, to,
 #'   arrowhead_length = 0.06,
 #'   arrowhead_width = 0.04,
 #'   lwd = 0.01
 #' )
+#'
+#' # View the plot
+#' r3js(p, translation = c(0, 0, 0.15), zoom = 2)
 #'
 arrows3js <- function(
   data3js,
@@ -190,7 +201,7 @@ arrow3js <- function(
 #' Add a surface to an data3js object
 #'
 #' This function behaves very similarly to the \code{surface3d} function in the \code{rgl}
-#' package, although the handling of NA values is more robust in this implementation.
+#' package, although the handling of NA values are handled differently.
 #'
 #' @param data3js The data3js object
 #' @param x Values corresponding to rows of z, or matrix of x coordinates
@@ -202,6 +213,9 @@ arrow3js <- function(
 #' @param wireframe Logical value for if the surface should be displayed as a mesh
 #' @param highlight highlight attributes (see `highlight3js()`)
 #' @param ... Material and texture properties. See `material3js()`
+#'
+#' @export
+#' @family {plot components}
 #'
 #' @examples
 #' # volcano example taken from "persp"
@@ -235,7 +249,6 @@ arrow3js <- function(
 #'   zoom = 1.5
 #' )
 #'
-#' @export
 surface3js <- function(
   data3js,
   x, y, z,
@@ -288,6 +301,9 @@ surface3js <- function(
 #' @param highlight highlight attributes (see `highlight3js()`)
 #' @param ... Additional attributes to pass to `material3js()`
 #'
+#' @family {plot components}
+#' @export
+#'
 #' @examples
 #' # Draw a teapot
 #' data(teapot)
@@ -306,9 +322,8 @@ surface3js <- function(
 #'   col = "lightblue"
 #' )
 #'
-#' p
+#' r3js(p, rotation = c(-2.8, 0, 3.14), zoom = 1.2)
 #'
-#' @export
 shape3js <- function(
   data3js,
   vertices,
@@ -349,6 +364,9 @@ shape3js <- function(
 #' @param highlight highlight attributes (see `highlight3js()`)
 #' @param ... Additional attributes to pass to `material3js()`
 #'
+#' @export
+#' @family {plot components}
+#'
 #' @examples
 #' # Draw some random triangles
 #' M <- matrix(
@@ -370,9 +388,8 @@ shape3js <- function(
 #'   col = rainbow(nrow(M))
 #' )
 #'
-#' p
+#' r3js(p, zoom = 2)
 #'
-#' @export
 triangle3js <- function(
   data3js,
   vertices,
@@ -421,9 +438,12 @@ triangle3js <- function(
 #'   ignored and the light will light all aspects of the scene evenly from no
 #'   particular position.
 #'
+#' @export
+#' @family {plot components}
+#'
 #' @examples
 #' # Set up a plot
-#' p <- plot3js(
+#' p0 <- plot3js(
 #'   x = 1:4,
 #'   y = c(2,1,3,4),
 #'   z = c(3,2,4,1),
@@ -437,27 +457,29 @@ triangle3js <- function(
 #' )
 #'
 #' # Light scene intensely from above
-#' light3js(
-#'   p,
+#' p <- light3js(
+#'   p0,
 #'   position = c(0, 1, 0)
 #' )
+#' r3js(p, zoom = 2)
 #'
 #' # Light scene positionally from the middle of the plot
-#' light3js(
-#'   p,
+#' p <- light3js(
+#'   p0,
 #'   position = c(2.5, 2.5, 2.5),
 #'   type = "point"
 #' )
+#' r3js(p, zoom = 2)
 #'
 #' # Light scene ambiently with a yellow light
-#' light3js(
-#'   p,
+#' p <- light3js(
+#'   p0,
 #'   intensity = 0.3,
 #'   type = "ambient",
 #'   col = "yellow"
 #' )
+#' r3js(p, zoom = 2)
 #'
-#' @export
 light3js <- function(
   data3js,
   position = NULL,

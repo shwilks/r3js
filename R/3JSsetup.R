@@ -104,6 +104,9 @@ background3js <- function(
 #' @param cornerside See `material3js()`
 #' @param ... Other arguments to pass to `material3js()`
 #'
+#' @export
+#' @family {plot components}
+#'
 #' @examples
 #' # Create a blank plot
 #' p <- plot3js.new()
@@ -113,9 +116,8 @@ background3js <- function(
 #' p <- mtext3js(p, "0.5m", side = "x")
 #' p <- mtext3js(p, "0.25m", side = "x", at = 0.25, line = 1)
 #' p <- mtext3js(p, "1m", side = "y", at = 1, line = 2)
-#' p
+#' r3js(p)
 #'
-#' @export
 mtext3js <- function(
   data3js,
   text,
@@ -189,11 +191,14 @@ mtext3js <- function(
 #' @param renderOrder The render order for the box, defaults to 1
 #' @param ... Other arguments to pass to `material3js()`
 #'
+#' @export
+#' @family {plot components}
+#'
 #' @examples
 #' p <- plot3js.new()
-#' box3js(p)
+#' p <- box3js(p)
+#' r3js(p)
 #'
-#' @export
 box3js <- function(
   data3js,
   sides = c("x","y","z"),

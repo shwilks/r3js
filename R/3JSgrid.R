@@ -14,6 +14,9 @@
 #' @param geometry Should the lines be rendered as a physical geometry in the scene (see `lines3js()`)
 #' @param ... Other arguments to pass to `material3js()`
 #'
+#' @export
+#' @family {plot components}
+#'
 #' @examples
 #' # Setup blank base plot
 #' p <- plot3js(draw_grid = FALSE, xlab = "X", ylab = "Y", zlab = "Z")
@@ -22,20 +25,23 @@
 #' p <- box3js(p)
 #'
 #' # Add grid lines but only for the z axis
-#' grid3js(
+#' p <- grid3js(
 #'   p, col = "red",
 #'   axes = "z"
 #' )
 #'
+#' r3js(p)
+#'
 #' # Add grid lines but only for the z axis and
 #' # only at either end of the x axis
-#' grid3js(
+#' p <- grid3js(
 #'   p, col = "blue",
 #'   axes = "z",
 #'   sides = "x"
 #' )
 #'
-#' @export
+#' r3js(p)
+#'
 grid3js <- function(
   data3js,
   sides = c("x","y","z"),
@@ -97,6 +103,8 @@ grid3js <- function(
 #' @param dynamic Should edges of the box closest to the viewer hide themselves automatically
 #' @param geometry Should the lines be rendered as a physical geometry in the scene (see `lines3js()`)
 #' @param ... Other arguments to pass to `material3js()`
+#'
+#' @noRd
 #'
 sidegrid3js <- function(
   data3js,

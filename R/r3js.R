@@ -46,13 +46,14 @@
 #'         off = list(backgroundColor = colorspace::lighten(rainbow(3)[3], 0.8), color = "white")
 #'       )
 #'     )
-#'   )
+#'   ),
+#'   zoom = 1.5
 #' )
 #'
 r3js <- function(
   data3js,
   rotation     = c(-1.45, 0, -2.35),
-  zoom         = 4,
+  zoom         = 2,
   translation  = c(0, 0, 0),
   styles       = list(),
   ...

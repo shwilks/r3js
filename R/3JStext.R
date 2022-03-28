@@ -21,6 +21,9 @@
 #' @param style named list of css style attributes to apply to the html text
 #' @param ... Additional attributes to pass to `material3js()`
 #'
+#' @family {plot components}
+#' @export
+#'
 #' @examples
 #' # Set text parameters
 #' x <- 1:4
@@ -30,16 +33,17 @@
 #' sizes <- c(0.4, 0.6, 0.8, 1)
 #'
 #' # Create empty plot
-#' p <- plot3js(
+#' p0 <- plot3js(
 #'   xlim = c(0, 5),
 #'   ylim = c(-1, 1),
 #'   zlim = c(-1, 1),
-#'   aspect = c(1, 1, 1)
+#'   aspect = c(1, 1, 1),
+#'   label_axes = FALSE
 #' )
 #'
 #' # Add text as a geometry
-#' text3js(
-#'   data3js = p,
+#' p <- text3js(
+#'   data3js = p0,
 #'   x = x,
 #'   y = y,
 #'   z = z,
@@ -47,9 +51,11 @@
 #'   text = labels
 #' )
 #'
+#' r3js(p, rotation = c(0, 0, 0), zoom = 1)
+#'
 #' # Add text as a html labels
-#' text3js(
-#'   data3js = p,
+#' p <- text3js(
+#'   data3js = p0,
 #'   x = x,
 #'   y = y,
 #'   z = z,
@@ -58,7 +64,8 @@
 #'   type = "html"
 #' )
 #'
-#' @export
+#' r3js(p, rotation = c(0, 0, 0), zoom = 1)
+#'
 text3js <- function(
   data3js,
   x, y, z,
@@ -69,7 +76,7 @@ text3js <- function(
   type   = "geometry",
   alignment = "center",
   offset    = c(0, 0),
-  style     = list(),
+  style     = list(fontFamily = "sans-serif"),
   ...){
 
   # Set default size
@@ -123,7 +130,7 @@ string3js <- function(
   type   = "geometry",
   alignment = "center",
   offset = c(0, 0),
-  style  = list(),
+  style  = list(fontFamily = "sans-serif"),
   ...
 ){
 

@@ -37,7 +37,7 @@
 #' @examples
 #'
 #' # Simple plot example
-#' plot3js(
+#' p <- plot3js(
 #'   x = iris$Sepal.Length,
 #'   y = iris$Sepal.Width,
 #'   z = iris$Petal.Length,
@@ -47,8 +47,10 @@
 #'   zlab = "Petal Length"
 #' )
 #'
+#' r3js(p, zoom = 2)
+#'
 #' # Plotting with point rollover info and highlighting
-#' plot3js(
+#' p <- plot3js(
 #'   x = USJudgeRatings$CONT,
 #'   y = USJudgeRatings$INTG,
 #'   z = USJudgeRatings$DMNR,
@@ -63,6 +65,8 @@
 #'   col = "green",
 #'   label = rownames(USJudgeRatings)
 #' )
+#'
+#' r3js(p, zoom = 2)
 #'
 plot3js <- function(
   x, y, z,

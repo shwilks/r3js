@@ -98,6 +98,8 @@ gllines3js <- function(
 #' @param highlight highlight characteristics (see `highlight3ks()`)
 #' @param geometry logical, should the point be rendered as a physical geometry
 #' @param ... further parameters to pass to `material3js()`
+#' @export
+#' @family {plot components}
 #'
 #' @examples
 #' # Draw three lines
@@ -110,7 +112,8 @@ gllines3js <- function(
 #'   xlim = c(0, 6),
 #'   ylim = c(0, 6),
 #'   zlim = c(-1, 1),
-#'   aspect = c(1, 1, 1)
+#'   aspect = c(1, 1, 1),
+#'   label_axes = FALSE
 #' )
 #'
 #' # Add a line using the linegl representation
@@ -138,9 +141,8 @@ gllines3js <- function(
 #' )
 #'
 #' # View the plot
-#' p
+#' r3js(p, rotation = c(0, 0, 0), zoom = 2)
 #'
-#' @export
 lines3js <- function(
   data3js,
   x, y, z,
@@ -213,6 +215,8 @@ lines3js <- function(
 #' @param highlight highlight characteristics (see `highlight3ks()`)
 #' @param geometry logical, should the lines be rendered as a physical geometries
 #' @param ... further parameters to pass to `material3js()`
+#' @export
+#' @family {plot components}
 #'
 #' @examples
 #' # Draw three lines
@@ -225,7 +229,8 @@ lines3js <- function(
 #'   xlim = c(0, 6),
 #'   ylim = c(0, 6),
 #'   zlim = c(-1, 1),
-#'   aspect = c(1, 1, 1)
+#'   aspect = c(1, 1, 1),
+#'   label_axes = F
 #' )
 #'
 #' # Add a line using the linegl representation
@@ -253,9 +258,8 @@ lines3js <- function(
 #' )
 #'
 #' # View the plot
-#' p
+#' r3js(p, rotation = c(0, 0, 0), zoom = 2)
 #'
-#' @export
 segments3js <- function(
   data3js,
   x, y, z,

@@ -181,6 +181,8 @@ convertCol3js <- function(col){
 #' @param data3js The data3js object
 #' @param highlight Arguments to apply to the highlighted object
 #'
+#' @noRd
+#'
 highlight3js <- function(
   data3js,
   highlight
@@ -255,7 +257,7 @@ allargs <- function(orig_values = FALSE, ...) {
 #' )
 #'
 #' # Add a sphere with clipping planes
-#' sphere3js(
+#' p <- sphere3js(
 #'   data3js = p,
 #'   0, 0, 0,
 #'   radius = 2,
@@ -284,6 +286,9 @@ allargs <- function(orig_values = FALSE, ...) {
 #'     )
 #'   )
 #' )
+#'
+#' # View the plot
+#' r3js(p, zoom = 2)
 #'
 clippingPlane3js <- function(
   coplanarPoints
