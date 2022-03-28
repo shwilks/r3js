@@ -35,6 +35,7 @@ R3JS.element.constructors.text = function(
             size   : plotobj.size[0],
             alignment : plotobj.alignment,
             offset     : plotobj.offset,
+            style      : plotobj.style,
             properties : R3JS.Material(plotobj.properties)
         });
 
