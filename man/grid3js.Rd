@@ -47,17 +47,39 @@ p <- plot3js(draw_grid = FALSE, xlab = "X", ylab = "Y", zlab = "Z")
 p <- box3js(p)
 
 # Add grid lines but only for the z axis
-grid3js(
+p <- grid3js(
   p, col = "red",
   axes = "z"
 )
 
+r3js(p)
+
 # Add grid lines but only for the z axis and
 # only at either end of the x axis
-grid3js(
+p <- grid3js(
   p, col = "blue",
   axes = "z",
   sides = "x"
 )
 
+r3js(p)
+
 }
+\seealso{
+Other {plot components}: 
+\code{\link{arrows3js}()},
+\code{\link{axis3js}()},
+\code{\link{box3js}()},
+\code{\link{legend3js}()},
+\code{\link{light3js}()},
+\code{\link{lines3js}()},
+\code{\link{mtext3js}()},
+\code{\link{points3js}()},
+\code{\link{segments3js}()},
+\code{\link{shape3js}()},
+\code{\link{sphere3js}()},
+\code{\link{surface3js}()},
+\code{\link{text3js}()},
+\code{\link{triangle3js}()}
+}
+\concept{{plot components}}

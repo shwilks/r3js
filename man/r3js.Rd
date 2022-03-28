@@ -65,7 +65,8 @@ r3js(
         off = list(backgroundColor = colorspace::lighten(rainbow(3)[3], 0.8), color = "white")
       )
     )
-  )
+  ),
+  zoom = 1.5
 )
 
 }

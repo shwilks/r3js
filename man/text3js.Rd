@@ -16,7 +16,7 @@ text3js(
   type = "geometry",
   alignment = "center",
   offset = c(0, 0),
-  style = list(),
+  style = list(fontFamily = "sans-serif"),
   ...
 )
 }
@@ -63,16 +63,17 @@ labels <- LETTERS[1:4]
 sizes <- c(0.4, 0.6, 0.8, 1)
 
 # Create empty plot
-p <- plot3js(
+p0 <- plot3js(
   xlim = c(0, 5),
   ylim = c(-1, 1),
   zlim = c(-1, 1),
-  aspect = c(1, 1, 1)
+  aspect = c(1, 1, 1),
+  label_axes = FALSE
 )
 
 # Add text as a geometry
-text3js(
-  data3js = p,
+p <- text3js(
+  data3js = p0,
   x = x,
   y = y,
   z = z,
@@ -80,9 +81,11 @@ text3js(
   text = labels
 )
 
+r3js(p, rotation = c(0, 0, 0), zoom = 1)
+
 # Add text as a html labels
-text3js(
-  data3js = p,
+p <- text3js(
+  data3js = p0,
   x = x,
   y = y,
   z = z,
@@ -91,4 +94,24 @@ text3js(
   type = "html"
 )
 
+r3js(p, rotation = c(0, 0, 0), zoom = 1)
+
 }
+\seealso{
+Other {plot components}: 
+\code{\link{arrows3js}()},
+\code{\link{axis3js}()},
+\code{\link{box3js}()},
+\code{\link{grid3js}()},
+\code{\link{legend3js}()},
+\code{\link{light3js}()},
+\code{\link{lines3js}()},
+\code{\link{mtext3js}()},
+\code{\link{points3js}()},
+\code{\link{segments3js}()},
+\code{\link{shape3js}()},
+\code{\link{sphere3js}()},
+\code{\link{surface3js}()},
+\code{\link{triangle3js}()}
+}
+\concept{{plot components}}

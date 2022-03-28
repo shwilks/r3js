@@ -90,7 +90,7 @@ A high level method for generating a 3D scatter or line plot.
 \examples{
 
 # Simple plot example
-plot3js(
+p <- plot3js(
   x = iris$Sepal.Length,
   y = iris$Sepal.Width,
   z = iris$Petal.Length,
@@ -100,8 +100,10 @@ plot3js(
   zlab = "Petal Length"
 )
 
+r3js(p, zoom = 2)
+
 # Plotting with point rollover info and highlighting
-plot3js(
+p <- plot3js(
   x = USJudgeRatings$CONT,
   y = USJudgeRatings$INTG,
   z = USJudgeRatings$DMNR,
@@ -116,5 +118,7 @@ plot3js(
   col = "green",
   label = rownames(USJudgeRatings)
 )
+
+r3js(p, zoom = 2)
 
 }

@@ -34,6 +34,25 @@ Add a box to an r3js plot
 }
 \examples{
 p <- plot3js.new()
-box3js(p)
+p <- box3js(p)
+r3js(p)
 
 }
+\seealso{
+Other {plot components}: 
+\code{\link{arrows3js}()},
+\code{\link{axis3js}()},
+\code{\link{grid3js}()},
+\code{\link{legend3js}()},
+\code{\link{light3js}()},
+\code{\link{lines3js}()},
+\code{\link{mtext3js}()},
+\code{\link{points3js}()},
+\code{\link{segments3js}()},
+\code{\link{shape3js}()},
+\code{\link{sphere3js}()},
+\code{\link{surface3js}()},
+\code{\link{text3js}()},
+\code{\link{triangle3js}()}
+}
+\concept{{plot components}}

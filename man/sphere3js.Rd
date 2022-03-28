@@ -27,7 +27,7 @@ sphere3js(data3js, x, y, z, radius, col = "black", highlight, ...)
 Unlike points3js, where geometric points can also be represented as
 spheres, this adds sphere that is sized with respect to the actual
 dimensions of the plotting space (and so if aspect ratios differ for
-each axis may not actually appear sphere-like!).
+each axis may not actually appear sphere-like).
 }
 \examples{
 # Setup base plot
@@ -38,12 +38,14 @@ p <- plot3js(
 )
 
 # Add sphere (this will look distorted because of axis scaling)
-sphere3js(
+p <- sphere3js(
   data3js = p,
   0, 0, 0,
   radius = 5,
   col = "green"
 )
+
+r3js(p, zoom = 2.5)
 
 # Setup base plot with equal aspect ratio
 p <- plot3js(
@@ -54,11 +56,31 @@ p <- plot3js(
 )
 
 # Add sphere (fixed aspect ratio now makes the sphere look spherical)
-sphere3js(
+p <- sphere3js(
   data3js = p,
   0, 0, 0,
   radius = 5,
   col = "green"
 )
 
+r3js(p, zoom = 2)
+
 }
+\seealso{
+Other {plot components}: 
+\code{\link{arrows3js}()},
+\code{\link{axis3js}()},
+\code{\link{box3js}()},
+\code{\link{grid3js}()},
+\code{\link{legend3js}()},
+\code{\link{light3js}()},
+\code{\link{lines3js}()},
+\code{\link{mtext3js}()},
+\code{\link{points3js}()},
+\code{\link{segments3js}()},
+\code{\link{shape3js}()},
+\code{\link{surface3js}()},
+\code{\link{text3js}()},
+\code{\link{triangle3js}()}
+}
+\concept{{plot components}}

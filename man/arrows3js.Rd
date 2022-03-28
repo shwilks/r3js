@@ -49,14 +49,35 @@ from <- cbind(
 to <- jitter(from, amount = 0.2)
 
 # Setup base plot
-p <- plot3js()
+p <- plot3js(label_axes = FALSE)
 
 # Add arrows
-arrows3js(
+p <- arrows3js(
   p, from, to,
   arrowhead_length = 0.06,
   arrowhead_width = 0.04,
   lwd = 0.01
 )
 
+# View the plot
+r3js(p, translation = c(0, 0, 0.15), zoom = 2)
+
 }
+\seealso{
+Other {plot components}: 
+\code{\link{axis3js}()},
+\code{\link{box3js}()},
+\code{\link{grid3js}()},
+\code{\link{legend3js}()},
+\code{\link{light3js}()},
+\code{\link{lines3js}()},
+\code{\link{mtext3js}()},
+\code{\link{points3js}()},
+\code{\link{segments3js}()},
+\code{\link{shape3js}()},
+\code{\link{sphere3js}()},
+\code{\link{surface3js}()},
+\code{\link{text3js}()},
+\code{\link{triangle3js}()}
+}
+\concept{{plot components}}

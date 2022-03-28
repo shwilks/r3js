@@ -16,3 +16,44 @@ legend3js(data3js, legend, fill)
 \description{
 Add a legend to an data3js object
 }
+\examples{
+# Setup plot
+p <- plot3js(
+  x = iris$Sepal.Length,
+  y = iris$Sepal.Width,
+  z = iris$Petal.Length,
+  col = rainbow(3)[iris$Species],
+  xlab = "Sepal Length",
+  ylab = "Sepal Width",
+  zlab = "Petal Length"
+)
+
+# Add simple legend
+p <- legend3js(
+  data3js = p,
+  legend = levels(iris$Species),
+  fill = rainbow(3)
+)
+
+# View plot
+r3js(p, zoom = 2)
+
+}
+\seealso{
+Other {plot components}: 
+\code{\link{arrows3js}()},
+\code{\link{axis3js}()},
+\code{\link{box3js}()},
+\code{\link{grid3js}()},
+\code{\link{light3js}()},
+\code{\link{lines3js}()},
+\code{\link{mtext3js}()},
+\code{\link{points3js}()},
+\code{\link{segments3js}()},
+\code{\link{shape3js}()},
+\code{\link{sphere3js}()},
+\code{\link{surface3js}()},
+\code{\link{text3js}()},
+\code{\link{triangle3js}()}
+}
+\concept{{plot components}}

@@ -38,7 +38,7 @@ surface3js(
 }
 \description{
 This function behaves very similarly to the \code{surface3d} function in the \code{rgl}
-package, although the handling of NA values is more robust in this implementation.
+package, although the handling of NA values are handled differently.
 }
 \examples{
 # volcano example taken from "persp"
@@ -73,3 +73,21 @@ r3js(
 )
 
 }
+\seealso{
+Other {plot components}: 
+\code{\link{arrows3js}()},
+\code{\link{axis3js}()},
+\code{\link{box3js}()},
+\code{\link{grid3js}()},
+\code{\link{legend3js}()},
+\code{\link{light3js}()},
+\code{\link{lines3js}()},
+\code{\link{mtext3js}()},
+\code{\link{points3js}()},
+\code{\link{segments3js}()},
+\code{\link{shape3js}()},
+\code{\link{sphere3js}()},
+\code{\link{text3js}()},
+\code{\link{triangle3js}()}
+}
+\concept{{plot components}}

@@ -26,7 +26,7 @@ p <- plot3js(
 )
 
 # Add a sphere with clipping planes
-sphere3js(
+p <- sphere3js(
   data3js = p,
   0, 0, 0,
   radius = 2,
@@ -55,5 +55,8 @@ sphere3js(
     )
   )
 )
+
+# View the plot
+r3js(p, zoom = 2)
 
 }

@@ -79,11 +79,12 @@ gl_shapes <- c(
 p <- plot3js(
   xlim = c(0, length(geo_shapes) + 1),
   ylim = c(-4, 4),
-  zlim = c(-4, 4)
+  zlim = c(-4, 4),
+  label_axes = FALSE
 )
 
-# Plot the three different point geometries
-points3js(
+# Plot the different point geometries
+p <- points3js(
   data3js = p,
   x = seq_along(geo_shapes),
   y = rep(0, length(geo_shapes)),
@@ -94,15 +95,18 @@ points3js(
   fill = "grey70"
 )
 
+r3js(p, rotation = c(0, 0, 0), zoom = 2)
+
 # Setup base plot
 p <- plot3js(
   xlim = c(0, length(gl_shapes) + 1),
   ylim = c(-4, 4),
-  zlim = c(-4, 4)
+  zlim = c(-4, 4),
+  label_axes = FALSE
 )
 
-    # Plot the three different point geometries
-points3js(
+# Plot the different gl points
+p <- points3js(
   data3js = p,
   x = seq_along(gl_shapes),
   y = rep(0, length(gl_shapes)),
@@ -114,16 +118,19 @@ points3js(
   geometry = FALSE
 )
 
-# Plot a 10,000 points using the much more efficient webgl representation
-# Add a set of points as the default sphere representation
+r3js(p, rotation = c(0, 0, 0), zoom = 2)
+
+# Plot a 10,000 points using the much more efficient gl.point representation
+
 # Setup base plot
 p <- plot3js(
   xlim = c(-4, 4),
   ylim = c(-4, 4),
-  zlim = c(-4, 4)
+  zlim = c(-4, 4),
+  label_axes = FALSE
 )
 
-points3js(
+p <- points3js(
   data3js = p,
   x = rnorm(10000, 0),
   y = rnorm(10000, 0),
@@ -134,4 +141,24 @@ points3js(
   geometry = FALSE
 )
 
+r3js(p, rotation = c(0, 0, 0), zoom = 2)
+
 }
+\seealso{
+Other {plot components}: 
+\code{\link{arrows3js}()},
+\code{\link{axis3js}()},
+\code{\link{box3js}()},
+\code{\link{grid3js}()},
+\code{\link{legend3js}()},
+\code{\link{light3js}()},
+\code{\link{lines3js}()},
+\code{\link{mtext3js}()},
+\code{\link{segments3js}()},
+\code{\link{shape3js}()},
+\code{\link{sphere3js}()},
+\code{\link{surface3js}()},
+\code{\link{text3js}()},
+\code{\link{triangle3js}()}
+}
+\concept{{plot components}}

@@ -38,7 +38,7 @@ particular position.
 }
 \examples{
 # Set up a plot
-p <- plot3js(
+p0 <- plot3js(
   x = 1:4,
   y = c(2,1,3,4),
   z = c(3,2,4,1),
@@ -52,24 +52,45 @@ p <- plot3js(
 )
 
 # Light scene intensely from above
-light3js(
-  p,
+p <- light3js(
+  p0,
   position = c(0, 1, 0)
 )
+r3js(p, zoom = 2)
 
 # Light scene positionally from the middle of the plot
-light3js(
-  p,
+p <- light3js(
+  p0,
   position = c(2.5, 2.5, 2.5),
   type = "point"
 )
+r3js(p, zoom = 2)
 
 # Light scene ambiently with a yellow light
-light3js(
-  p,
+p <- light3js(
+  p0,
   intensity = 0.3,
   type = "ambient",
   col = "yellow"
 )
+r3js(p, zoom = 2)
 
 }
+\seealso{
+Other {plot components}: 
+\code{\link{arrows3js}()},
+\code{\link{axis3js}()},
+\code{\link{box3js}()},
+\code{\link{grid3js}()},
+\code{\link{legend3js}()},
+\code{\link{lines3js}()},
+\code{\link{mtext3js}()},
+\code{\link{points3js}()},
+\code{\link{segments3js}()},
+\code{\link{shape3js}()},
+\code{\link{sphere3js}()},
+\code{\link{surface3js}()},
+\code{\link{text3js}()},
+\code{\link{triangle3js}()}
+}
+\concept{{plot components}}

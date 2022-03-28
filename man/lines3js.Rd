@@ -56,7 +56,8 @@ p <- plot3js(
   xlim = c(0, 6),
   ylim = c(0, 6),
   zlim = c(-1, 1),
-  aspect = c(1, 1, 1)
+  aspect = c(1, 1, 1),
+  label_axes = FALSE
 )
 
 # Add a line using the linegl representation
@@ -84,6 +85,24 @@ p <- lines3js(
 )
 
 # View the plot
-p
+r3js(p, rotation = c(0, 0, 0), zoom = 2)
 
 }
+\seealso{
+Other {plot components}: 
+\code{\link{arrows3js}()},
+\code{\link{axis3js}()},
+\code{\link{box3js}()},
+\code{\link{grid3js}()},
+\code{\link{legend3js}()},
+\code{\link{light3js}()},
+\code{\link{mtext3js}()},
+\code{\link{points3js}()},
+\code{\link{segments3js}()},
+\code{\link{shape3js}()},
+\code{\link{sphere3js}()},
+\code{\link{surface3js}()},
+\code{\link{text3js}()},
+\code{\link{triangle3js}()}
+}
+\concept{{plot components}}

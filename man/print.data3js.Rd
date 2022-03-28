@@ -2,9 +2,12 @@
 % Please edit documentation in R/3JSmethods.R
 \name{print.data3js}
 \alias{print.data3js}
-\title{Print data3js}
+\alias{plot.data3js}
+\title{Print method for data3js objects}
 \usage{
-\method{print}{data3js}(x, ...)
+\method{print}{data3js}(x, ..., view = interactive())
+
+\method{plot}{data3js}(x, ..., view = interactive())
 }
 \arguments{
 \item{x}{The data3js object}

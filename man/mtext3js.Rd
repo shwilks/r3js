@@ -34,6 +34,24 @@ p <- box3js(p)
 p <- mtext3js(p, "0.5m", side = "x")
 p <- mtext3js(p, "0.25m", side = "x", at = 0.25, line = 1)
 p <- mtext3js(p, "1m", side = "y", at = 1, line = 2)
-p
+r3js(p)
 
 }
+\seealso{
+Other {plot components}: 
+\code{\link{arrows3js}()},
+\code{\link{axis3js}()},
+\code{\link{box3js}()},
+\code{\link{grid3js}()},
+\code{\link{legend3js}()},
+\code{\link{light3js}()},
+\code{\link{lines3js}()},
+\code{\link{points3js}()},
+\code{\link{segments3js}()},
+\code{\link{shape3js}()},
+\code{\link{sphere3js}()},
+\code{\link{surface3js}()},
+\code{\link{text3js}()},
+\code{\link{triangle3js}()}
+}
+\concept{{plot components}}
