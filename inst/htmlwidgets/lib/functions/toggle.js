@@ -47,6 +47,7 @@ R3JS.Viewer.prototype.addToggles = function(){
             // Style button
             if(this.on){
                 if(viewer.settings.styles 
+                    && viewer.settings.styles.toggles
                     && viewer.settings.styles.toggles[this.innerHTML]
                     && viewer.settings.styles.toggles[this.innerHTML].on){
 
@@ -60,6 +61,7 @@ R3JS.Viewer.prototype.addToggles = function(){
                 }
             } else {
                 if(viewer.settings.styles 
+                    && viewer.settings.styles.toggles
                     && viewer.settings.styles.toggles[this.innerHTML]
                     && viewer.settings.styles.toggles[this.innerHTML].off){
 
