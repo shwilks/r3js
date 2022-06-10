@@ -33,6 +33,4 @@ Thumbs.db
 *.sublime-project
 
 inst/doc
-docs
-
 tests/testoutput
