@@ -1,14 +1,5 @@
 
-#' Print method for data3js objects
-#'
-#' The print method for the data3js object, by default plotting the htmlwidget.
-#'
-#' @param x The data3js object
-#' @param ... Additional arguments, not used
-#'
-#' @method print data3js
 #' @export
-#'
 print.data3js <- function(x, ..., view = interactive()) {
   print(r3js(x), view = view, ...)
 }
