@@ -15,7 +15,8 @@ plot3js(
   ylab = NULL,
   zlab = NULL,
   label = NULL,
-  type = "p",
+  type = "points",
+  geometry = NULL,
   axislabel_line = 3,
   aspect = NULL,
   label_axes = c("x", "y", "z"),
@@ -51,8 +52,11 @@ plot3js(
 
 \item{label}{optional vector of interactive point labels}
 
-\item{type}{plot type "p" for geometric points, "l" for lines, or "glpoints"
-gl.POINTS rendered points}
+\item{type}{one of "points" or "lines"}
+
+\item{geometry}{should points and lines be represented as physical
+geometries? Default for points is TRUE and for lines is FALSE, see
+\code{points()} and \code{lines()} for more information.}
 
 \item{axislabel_line}{Distance of axis label from plot}
 

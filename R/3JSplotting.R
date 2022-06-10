@@ -13,8 +13,10 @@
 #' @param ylab y axis label
 #' @param zlab z axis label
 #' @param label optional vector of interactive point labels
-#' @param type plot type "p" for geometric points, "l" for lines, or "glpoints"
-#'   gl.POINTS rendered points
+#' @param type one of "points" or "lines"
+#' @param geometry should points and lines be represented as physical
+#'   geometries? Default for points is TRUE and for lines is FALSE, see
+#'   `points()` and `lines()` for more information.
 #' @param axislabel_line Distance of axis label from plot
 #' @param aspect Plot axis aspect ratio, see `plot3js.window()`
 #' @param label_axes Vector of axes to label, any combination of "x", "y" and
@@ -77,7 +79,8 @@ plot3js <- function(
   ylab = NULL,
   zlab = NULL,
   label = NULL,
-  type = "p",
+  type = "points",
+  geometry = NULL,
   axislabel_line = 3,
   aspect = NULL,
   label_axes = c("x", "y", "z"),
@@ -94,6 +97,12 @@ plot3js <- function(
 
   # Setup plot
   data3js <- plot3js.new(background = background)
+
+  # Set default arguments
+  if (is.null(geometry)) {
+    if (type == "points") geometry <- TRUE
+    else                  geometry <- FALSE
+  }
 
   # Set default limits
   if (is.null(xlim)) {
@@ -203,30 +212,23 @@ plot3js <- function(
      && !missing(y)
      && !missing(z)){
 
-    if(type == "p"){
+    if(type == "points"){
       data3js <- points3js(
         data3js,
         x = x,
         y = y,
         z = z,
         label = label,
+        geometry = geometry,
         ...
       )
-    } else if(type == "l"){
+    } else if(type == "lines"){
       data3js <- lines3js(
         data3js,
         x = x,
         y = y,
         z = z,
-        ...
-      )
-    } else if(type == "glpoints"){
-      data3js <- glpoints3js(
-        data3js,
-        x = x,
-        y = y,
-        z = z,
-        label = label,
+        geometry = geometry,
         ...
       )
     }
