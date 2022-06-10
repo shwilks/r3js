@@ -9,6 +9,7 @@
 #' @param zoom Plot starting zoom factor
 #' @param translation Plot starting translation
 #' @param styles List of styles controlling elements of the plot, see examples
+#' @param title Title for the viewer
 #' @param ... Additional arguments to pass to `htmlwidgets::createWidget()`
 #'
 #' @return Returns an html widget of the plot

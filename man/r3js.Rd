@@ -25,6 +25,8 @@ r3js(
 
 \item{styles}{List of styles controlling elements of the plot, see examples}
 
+\item{title}{Title for the viewer}
+
 \item{...}{Additional arguments to pass to \code{htmlwidgets::createWidget()}}
 }
 \value{
