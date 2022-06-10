@@ -6,6 +6,9 @@ R3JS.Viewer.prototype.load = function(plotData, settings = {}){
     this.contentLoaded = true;
     this.settings = settings;
 
+    // Set plot title
+    if (settings.title !== undefined) this.name = settings.title;
+
     // Set background color
     if (plotData.scene && plotData.scene.background) {
         this.scene.setBackgroundColor({

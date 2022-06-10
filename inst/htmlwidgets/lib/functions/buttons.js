@@ -26,7 +26,7 @@ R3JS.Viewer.prototype.addViewerButtons = function(){
 		name  : "snapshot",
 		title : "Download image",
 		icon  : R3JS.icons.snapshot(),
-		fn    : e => this.downloadImage(this.name)
+		fn    : e => this.downloadImage(this.name + ".png")
 	});
 
 	// Pop out viewer

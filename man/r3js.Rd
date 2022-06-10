@@ -7,9 +7,10 @@
 r3js(
   data3js,
   rotation = c(-1.45, 0, -2.35),
-  zoom = 4,
+  zoom = 2,
   translation = c(0, 0, 0),
   styles = list(),
+  title = "R3JS viewer",
   ...
 )
 }

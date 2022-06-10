@@ -56,6 +56,7 @@ r3js <- function(
   zoom         = 2,
   translation  = c(0, 0, 0),
   styles       = list(),
+  title        = "R3JS viewer",
   ...
   ) {
 
@@ -66,6 +67,7 @@ r3js <- function(
 
   settings <- list()
   settings$styles <- styles
+  settings$title  <- title
 
   # Forward options using x
   x = list(
