@@ -222,13 +222,14 @@ test_that("plot3js", {
   export.viewer.test(
     r3js(
       plot3js(
-        x = iris$Sepal.Length,
-        y = iris$Sepal.Width,
-        z = iris$Petal.Length,
-        col = rainbow(3)[iris$Species],
-        xlab = "Sepal Length",
-        ylab = "Sepal Width",
-        zlab = "Petal Length"
+        x = mtcars$mpg,
+        y = mtcars$hp,
+        z = mtcars$disp,
+        xlab = "mpg",
+        ylab = "hp",
+        zlab = "disp",
+        size = 2,
+        col = "green"
       )
     ),
     "plot3js.html"
