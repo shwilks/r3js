@@ -105,9 +105,7 @@ glpoints3js <- function(
 #' @param size point sizes
 #' @param col point colors
 #' @param fill point fill color
-#' @param shape point shapes, one of "circle", "open circle", "square", "open
-#'   square", "sphere", "cube" or "open cube". For geometry = FALSE, currently
-#'   only "circle" and "sphere" are supported.
+#' @param shape point shapes, see the examples below for a list of different types.
 #' @param geometry logical, should the point be rendered as a physical geometry
 #' @param highlight highlight characteristics (see `highlight3js()`)
 #' @param label optional vector of interactive labels to apply to the points (see `highlight3js()`)

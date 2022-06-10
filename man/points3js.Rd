@@ -35,9 +35,7 @@ points3js(
 
 \item{fill}{point fill color}
 
-\item{shape}{point shapes, one of "circle", "open circle", "square", "open
-square", "sphere", "cube" or "open cube". For geometry = FALSE, currently
-only "circle" and "sphere" are supported.}
+\item{shape}{point shapes, see the examples below for a list of different types.}
 
 \item{highlight}{highlight characteristics (see \code{highlight3js()})}
 
