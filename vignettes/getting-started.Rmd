@@ -1,0 +1,101 @@
+---
+title: "Getting Started"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(r3js)
+```
+
+Generally, r3js works by generating an object containing the plotting data and then continuously updating it as new features are added to the plot (similar to plotly).  For a simple 3D scatterplot however, the `plot3js` function handles all of the plotting setup for you. Plotting syntax is intended to be similar to the base plotting functions in R, and that used in the RGL package.
+
+
+```{r, out.width="100%", out.height="400px"}
+# Generate and view a simple 3D scatterplot
+x <- sort(rnorm(1000))
+y <- rnorm(1000)
+z <- rnorm(1000) + atan2(x, y)
+  
+p <- plot3js(x, y, z, col = rainbow(1000))
+r3js(p)
+```
+
+
+You can also build up a plot step by step using the lower level functions for initiating 3D plots (see vignettes 'Creating a plot from scratch').
+
+## Interactivity
+Several ways to add interactivity to plots are currently supported, namely labels, highlighting on mouse roll-over, and toggle buttons.
+
+### Labels
+Labels can be added, which will display when you hover the mouse over the plot element, simply by providing a string or string vector as input to the plotting function for the `label` argument:
+
+```{r, out.width="100%", out.height="400px"}
+p <- plot3js(
+  x = runif(100),
+  y = runif(100),
+  z = runif(100),
+  size = 3,
+  col = rainbow(100),
+  label = paste("Point", 1:100),
+)
+
+r3js(p)
+```
+
+
+### Roll-over highlighting
+Features of a plotted object can be programmed to change upon a mouse roll-over simply by passing the arguments you wish to update as a list to the `highlight` argument and set `interactive = TRUE`:
+
+```{r, out.width="100%", out.height="400px"}
+p <- plot3js(
+  x = runif(100),
+  y = runif(100),
+  z = runif(100),
+  size = 3,
+  col = rainbow(100),
+  highlight = list(
+    size = 4,
+    col = rev(rainbow(100)),
+    mat = "basic"
+  ),
+  interactive = TRUE
+)
+
+r3js(p)
+```
+
+### Toggle buttons
+To associate an object with a toggle button simply pass the desired toggle label to the `toggle` argument:
+
+```{r, out.width="100%", out.height="400px"}
+x <- runif(100)
+y <- runif(100)
+z <- runif(100)
+
+col <- c(
+  rep("blue", 50),
+  rep("red", 50)
+)
+
+toggle <- paste(col, "points")
+
+p <- plot3js(
+  x = x,
+  y = y,
+  z = z,
+  size = 3,
+  col = col,
+  toggle = toggle
+)
+
+r3js(p)
+```
+

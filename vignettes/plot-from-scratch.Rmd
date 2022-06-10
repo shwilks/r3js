@@ -7,6 +7,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+When setting up a plot to later add further elements to, generally your life will be made easier if you still use the `plot3js()` function to achieve basic plot setup but do not supply and x, y or z data to plot.
+
+However it is of course possible to call the lower level functions that `plot3js()` uses but to call them directly as demonstrated in a simple example below.
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -18,7 +22,7 @@ knitr::opts_chunk$set(
 library(r3js)
 ```
 
-```{r plot_creation}
+```{r, out.width="100%", out.height="400px"}
 # Generate data
 x <- runif(20, 0, 10)
 y <- runif(20, 0, 20)
@@ -33,7 +37,7 @@ data3js <- plot3js.window(
   xlim = c(0,10),
   ylim = c(0,20),
   zlim = c(0,1),
-  aspect = c(0.5,1,0.5)
+  aspect = c(1, 1, 1)
 )
 
 # Add box

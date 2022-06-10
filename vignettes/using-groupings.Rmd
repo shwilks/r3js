@@ -7,6 +7,12 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+Sometimes you may want to include more complex patterns of interactivity into a plot, for example where interaction with one plot elements triggers changes or appearance / disappearance in a wider group of other plot elements.
+
+In this case you can utilise the ability to group elements in a plot, so that interaction with any one of the group elements that has been indicated as interactive with the argument `interactive = TRUE` will trigger changes as specified by `highlight` in all other plot elements in the same group.
+
+The example below builds up a plot with more complex interactivity based on these principles.
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -15,7 +21,7 @@ knitr::opts_chunk$set(
 library(r3js)
 ```
 
-```{r groupings}
+```{r, out.width="100%", out.height="600px"}
 # Set data
 x_vals <- iris$Sepal.Length
 y_vals <- iris$Sepal.Width
