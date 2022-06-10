@@ -50,7 +50,7 @@ p <- plot3js(
   ylim = c(0, 6),
   zlim = c(-1, 1),
   aspect = c(1, 1, 1),
-  label_axes = F
+  label_axes = FALSE
 )
 
 # Add a line using the linegl representation
