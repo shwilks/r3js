@@ -14,3 +14,4 @@
 ^tests/testoutput$
 ^builds$
 ^README\.Rmd$
+^cran-comments\.md$
