@@ -33,7 +33,7 @@ Several ways to add interactivity to plots are currently supported, namely label
 
 Using the possibilities together you can create plots like the one below.
 
-<a href="https://shwilks.github.io/r3js/reference/figures/README-ablandscape.html"><img src="https://shwilks.github.io/r3js/reference/figures/README-ablandscape.png" style="margin-top:14px; width:100%; height:400px; border:solid 2px #eeeeee;"/></a>
+<iframe src="reference/figures/README-ablandscape.html" style="margin-top:14px; width:100%; height:400px; border:solid 2px #eeeeee;"></iframe>
 
 ## Learn more
-For a basic introduction to plotting and using the different types of interactivity see the article [Getting started](https://shwilks.github.io/r3js/articles/getting-started.html). For a more complex example using plot element groupings to link interaction with one plot element to changes in others see the article [Grouping plot elements](https://shwilks.github.io/r3js/articles/using-groupings.html).
+For a basic introduction to plotting and using the different types of interactivity see the article [Getting started](articles/getting-started.html). For a more complex example using plot element groupings to link interaction with one plot element to changes in others see the article [Grouping plot elements](articles/using-groupings.html).
