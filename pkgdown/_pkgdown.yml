@@ -26,14 +26,6 @@ navbar:
     articles:
       text: Articles
       href: articles/index.html
-articles:
-- title: Getting started
-  contents:
-  - basic-3d-plotting
-- title: Map diagnostics
-  contents:
-  - plot-from-scratch
-  - using-groupings
 reference:
 - title: Setting up a plot
   contents:
