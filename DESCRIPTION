@@ -2,6 +2,7 @@ Package: r3js
 Type: Package
 Title: WebGL-based 3D plotting in R using the three.js library
 Version: 0.0.1
+Date: 2022-06-10
 Author: Sam Wilks
 Maintainer: Sam Wilks <sw463@cam.ac.uk>
 Description: Provides R and javascript functions to allow WebGL-based 3D plotting in R 
