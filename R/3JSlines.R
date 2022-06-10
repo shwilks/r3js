@@ -174,7 +174,7 @@ lines3js <- function(
 
     # Update the last IDs field to reflect all the points added
     data3js$lastID <- seq(
-      from = data3js$lastID - length(x)-1 + 1,
+      from = data3js$lastID - (length(x)-1) + 1,
       to = data3js$lastID
     )
 
@@ -230,7 +230,7 @@ lines3js <- function(
 #'   ylim = c(0, 6),
 #'   zlim = c(-1, 1),
 #'   aspect = c(1, 1, 1),
-#'   label_axes = F
+#'   label_axes = FALSE
 #' )
 #'
 #' # Add a line using the linegl representation
