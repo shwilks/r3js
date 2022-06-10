@@ -25,7 +25,7 @@ convert_style <- function(...){
 #' @param fill If supplied the fill color of a box placed next to each label
 #'
 #' @export
-#' @family {plot components}
+#' @family plot components
 #'
 #' @examples
 #' # Setup plot

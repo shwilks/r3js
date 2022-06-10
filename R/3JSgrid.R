@@ -15,7 +15,7 @@
 #' @param ... Other arguments to pass to `material3js()`
 #'
 #' @export
-#' @family {plot components}
+#' @family plot components
 #'
 #' @examples
 #' # Setup blank base plot

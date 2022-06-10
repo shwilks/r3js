@@ -98,7 +98,7 @@ r3js(p, rotation = c(0, 0, 0), zoom = 1)
 
 }
 \seealso{
-Other {plot components}: 
+Other plot components: 
 \code{\link{arrows3js}()},
 \code{\link{axis3js}()},
 \code{\link{box3js}()},
@@ -114,4 +114,4 @@ Other {plot components}:
 \code{\link{surface3js}()},
 \code{\link{triangle3js}()}
 }
-\concept{{plot components}}
+\concept{plot components}

@@ -105,7 +105,7 @@ background3js <- function(
 #' @param ... Other arguments to pass to `material3js()`
 #'
 #' @export
-#' @family {plot components}
+#' @family plot components
 #'
 #' @examples
 #' # Create a blank plot
@@ -192,7 +192,7 @@ mtext3js <- function(
 #' @param ... Other arguments to pass to `material3js()`
 #'
 #' @export
-#' @family {plot components}
+#' @family plot components
 #'
 #' @examples
 #' p <- plot3js.new()

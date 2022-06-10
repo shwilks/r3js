@@ -99,7 +99,7 @@ gllines3js <- function(
 #' @param geometry logical, should the point be rendered as a physical geometry
 #' @param ... further parameters to pass to `material3js()`
 #' @export
-#' @family {plot components}
+#' @family plot components
 #'
 #' @examples
 #' # Draw three lines
@@ -216,7 +216,7 @@ lines3js <- function(
 #' @param geometry logical, should the lines be rendered as a physical geometries
 #' @param ... further parameters to pass to `material3js()`
 #' @export
-#' @family {plot components}
+#' @family plot components
 #'
 #' @examples
 #' # Draw three lines

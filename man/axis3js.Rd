@@ -35,7 +35,7 @@ separately to add an axis, generally in combination after other lower
 level functions like \code{plot3js.new()} and \code{plot3js.window()}.
 }
 \seealso{
-Other {plot components}: 
+Other plot components: 
 \code{\link{arrows3js}()},
 \code{\link{box3js}()},
 \code{\link{grid3js}()},
@@ -51,4 +51,4 @@ Other {plot components}:
 \code{\link{text3js}()},
 \code{\link{triangle3js}()}
 }
-\concept{{plot components}}
+\concept{plot components}

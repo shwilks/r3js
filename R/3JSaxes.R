@@ -6,7 +6,7 @@
 #' level functions like `plot3js.new()` and `plot3js.window()`.
 #'
 #' @export
-#' @family {plot components}
+#' @family plot components
 #'
 #' @param data3js The data3js object
 #' @param side The axis side, either "x", "y" or "z"

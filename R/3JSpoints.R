@@ -112,7 +112,7 @@ glpoints3js <- function(
 #' @param toggle optional vector of interactive toggles associate to each point (see `highlight3js()`)
 #' @param ... further parameters to pass to `material3js()`
 #' @export
-#' @family {plot components}
+#' @family plot components
 #'
 #' @examples
 #' geo_shapes <- c(

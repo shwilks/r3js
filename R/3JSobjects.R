@@ -16,7 +16,7 @@
 #' @param ... other arguments to pass to `material3js()`
 #'
 #' @export
-#' @family {plot components}
+#' @family plot components
 #'
 #' @examples
 #' # Setup base plot
@@ -95,7 +95,7 @@ sphere3js <- function(
 #' @param ... other arguments to pass to `material3js()`
 #'
 #' @export
-#' @family {plot components}
+#' @family plot components
 #'
 #' @examples
 #' # Draw a set of arrows
@@ -215,7 +215,7 @@ arrow3js <- function(
 #' @param ... Material and texture properties. See `material3js()`
 #'
 #' @export
-#' @family {plot components}
+#' @family plot components
 #'
 #' @examples
 #' # volcano example taken from "persp"
@@ -301,7 +301,7 @@ surface3js <- function(
 #' @param highlight highlight attributes (see `highlight3js()`)
 #' @param ... Additional attributes to pass to `material3js()`
 #'
-#' @family {plot components}
+#' @family plot components
 #' @export
 #'
 #' @examples
@@ -365,7 +365,7 @@ shape3js <- function(
 #' @param ... Additional attributes to pass to `material3js()`
 #'
 #' @export
-#' @family {plot components}
+#' @family plot components
 #'
 #' @examples
 #' # Draw some random triangles
@@ -439,7 +439,7 @@ triangle3js <- function(
 #'   particular position.
 #'
 #' @export
-#' @family {plot components}
+#' @family plot components
 #'
 #' @examples
 #' # Set up a plot
