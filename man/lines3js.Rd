@@ -35,6 +35,9 @@ lines3js(
 
 \item{...}{further parameters to pass to \code{material3js()}}
 }
+\value{
+Returns an updated data3js object
+}
 \description{
 This adds lines to a plot, similarly to the \code{lines()} function. You have to decide whether
 you would like lines to physically exist as geometries in the scene (geometry = TRUE), i.e. as

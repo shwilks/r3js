@@ -11,7 +11,7 @@ clippingPlane3js(coplanarPoints)
 a point, cols are coordinates}
 }
 \value{
-Returns a r3js clipping plane object
+Returns an r3js clipping plane object
 }
 \description{
 This function can be used to create a clipping plane that can then be applied

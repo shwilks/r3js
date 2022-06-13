@@ -14,6 +14,8 @@
 #' @param geometry Should the lines be rendered as a physical geometry in the scene (see `lines3js()`)
 #' @param ... Other arguments to pass to `material3js()`
 #'
+#' @return Returns an updated data3js object
+#'
 #' @export
 #' @family plot components
 #'
@@ -104,6 +106,8 @@ grid3js <- function(
 #' @param geometry Should the lines be rendered as a physical geometry in the scene (see `lines3js()`)
 #' @param ... Other arguments to pass to `material3js()`
 #'
+#' @return Returns an updated data3js object
+#'
 #' @noRd
 #'
 sidegrid3js <- function(
@@ -172,6 +176,8 @@ sidegrid3js <- function(
 #'
 #' Add a grid parallel to the axis to an r3js plot. This is mostly intended for
 #' adding grid lines to an axis.
+#'
+#' @return Returns an updated data3js object
 #'
 #' @noRd
 axislines3js <- function(

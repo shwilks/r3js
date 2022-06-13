@@ -29,6 +29,9 @@ box3js(
 
 \item{...}{Other arguments to pass to \code{material3js()}}
 }
+\value{
+Returns an updated data3js object
+}
 \description{
 Add a box to an r3js plot
 }

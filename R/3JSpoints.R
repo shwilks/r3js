@@ -18,6 +18,8 @@
 #' @param highlight point highlight appearance (see `highlight3js()`)
 #' @param ... other attributes to pass to `material3js()`
 #'
+#' @return Returns an updated data3js object
+#'
 #' @noRd
 #'
 geopoint3js <- function(
@@ -61,6 +63,8 @@ geopoint3js <- function(
 #' @param shape point shapes
 #' @param highlight highlight characteristics (see `highlight3ks()`)
 #' @param ... further parameters to pass to `material3js()`
+#'
+#' @return Returns an updated data3js object
 #'
 #' @noRd
 #'
@@ -111,6 +115,9 @@ glpoints3js <- function(
 #' @param label optional vector of interactive labels to apply to the points (see `highlight3js()`)
 #' @param toggle optional vector of interactive toggles associate to each point (see `highlight3js()`)
 #' @param ... further parameters to pass to `material3js()`
+#'
+#' @return Returns an updated data3js object
+#'
 #' @export
 #' @family plot components
 #'

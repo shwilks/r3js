@@ -19,6 +19,9 @@ plot3js.window(data3js, xlim, ylim, zlim, aspect = NULL)
 automatically set the aspect ratio such that axes have the same visual
 length}
 }
+\value{
+Returns an updated data3js object
+}
 \description{
 This is similar to the \code{plot.window()} command except that plot limits can
 only be set once for each plot.

@@ -17,6 +17,9 @@ triangle3js(data3js, vertices, col = "black", highlight, ...)
 
 \item{...}{Additional attributes to pass to \code{material3js()}}
 }
+\value{
+Returns an updated data3js object
+}
 \description{
 Add a triangle to a data3js object
 }

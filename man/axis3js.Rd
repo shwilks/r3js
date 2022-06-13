@@ -29,6 +29,9 @@ axis3js(
 
 \item{...}{Other arguments to pass to \code{material3js()}}
 }
+\value{
+Returns an updated data3js object
+}
 \description{
 This is used as part of the \code{plot3js()} function but can be called
 separately to add an axis, generally in combination after other lower

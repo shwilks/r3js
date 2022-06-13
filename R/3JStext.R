@@ -21,6 +21,8 @@
 #' @param style named list of css style attributes to apply to the html text
 #' @param ... Additional attributes to pass to `material3js()`
 #'
+#' @return Returns an updated data3js object
+#'
 #' @family plot components
 #' @export
 #'

@@ -35,6 +35,9 @@ arrows3js(
 
 \item{...}{other arguments to pass to \code{material3js()}}
 }
+\value{
+Returns an updated data3js object
+}
 \description{
 Add arrows to a data3js object
 }

@@ -12,6 +12,8 @@
 #' @param mat material (see `material3js()`)
 #' @param ... further parameters to pass to `material3js()`
 #'
+#' @return Returns an updated data3js object
+#'
 #' @noRd
 #'
 line3js <- function(
@@ -50,6 +52,8 @@ line3js <- function(
 #' @param col line color
 #' @param segments Should the line be interpreted as segments, e.g. a dashed line
 #' @param ... Additional arguments to pass to `material3js()`
+#'
+#' @return Returns an updated data3js object
 #'
 #' @noRd
 gllines3js <- function(
@@ -98,6 +102,9 @@ gllines3js <- function(
 #' @param highlight highlight characteristics (see `highlight3ks()`)
 #' @param geometry logical, should the point be rendered as a physical geometry
 #' @param ... further parameters to pass to `material3js()`
+#'
+#' @return Returns an updated data3js object
+#'
 #' @export
 #' @family plot components
 #'
@@ -218,6 +225,8 @@ lines3js <- function(
 #' @export
 #' @family plot components
 #'
+#' @return Returns an updated data3js object
+#'
 #' @examples
 #' # Draw three lines
 #' x <- seq(from = 0, to = 6, length.out = 100)
@@ -305,12 +314,3 @@ segments3js <- function(
   data3js
 
 }
-
-
-
-
-
-
-
-
-

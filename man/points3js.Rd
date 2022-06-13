@@ -47,6 +47,9 @@ points3js(
 
 \item{...}{further parameters to pass to \code{material3js()}}
 }
+\value{
+Returns an updated data3js object
+}
 \description{
 This is the base function for adding points to a plot. Alongside other parameters
 you will need to decide whether you want the points plotted as physical geometries

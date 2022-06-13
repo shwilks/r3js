@@ -2,7 +2,7 @@
 % Please edit documentation in R/3JSproperties.R
 \name{material3js}
 \alias{material3js}
-\title{Set material properties of a 3js object}
+\title{Set material properties of an r3js object}
 \usage{
 material3js(
   mat = "phong",
@@ -104,7 +104,10 @@ rendered}
 
 \item{...}{Additional arguments (not used)}
 }
+\value{
+Returns a list of material properties
+}
 \description{
 Arguments refer to different material properties for an object, many of which
-refer directly to properties as described in the \href{https://threejs.org/docs/index.html?q=material#api/en/materials/Material}{threejs documentation}
+refer directly to properties as described in the \href{https://threejs.org/docs/index.html?q=material#api/en/materials/Material}{'threejs' documentation}
 }

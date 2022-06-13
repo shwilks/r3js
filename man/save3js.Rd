@@ -29,6 +29,9 @@ filename_files)}
 
 \item{...}{Further arguments to pass to \code{r3js()}}
 }
+\value{
+No return value, called for the side-effect of saving the plot.
+}
 \description{
 Converts r3js plot data to a widget and saves it to an HTML file (e.g. for
 sharing with others)

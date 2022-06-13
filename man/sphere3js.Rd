@@ -23,6 +23,9 @@ sphere3js(data3js, x, y, z, radius, col = "black", highlight, ...)
 
 \item{...}{other arguments to pass to \code{material3js()}}
 }
+\value{
+Returns an updated data3js object
+}
 \description{
 Unlike points3js, where geometric points can also be represented as
 spheres, this adds sphere that is sized with respect to the actual

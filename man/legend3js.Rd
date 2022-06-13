@@ -13,6 +13,9 @@ legend3js(data3js, legend, fill)
 
 \item{fill}{If supplied the fill color of a box placed next to each label}
 }
+\value{
+Returns an updated data3js object
+}
 \description{
 Add a legend to an data3js object
 }

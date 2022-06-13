@@ -29,6 +29,9 @@ shape3js(
 
 \item{...}{Additional attributes to pass to \code{material3js()}}
 }
+\value{
+Returns an updated data3js object
+}
 \description{
 Add a generic shape to an 3js plot
 }

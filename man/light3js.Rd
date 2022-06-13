@@ -23,6 +23,9 @@ light3js(
 
 \item{col}{Light color}
 }
+\value{
+Returns an updated data3js object
+}
 \description{
 When no light source is provided the 3d scene is lit from the top left, this
 function allows you to specify different numbers of light sources at

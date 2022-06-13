@@ -1,8 +1,8 @@
 
-#' Set material properties of a 3js object
+#' Set material properties of an r3js object
 #'
 #' Arguments refer to different material properties for an object, many of which
-#' refer directly to properties as described in the [threejs
+#' refer directly to properties as described in the ['threejs'
 #' documentation](https://threejs.org/docs/index.html?q=material#api/en/materials/Material)
 #'
 #' @param mat Material to use for the object, one of "basic", "lambert", "phong"
@@ -54,6 +54,8 @@
 #'   [renderOrder](https://threejs.org/docs/index.html#api/en/core/Object3D.renderOrder)
 #'
 #' @param ... Additional arguments (not used)
+#'
+#' @return Returns a list of material properties
 #'
 #' @export
 #'
@@ -181,6 +183,9 @@ convertCol3js <- function(col){
 #' @param data3js The data3js object
 #' @param highlight Arguments to apply to the highlighted object
 #'
+#' @return Returns the r3js object with additional information needed to achieve
+#'   highlighting.
+#'
 #' @noRd
 #'
 highlight3js <- function(
@@ -245,7 +250,7 @@ allargs <- function(orig_values = FALSE, ...) {
 #' @param coplanarPoints A matrix of 3 points coplanar to the plane, each row is
 #'   a point, cols are coordinates
 #'
-#' @return Returns a r3js clipping plane object
+#' @return Returns an r3js clipping plane object
 #' @export
 #'
 #' @examples

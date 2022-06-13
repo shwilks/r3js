@@ -29,6 +29,9 @@ filename_files)}
 
 \item{...}{Further arguments to pass to \code{\link[htmlwidgets]{saveWidget}}}
 }
+\value{
+No return value, called for the side-effect of saving the plot.
+}
 \description{
 Save a rendered r3js widget to an HTML file (e.g. for sharing with others).
 This is mostly a wrapper for \code{\link[htmlwidgets]{saveWidget}}.

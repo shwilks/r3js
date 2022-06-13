@@ -35,6 +35,9 @@ grid3js(
 
 \item{...}{Other arguments to pass to \code{material3js()}}
 }
+\value{
+Returns an updated data3js object
+}
 \description{
 This is used for example by \code{plot3js()} to add axis grids to a plot
 these show along the faces of the plotting box, indicating axis ticks.

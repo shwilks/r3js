@@ -35,6 +35,9 @@ segments3js(
 
 \item{...}{further parameters to pass to \code{material3js()}}
 }
+\value{
+Returns an updated data3js object
+}
 \description{
 Add lines segments a 3js object
 }

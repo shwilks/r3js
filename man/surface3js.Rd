@@ -36,6 +36,9 @@ surface3js(
 
 \item{...}{Material and texture properties. See \code{material3js()}}
 }
+\value{
+Returns an updated data3js object
+}
 \description{
 This function behaves very similarly to the \code{surface3d} function in the \code{rgl}
 package, although the handling of NA values are handled differently.

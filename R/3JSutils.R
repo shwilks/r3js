@@ -14,6 +14,8 @@
 #'   filename_files)
 #' @param ... Further arguments to pass to `r3js()`
 #'
+#' @return No return value, called for the side-effect of saving the plot.
+#'
 #' @export
 #'
 save3js <- function(
@@ -55,6 +57,8 @@ save3js <- function(
 #' @param libdir Directory to copy HTML dependencies into (defaults to
 #'   filename_files)
 #' @param ... Further arguments to pass to \code{\link[htmlwidgets]{saveWidget}}
+#'
+#' @return No return value, called for the side-effect of saving the plot.
 #'
 #' @export
 #'

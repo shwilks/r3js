@@ -11,6 +11,9 @@ background3js(data3js, col)
 
 \item{col}{The background color}
 }
+\value{
+Returns an updated data3js object
+}
 \description{
 Set the plot background color
 }

@@ -5,6 +5,8 @@
 #' separately to add an axis, generally in combination after other lower
 #' level functions like `plot3js.new()` and `plot3js.window()`.
 #'
+#' @return Returns an updated data3js object
+#'
 #' @export
 #' @family plot components
 #'

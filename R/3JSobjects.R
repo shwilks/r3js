@@ -15,6 +15,8 @@
 #' @param highlight highlight attributes (see `highlight3js()`)
 #' @param ... other arguments to pass to `material3js()`
 #'
+#' @return Returns an updated data3js object
+#'
 #' @export
 #' @family plot components
 #'
@@ -94,6 +96,8 @@ sphere3js <- function(
 #' @param mat material (see `material3js()`)
 #' @param ... other arguments to pass to `material3js()`
 #'
+#' @return Returns an updated data3js object
+#'
 #' @export
 #' @family plot components
 #'
@@ -170,6 +174,8 @@ arrows3js <- function(
 #' @param mat material (see `material3js()`)
 #' @param ... other arguments to pass to `material3js()`
 #'
+#' @return Returns an updated data3js object
+#'
 #' @noRd
 #'
 arrow3js <- function(
@@ -213,6 +219,8 @@ arrow3js <- function(
 #' @param wireframe Logical value for if the surface should be displayed as a mesh
 #' @param highlight highlight attributes (see `highlight3js()`)
 #' @param ... Material and texture properties. See `material3js()`
+#'
+#' @return Returns an updated data3js object
 #'
 #' @export
 #' @family plot components
@@ -301,6 +309,8 @@ surface3js <- function(
 #' @param highlight highlight attributes (see `highlight3js()`)
 #' @param ... Additional attributes to pass to `material3js()`
 #'
+#' @return Returns an updated data3js object
+#'
 #' @family plot components
 #' @export
 #'
@@ -363,6 +373,8 @@ shape3js <- function(
 #' @param col Single color for the triangles or vector of vertex colors
 #' @param highlight highlight attributes (see `highlight3js()`)
 #' @param ... Additional attributes to pass to `material3js()`
+#'
+#' @return Returns an updated data3js object
 #'
 #' @export
 #' @family plot components
@@ -437,6 +449,8 @@ triangle3js <- function(
 #'   coordinate space light a light bulb. If "ambient" any position argument is
 #'   ignored and the light will light all aspects of the scene evenly from no
 #'   particular position.
+#'
+#' @return Returns an updated data3js object
 #'
 #' @export
 #' @family plot components

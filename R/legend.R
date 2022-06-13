@@ -24,6 +24,8 @@ convert_style <- function(...){
 #' @param legend Character vector of legend labels
 #' @param fill If supplied the fill color of a box placed next to each label
 #'
+#' @return Returns an updated data3js object
+#'
 #' @export
 #' @family plot components
 #'
@@ -112,8 +114,3 @@ legend3js <- function(
   data3js
 
 }
-
-
-
-
-

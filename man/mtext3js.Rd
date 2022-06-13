@@ -21,6 +21,9 @@ mtext3js(data3js, text, side, line = 0, at = 0.5, cornerside = "f", ...)
 
 \item{...}{Other arguments to pass to \code{material3js()}}
 }
+\value{
+Returns an updated data3js object
+}
 \description{
 This is used for example to add axis labels but can also
 be used for other purposes.

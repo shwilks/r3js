@@ -51,6 +51,8 @@ plot3js.new <- function(
 #'   automatically set the aspect ratio such that axes have the same visual
 #'   length
 #'
+#' @return Returns an updated data3js object
+#'
 #' @export
 #'
 plot3js.window <- function(
@@ -78,6 +80,8 @@ plot3js.window <- function(
 #' @param data3js The data3js object
 #' @param col The background color
 #'
+#' @return Returns an updated data3js object
+#'
 #' @export
 #'
 background3js <- function(
@@ -103,6 +107,8 @@ background3js <- function(
 #' @param at Position along the plot edge, defaults to 0.5 (middle)
 #' @param cornerside See `material3js()`
 #' @param ... Other arguments to pass to `material3js()`
+#'
+#' @return Returns an updated data3js object
 #'
 #' @export
 #' @family plot components
@@ -190,6 +196,8 @@ mtext3js <- function(
 #' @param geometry Should the box be rendered as a physical geometry in the scene (see `lines3js()`)
 #' @param renderOrder The render order for the box, defaults to 1
 #' @param ... Other arguments to pass to `material3js()`
+#'
+#' @return Returns an updated data3js object
 #'
 #' @export
 #' @family plot components

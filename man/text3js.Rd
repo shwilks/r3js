@@ -49,6 +49,9 @@ this is interpreted as size in pts (default 16).}
 
 \item{...}{Additional attributes to pass to \code{material3js()}}
 }
+\value{
+Returns an updated data3js object
+}
 \description{
 The text added can either be as an html text object, superimposed on the scene
 but moving relative to appear relative to the specified coordinqtes, or an actual
