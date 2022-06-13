@@ -10,7 +10,7 @@ export.viewer.test <- function(
   ){
 
   # Set the output filepath
-  rootdir <- testthat::test_path("../testoutput/viewer")
+  rootdir <- tempdir()
   testfile <- file.path(normalizePath(rootdir), filename)
 
   # Save the widget
@@ -22,13 +22,13 @@ export.viewer.test <- function(
   )
 
   # Remove any additional files
-  unlink(file.path(rootdir, paste0("lib/r3js-1.0.0")), recursive = T)
+  unlink(file.path(rootdir, "lib/r3js-1.0.0"), recursive = T)
 
   # Replace links to library with links to main code
   plotdata <- readLines(testfile)
   plotdata <- gsub(
-    pattern     = paste0("lib/r3js-1.0.0/"),
-    replacement = paste0("../../../inst/htmlwidgets/lib/"),
+    pattern     = "lib/r3js-1.0.0/",
+    replacement = system.file("inst/htmlwidgets/lib", package = "r3js"),
     x           = plotdata,
     fixed       = TRUE
   )
