@@ -12,7 +12,13 @@ Plots are built as html widgets, using the RStudio viewer panel to display the p
 
 ## Installation
 
-You can install the development version from [GitHub](https://github.com/) with:
+You can install tthe latest CRAN release with:
+
+```r
+install.packages("r3js")
+```
+
+Or install the latest development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
