@@ -4,6 +4,7 @@
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/shwilks/r3js/workflows/R-CMD-check/badge.svg)](https://github.com/shwilks/r3js/actions)
 [![Codecov test coverage](https://codecov.io/gh/shwilks/r3js/branch/master/graph/badge.svg)](https://app.codecov.io/gh/shwilks/r3js?branch=master)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/r3js)](https://cran.r-project.org/package=r3js)
 <!-- badges: end -->
 
 This is the project directory for the r3js, a package to provide R and javascript functions to allow WebGL-based 3D plotting in R using the [three.js](https://threejs.org) javascript library. Simple interactivity through roll-over highlighting and toggle buttons is also supported.
