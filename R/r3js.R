@@ -69,6 +69,8 @@ r3js <- function(
   settings <- list()
   settings$styles <- styles
   settings$title  <- title
+  settings$ID     <- data3js$ID
+  settings$linked <- data3js$linked
 
   # Forward options using x
   x = list(
