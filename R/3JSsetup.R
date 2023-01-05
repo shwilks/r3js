@@ -15,8 +15,10 @@ plot3js.new <- function(
   background = "#ffffff"
   ){
 
+  # Setup data
   data3js <-  structure(list(), class = c("data3js", "list"))
   data3js$ticks <- list(NULL,NULL,NULL)
+  data3js$ID <- jsonlite::unbox(paste(c(letters, 0:9)[sample(36, 20, T)], collapse = ""))
 
   # Set background color
   data3js <- background3js(
