@@ -106,3 +106,22 @@ save3jsWidget <- function(
 
 }
 
+
+link3js <- function(
+    plotdata
+) {
+
+  plotids <- vapply(plotdata, function(x) {
+      if (inherits(x, "htmlwidget")) x$x$settings$ID
+      else                           x$ID
+    },
+    character(1)
+  )
+
+  lapply(plotdata, function(x) {
+    if (inherits(x, "htmlwidget")) x$x$settings$linked <- c(x$x$settings$linked, plotids)
+    else                           x$linked <- c(x$linked, plotids)
+    x
+  })
+
+}
