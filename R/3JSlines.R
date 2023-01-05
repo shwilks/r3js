@@ -74,7 +74,6 @@ gllines3js <- function(
   )
   object$position <- cbind(x,y,z)
   object$segments <- jsonlite::unbox(segments)
-  object
 
   data3js <- addObject3js(data3js, object)
   data3js
