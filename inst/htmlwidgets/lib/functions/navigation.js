@@ -27,7 +27,7 @@ R3JS.Viewer.prototype.bindNavigation = function(){
                 if(!viewport.mouse.event.metaKey && !viewport.mouse.event.shiftKey && viewport.touch.num <= 1){
                     viewer.mouseMove();
                 } else if(viewport.mouse.event.metaKey){
-                    viewer.mouseMoveMeta();
+                    viewer.mouseMoveMeta(this.viewport.mouse.deltaX, this.viewport.mouse.deltaY);
                 }
             }
         }
@@ -46,7 +46,7 @@ R3JS.Viewer.prototype.bindNavigation = function(){
             if(viewport.mouse.scrollShift){
                 viewer.mouseScrollShift();
             } else {
-                viewer.mouseScroll();
+                viewer.mouseScroll(viewport.mouse.scrollY);
             }
         }
 
@@ -76,7 +76,12 @@ R3JS.Viewer.prototype.rotateSceneWithInertia = function(){
 
 }
 
-R3JS.Viewer.prototype.rotateSceneXY = function( deltaX, deltaY ){
+R3JS.Viewer.prototype.rotateSceneXY = function( deltaX, deltaY, linked ){
+
+    // Rotate linked plots
+    if (linked === undefined) {
+        this.linkedviewers.map(viewer => viewer.rotateSceneXY(deltaX, deltaY, true));
+    }
 
     this.sceneChange = true;
     this.scene.rotateOnAxis(new THREE.Vector3(0,1,0), deltaX );
@@ -103,18 +108,26 @@ R3JS.Viewer.prototype.rotationDamper = function(deltaX, deltaY){
 
 }
 
-R3JS.Viewer.prototype.zoomScene = function(){
+R3JS.Viewer.prototype.zoomScene = function(zoom, linked){
+
+    // Zoom linked plots
+    if (linked === undefined) {
+        this.linkedviewers.map(viewer => viewer.zoomScene(zoom, true));
+    }
 
     this.sceneChange = true;
-    this.camera.zoom(Math.pow(1.01, this.viewport.mouse.scrollY));
+    this.camera.zoom(Math.pow(1.01, zoom));
 
 }
 
-R3JS.Viewer.prototype.panScene = function(){
+R3JS.Viewer.prototype.panScene = function(panX, panY, linked){
+
+    // Pan linked plots
+    if (linked === undefined) {
+        this.linkedviewers.map(viewer => viewer.panScene(panX, panY, true));
+    }
 
     this.sceneChange = true;
-    var panX = this.viewport.mouse.deltaX;
-    var panY = this.viewport.mouse.deltaY;
 
     var plotHolder = this.scene.plotHolder;
     var plotPoints = this.plotPoints;
