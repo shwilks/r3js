@@ -16,3 +16,10 @@ Converted title to title case:
 Added single quotes to software references in title and description.
 
 Removed unnecessary additional braces for '\concept{{plot components}}' in documentation
+
+## Alterations upon resubmission 2
+JavaScript additionally quoted to become 'JavaScript' in package description
+
+Added \value Rd tags for all function documentation.
+
+Tests now write to tempdir() and not to the users home filespace.
