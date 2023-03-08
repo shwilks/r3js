@@ -23,3 +23,7 @@ JavaScript additionally quoted to become 'JavaScript' in package description
 Added \value Rd tags for all function documentation.
 
 Tests now write to tempdir() and not to the users home filespace.
+
+## Version 0.0.2
+Ellipsis argument added to `as.tags.data3js` in order to match the generic `as.tags` 
+arguments, in order to address a new CRAN check failure.
