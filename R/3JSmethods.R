@@ -17,8 +17,8 @@ NULL
 
 #' @method as.tags data3js
 #' @export
-as.tags.data3js <- function(x, standalone = FALSE) {
-  htmltools::as.tags(r3js(x), standalone = standalone)
+as.tags.data3js <- function(x, standalone = FALSE, ...) {
+  htmltools::as.tags(r3js(x), standalone = standalone, ...)
 }
 
 #' @rdname print.data3js
