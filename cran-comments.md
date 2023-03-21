@@ -27,3 +27,6 @@ Tests now write to tempdir() and not to the users home filespace.
 ## Version 0.0.2
 Ellipsis argument added to `as.tags.data3js` in order to match the generic `as.tags` 
 arguments, in order to address a new CRAN check failure.
+
+## Alterations upon resubmission
+Date field updated
