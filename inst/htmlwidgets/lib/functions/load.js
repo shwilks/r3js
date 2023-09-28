@@ -42,6 +42,9 @@ R3JS.Viewer.prototype.load = function(plotData, settings = {}){
         dimensions : 3
     });
 
+    // Clear the plot
+    this.scene.empty();
+
     // Populate the plot
     this.scene.populatePlot(plotData);
 
@@ -52,7 +55,7 @@ R3JS.Viewer.prototype.load = function(plotData, settings = {}){
 
     // Add any toggles
     this.addToggles();
-	
+
     // Lights
     this.scene.clearLights();
 
