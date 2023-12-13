@@ -25,5 +25,7 @@ Suggests:
 RoxygenNote: 7.2.1
 Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
+URL: https://shwilks.github.io/r3js/, https://github.com/shwilks/r3js
+BugReports: https://github.com/shwilks/r3js/issues
 Depends: 
     R (>= 2.10)
