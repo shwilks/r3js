@@ -285,3 +285,23 @@ test_that("Test point rotation", {
 
 })
 
+
+test_that("Test orthographic camera", {
+
+  p <- plot3js(
+    x = iris$Sepal.Length,
+    y = iris$Sepal.Width,
+    z = iris$Petal.Length,
+    col = rainbow(3)[iris$Species],
+    xlab = "Sepal Length",
+    ylab = "Sepal Width",
+    zlab = "Petal Length"
+  )
+
+  export.viewer.test(
+    r3js(p, camera = "orthographic"),
+    "orthographic_camera.html"
+  )
+
+})
+

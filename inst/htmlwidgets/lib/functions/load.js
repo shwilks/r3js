@@ -42,6 +42,13 @@ R3JS.Viewer.prototype.load = function(plotData, settings = {}){
         dimensions : 3
     });
 
+    // Set camera type
+    if (this.settings.camera == "orthographic") {
+        this.camera = this.orthocamera;
+    } else {
+        this.camera = this.perspcamera;
+    }
+
     // Clear the plot
     this.scene.empty();
 

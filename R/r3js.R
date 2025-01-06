@@ -10,6 +10,7 @@
 #' @param translation Plot starting translation
 #' @param styles List of styles controlling elements of the plot, see examples
 #' @param title Title for the viewer
+#' @param camera Camera type, either "perspective" or "orthographic"
 #' @param ... Additional arguments to pass to `htmlwidgets::createWidget()`
 #'
 #' @return Returns an html widget of the plot
@@ -58,6 +59,7 @@ r3js <- function(
   translation  = c(0, 0, 0),
   styles       = list(),
   title        = "R3JS viewer",
+  camera       = "perspective",
   ...
   ) {
 
@@ -69,6 +71,7 @@ r3js <- function(
   settings <- list()
   settings$styles <- styles
   settings$title  <- title
+  settings$camera <- camera
   settings$ID     <- data3js$ID
   settings$linked <- data3js$linked
 
