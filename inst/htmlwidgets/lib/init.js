@@ -1,22 +1,22 @@
 
 // Setup object
-if(typeof R3JS === "undefined") R3JS = {};
+if (typeof R3JS === "undefined") R3JS = {};
 
 R3JS.Viewer = class R3JSviewer {
 
     // Constructor function
     constructor(container, settings = {
-        startAnimation : true,
-        initiate : true
-    }){
+        startAnimation: true,
+        initiate: true
+    }) {
 
         // Set settings
         this.settings = settings;
 
         // Set variables
-        this.sceneChange    = false;
+        this.sceneChange = false;
         this.raytraceNeeded = false;
-        this.name           = "r3js viewer";
+        this.name = "r3js viewer";
 
         // Set the container
         this.container = container;
@@ -29,21 +29,21 @@ R3JS.Viewer = class R3JSviewer {
         this.bindEventListeners();
 
         // Initiate the viewer
-        if(settings.initiate){ 
-            this.initiate( settings.startAnimation );
+        if (settings.initiate) {
+            this.initiate(settings.startAnimation);
         }
 
     }
 
     // Function to initiate webgl
-    initiate(startAnimation = true){
+    initiate(startAnimation = true) {
 
         // Create scene
         this.scene = new R3JS.Scene(this);
         this.scene.setBackgroundColor({
-            r : 1,
-            g : 1,
-            b : 1
+            r: 1,
+            g: 1,
+            b: 1
         })
 
         // Create renderer and append to dom
@@ -65,7 +65,7 @@ R3JS.Viewer = class R3JSviewer {
         this.bindNavigation();
 
         // Add rectangular selection
-        if(this.settings.rectangularSelection){
+        if (this.settings.rectangularSelection) {
             this.addRectangleSelection();
         }
 
@@ -73,11 +73,11 @@ R3JS.Viewer = class R3JSviewer {
         var viewer = this;
         function animate() {
 
-            if(viewer.raytraceNeeded || viewer.sceneChange || viewer.scene.sceneChange){
+            if (viewer.raytraceNeeded || viewer.sceneChange || viewer.scene.sceneChange) {
                 viewer.raytraceNeeded = false;
                 viewer.raytrace();
             }
-            if(viewer.sceneChange || viewer.scene.sceneChange){
+            if (viewer.sceneChange || viewer.scene.sceneChange) {
                 viewer.sceneChange = false;
                 viewer.scene.sceneChange = false;
                 viewer.render();
@@ -90,15 +90,15 @@ R3JS.Viewer = class R3JSviewer {
     }
 
     // Render function
-    render(){
+    render() {
         this.renderer.render(
-            this.scene, 
+            this.scene,
             this.camera
         );
     }
 
     // Raytrace function
-    raytrace(){
+    raytrace() {
         this.raytracer.raytrace(
             this,
             this.scene,
@@ -108,7 +108,7 @@ R3JS.Viewer = class R3JSviewer {
     }
 
     // Rest transformation
-    resetTransformation(){
+    resetTransformation() {
         this.sceneChange = true;
         this.scene.resetTransformation();
         this.camera.resetZoom();
@@ -116,7 +116,7 @@ R3JS.Viewer = class R3JSviewer {
     }
 
     // Set plot lims
-    setPlotDims(plotdims){
+    setPlotDims(plotdims) {
 
         // Set scene lims
         this.scene.setPlotDims(plotdims);
@@ -125,7 +125,7 @@ R3JS.Viewer = class R3JSviewer {
         //this.navigation_bind(plotdims.dimensions);
 
         // Set camera
-        if(plotdims.dimensions == 2){
+        if (plotdims.dimensions == 2) {
             this.camera.setType("orthographic");
             this.renderer.setShaders(
                 R3JS.Shaders.VertexShader2D,
@@ -142,25 +142,25 @@ R3JS.Viewer = class R3JSviewer {
     }
 
     // Return aspect ratio
-    getAspect(){
-        return(this.viewport.getAspect());
+    getAspect() {
+        return (this.viewport.getAspect());
     }
 
     // Get plot dims
     getPlotDims() {
-        return(this.scene.plotdims.dimensions);
+        return (this.scene.plotdims.dimensions);
     }
 
     // Check if this is part of a page or the whole page
-    fullpage(){
-        return(
+    fullpage() {
+        return (
             this.container.offsetHeight == document.body.offsetHeight &&
-            this.container.offsetWidth  == document.body.offsetWidth
+            this.container.offsetWidth == document.body.offsetWidth
         )
     }
 
     // For dispatching custom events
-    dispatchEvent(name, detail){
+    dispatchEvent(name, detail) {
         detail.viewer = this;
         let event = new CustomEvent(name, {
             detail: detail
@@ -168,14 +168,14 @@ R3JS.Viewer = class R3JSviewer {
         this.container.dispatchEvent(event);
     }
 
-    addEventListener(name, fn){
+    addEventListener(name, fn) {
         this.container.addEventListener(name, fn);
     }
 
-    bindEventListeners(){
-        for(var i=0; i<this.eventListeners.length; i++){
+    bindEventListeners() {
+        for (var i = 0; i < this.eventListeners.length; i++) {
             this.addEventListener(
-                this.eventListeners[i].name, 
+                this.eventListeners[i].name,
                 this.eventListeners[i].fn
             );
         }
