@@ -70,21 +70,19 @@ R3JS.Viewer = class R3JSviewer {
         }
 
         // Start animation loop
-        var viewer = this;
-        function animate() {
-
-            if (viewer.raytraceNeeded || viewer.sceneChange || viewer.scene.sceneChange) {
-                viewer.raytraceNeeded = false;
-                viewer.raytrace();
+        const animate = () => {
+            if (this.raytraceNeeded || this.sceneChange || this.scene.sceneChange) {
+                this.raytraceNeeded = false;
+                this.raytrace();
             }
-            if (viewer.sceneChange || viewer.scene.sceneChange) {
-                viewer.sceneChange = false;
-                viewer.scene.sceneChange = false;
-                viewer.render();
+            if (this.sceneChange || this.scene.sceneChange) {
+                this.sceneChange = false;
+                this.scene.sceneChange = false;
+                this.render();
             }
             requestAnimationFrame(animate);
+        };
 
-        }
         animate();
 
     }
