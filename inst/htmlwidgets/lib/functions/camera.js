@@ -55,6 +55,10 @@ R3JS.Camera = class Camera {
 		this.orthocamera.zoomToLims(lims);
 	}
 
+	getPosition(){
+		return(this.perspcamera.getPosition());
+	}
+
 	// Get the threejs camera
 	get3JSCamera(){
 		return(this.maincamera.get3JSCamera());
@@ -69,6 +73,17 @@ R3JS.Camera = class Camera {
 			this.type = "perspective";
 			this.maincamera = this.perspcamera;
 		}
+	}
+
+	// Toggle the camera type
+	toggleType(){
+		if(this.type == "orthographic"){
+			this.setType("perspective");
+		} else {
+			this.setType("orthographic");
+		}
+		this.viewer.render();
+		this.viewer.dispatchEvent("cameraTypeChange", {type: this.type});
 	}
 
 }
@@ -171,6 +186,11 @@ R3JS.PerspCamera = class PerspCamera extends R3JS.BaseCamera {
 
 		return(this.camera.position.z);
 
+	}
+
+	// Get the position
+	getPosition(){
+		return(this.camera.position);
 	}
 
 	// Set the zoom

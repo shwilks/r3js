@@ -115,7 +115,6 @@ R3JS.Scene.prototype.showhideDynamics = function(camera){
     if(this.dynamic){
         
         var aspect = this.plotdims.aspect;
-        var perspcamera = camera.perspcamera.camera;
 
         // Set variables
         var face_normals   = this.boundingBox.face_normals;
@@ -134,7 +133,7 @@ R3JS.Scene.prototype.showhideDynamics = function(camera){
             var origin = new THREE.Vector3().fromArray(this.getTranslation());
 
             origin.applyQuaternion(this.plotHolder.quaternion);
-            camera_to_origin = origin.clone().sub( perspcamera.position );
+            camera_to_origin = origin.clone().sub( camera.getPosition() );
             var face_angle   = camera_to_origin.angleTo(face_norm);
             var face_visible = face_angle < Math.PI/2;
 
