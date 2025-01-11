@@ -16,7 +16,7 @@ R3JS.Viewer.prototype.getImgData = function(){
   this.save_renderer.setPixelRatio( window.devicePixelRatio );
   this.save_renderer.render( 
     this.scene.scene, 
-    this.camera.camera
+    this.camera.get3JSCamera()
   );
 
   var img_data = this.save_renderer.domElement.toDataURL();

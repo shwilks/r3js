@@ -55,9 +55,8 @@ R3JS.Viewer = class R3JSviewer {
         );
 
         // Create cameras
-        this.perspcamera = new R3JS.PerspCamera(this);
-        this.orthocamera = new R3JS.OrthoCamera(this);
-        this.camera      = this.perspcamera;
+        this.camera = new R3JS.Camera(this);
+        this.camera.setType("perspective");
 
         // Add raytracer
         this.raytracer = new R3JS.Raytracer();
@@ -113,7 +112,7 @@ R3JS.Viewer = class R3JSviewer {
         this.sceneChange = true;
         this.scene.resetTransformation();
         this.camera.resetZoom();
-        this.scene.showhideDynamics(this.camera.camera);
+        this.scene.showhideDynamics(this.camera);
     }
 
     // Set plot lims
@@ -127,13 +126,13 @@ R3JS.Viewer = class R3JSviewer {
 
         // Set camera
         if(plotdims.dimensions == 2){
-            this.camera = this.orthocamera;
+            this.camera.setType("orthographic");
             this.renderer.setShaders(
                 R3JS.Shaders.VertexShader2D,
                 R3JS.Shaders.FragmentShader2D
             );
         } else {
-            this.camera = this.perspcamera;
+            this.camera.setType("perspective");
             this.renderer.setShaders(
                 R3JS.Shaders.VertexShader3D,
                 R3JS.Shaders.FragmentShader2D

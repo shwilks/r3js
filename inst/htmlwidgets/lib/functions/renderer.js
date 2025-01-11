@@ -35,8 +35,8 @@ R3JS.Renderer = class Renderer {
     }
 
     render(scene, camera){
-        this.webglrenderer.render( scene.scene, camera.camera );
-        this.labelrenderer.render( scene.scene, camera.camera );
+        this.webglrenderer.render( scene.scene, camera.get3JSCamera() );
+        this.labelrenderer.render( scene.scene, camera.get3JSCamera() );
     }
 
     getPixelRatio(){
@@ -82,8 +82,8 @@ R3JS.SVGRenderer = class SVGRenderer {
     }
 
     render(scene, camera){
-        this.svgrenderer.render( scene.scene, camera.camera );
-        this.labelrenderer.render( scene.scene, camera.camera );
+        this.svgrenderer.render( scene.scene, camera.get3JSCamera() );
+        this.labelrenderer.render( scene.scene, camera.get3JSCamera() );
     }
 
     getPixelRatio(){

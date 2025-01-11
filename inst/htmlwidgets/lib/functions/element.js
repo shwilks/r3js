@@ -158,7 +158,7 @@ R3JS.element.base = class Element {
 
         var projectedPosition = this.object.position.clone()
                                                     .applyMatrix4(this.object.parent.matrixWorld)
-                                                    .project(camera.camera);
+                                                    .project(camera.get3JSCamera());
 
         var aspect = camera.aspect;
         

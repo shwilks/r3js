@@ -541,7 +541,7 @@ R3JS.element.glpoint = class GLPoint extends R3JS.element.base {
             var projectedPosition = new THREE.Vector3()
                                              .fromArray(this.coords)
                                              .applyMatrix4(this.object.matrixWorld)
-                                             .project(camera.camera);
+                                             .project(camera.get3JSCamera());
 
             var aspect = camera.aspect;
             

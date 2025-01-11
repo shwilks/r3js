@@ -16,11 +16,11 @@ R3JS.Raytracer = class Raytracer {
 		){
 
 		// Do raystracing and find intersections
-		this.raycaster.camera = camera.camera;
+		this.raycaster.camera = camera.get3JSCamera();
 		this.raycaster.aspect = viewer.getAspect();
 		this.raycaster.setFromCamera( 
 			mouse, 
-			camera.camera
+			camera.get3JSCamera()
 		);
 	    
 	    // Find intersections with selectable objects

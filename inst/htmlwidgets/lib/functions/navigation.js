@@ -86,7 +86,7 @@ R3JS.Viewer.prototype.rotateSceneXY = function( deltaX, deltaY, linked ){
     this.sceneChange = true;
     this.scene.rotateOnAxis(new THREE.Vector3(0,1,0), deltaX );
     this.scene.rotateOnAxis(new THREE.Vector3(1,0,0), deltaY );
-    if(this.scene.dynamic) this.scene.showhideDynamics(this.camera.camera);
+    if(this.scene.dynamic) this.scene.showhideDynamics(this.camera);
 
 }
 
@@ -133,15 +133,15 @@ R3JS.Viewer.prototype.panScene = function(panX, panY, linked){
     var plotPoints = this.plotPoints;
 
     var position = new THREE.Vector3(0, 0, 0);
-    position.applyMatrix4(plotHolder.matrixWorld).project(this.camera.camera);
+    position.applyMatrix4(plotHolder.matrixWorld).project(this.camera.get3JSCamera());
     position.x += panX;
     position.y += panY;
     var inverse_mat = new THREE.Matrix4();
     inverse_mat.copy(plotHolder.matrixWorld).invert();
-    position.unproject(this.camera.camera).applyMatrix4(inverse_mat);
+    position.unproject(this.camera.get3JSCamera()).applyMatrix4(inverse_mat);
 
     this.scene.panScene(position.toArray());
-    this.scene.showhideDynamics(this.camera.camera);
+    this.scene.showhideDynamics(this.camera);
 
 }
 
@@ -152,13 +152,13 @@ R3JS.Viewer.prototype.rockScene = function(){
     var rotZ = this.viewport.mouse.scrollY;
     var plotHolder = this.scene.plotHolder;
     this.scene.rotateOnAxis(new THREE.Vector3(0,0,1), rotZ*0.01);
-    this.scene.showhideDynamics(this.camera.camera);
+    this.scene.showhideDynamics(this.camera);
 
     if(this.settings.rotateAroundMouse){
 
         // Rotate about mouse position
         var mouse = this.viewport.mouse;
-        var scene_pos1 = new THREE.Vector3( mouse.x, mouse.y, 0 ).unproject( this.camera.camera );
+        var scene_pos1 = new THREE.Vector3( mouse.x, mouse.y, 0 ).unproject( this.camera.get3JSCamera() );
         this.scene.plotHolder.updateMatrixWorld();
         this.scene.plotHolder.worldToLocal(scene_pos1);
 

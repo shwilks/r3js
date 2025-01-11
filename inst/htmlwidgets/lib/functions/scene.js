@@ -161,7 +161,7 @@ R3JS.Scene = class Scene {
         );
 
         // Do any dynamic showing and hiding
-        if(this.dynamic) this.showhideDynamics(this.viewer.camera.camera);
+        if(this.dynamic) this.showhideDynamics(this.viewer.camera);
 
     }
 
@@ -274,7 +274,7 @@ R3JS.Scene = class Scene {
 
         // Pan the scene by the difference
         this.panScene(newtranslation);
-        this.showhideDynamics(this.viewer.camera.camera);
+        this.showhideDynamics(this.viewer.camera);
 
     }
 

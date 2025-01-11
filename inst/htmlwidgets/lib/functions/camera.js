@@ -1,7 +1,80 @@
 
 
-// Standard camera class
 R3JS.Camera = class Camera {
+
+	constructor(viewer){
+		this.viewer = viewer;
+		this.perspcamera = new R3JS.PerspCamera(viewer);
+		this.orthocamera = new R3JS.OrthoCamera(viewer);
+	}
+
+	// Set the zoom
+	setZoom(zoom){
+		this.perspcamera.setZoom(zoom);
+		this.orthocamera.setZoom(zoom);
+	}
+
+	// Get the zoom
+	getZoom(){
+		return(this.camera.getZoom());
+	}
+
+	// Reset the zoom
+	resetZoom(){
+		this.perspcamera.resetZoom();
+		this.orthocamera.resetZoom();
+	}
+
+	// Zoom the camera
+	zoom(zoom){
+		this.perspcamera.zoom(zoom);
+		this.orthocamera.zoom(zoom);
+	}
+
+	// Set the size
+	setSize(width, height){
+		this.perspcamera.setSize(width, height);
+		this.orthocamera.setSize(width, height);
+	}
+
+	// Initiate the camera in a viewer
+	initiateInViewer(viewer){
+		this.perspcamera.initiateInViewer(viewer);
+		this.orthocamera.initiateInViewer(viewer);
+	}
+
+	// Reset the default zoom
+	setDefaultZoom(){
+		this.perspcamera.setDefaultZoom();
+		this.orthocamera.setDefaultZoom();
+	}
+
+	// Zoom to limits
+	zoomToLims(lims){
+		this.perspcamera.zoomToLims(lims);
+		this.orthocamera.zoomToLims(lims);
+	}
+
+	// Get the threejs camera
+	get3JSCamera(){
+		return(this.maincamera.get3JSCamera());
+	}
+
+	// Set the camera type
+	setType(type){
+		if (type == "orthographic") {
+			this.type = "orthographic";
+			this.maincamera = this.orthocamera;
+		} else {
+			this.type = "perspective";
+			this.maincamera = this.perspcamera;
+		}
+	}
+
+}
+
+// Base camera class that contains both orthographic and perspective cameras
+R3JS.BaseCamera = class BaseCamera {
 
 	constructor(viewer){
 		this.min_zoom     = 0.1;
@@ -73,11 +146,16 @@ R3JS.Camera = class Camera {
 		this.default_zoom = this.getZoom();
 	}
 
+	// Get the threejs camera
+	get3JSCamera(){
+		return(this.camera);
+	}
+
 }
 
 
 // Standard perspective camera for 3D
-R3JS.PerspCamera = class PerspCamera extends R3JS.Camera {
+R3JS.PerspCamera = class PerspCamera extends R3JS.BaseCamera {
 
 	// Constructor function
 	constructor(viewer){
@@ -126,7 +204,7 @@ R3JS.PerspCamera = class PerspCamera extends R3JS.Camera {
 
 
 // Orthographic camera for 2D
-R3JS.OrthoCamera = class OrthoCamera extends R3JS.Camera {
+R3JS.OrthoCamera = class OrthoCamera extends R3JS.BaseCamera {
 
 	// Constructor function
 	constructor(viewer){
