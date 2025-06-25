@@ -15,14 +15,14 @@ Imports:
     htmlwidgets, 
     htmltools, 
     jsonlite,
-    ellipsis,
+    rlang,
     vctrs
 Suggests: 
     testthat,
     rmarkdown,
     colorspace,
     knitr
-RoxygenNote: 7.2.1
+RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
 URL: https://shwilks.github.io/r3js/, https://github.com/shwilks/r3js
