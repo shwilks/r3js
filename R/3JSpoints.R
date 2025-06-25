@@ -220,7 +220,7 @@ points3js <- function(
   ...) {
 
   # Perform input checks
-  ellipsis::check_dots_used()
+  rlang::check_dots_used()
 
   # Repeat arguments to match length of points
   col    <- rep_len(col,    length(x))

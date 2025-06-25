@@ -9,3 +9,7 @@
 # r3js 0.0.2
 
 * Add ellipsis to `as.tags.data3js` method to match the generic
+
+# r3js 0.03
+
+* Remove ellipsis dependency (deprecated) and replace it by rlang.
